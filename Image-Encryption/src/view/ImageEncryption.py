@@ -5,7 +5,6 @@ Created on 13 janv. 2017
 '''
 import tkinter
 import tkinter.ttk as ttk
-import os
 import controller.ImageEncryptionController as IEC
 import model.ImageEncryptionModel as IEM
 
@@ -13,7 +12,6 @@ class ImageEncryption(object):
     '''
     La classe principale de l'application.
     '''
-    PLUGINS_PATH = "../../plugins"
     
 
     def __init__(self):
@@ -44,7 +42,11 @@ class ImageEncryption(object):
         self._frame = tkinter.Tk()
         self._frame.title("Image Encryption")
         
-        self._pluginTabs = [tkinter.Frame() for _ in os.listdir(ImageEncryption.PLUGINS_PATH)]
+        self._pluginTabs = []
+        for d in self._model.getPlugins():
+            frame = tkinter.Frame()
+            frame.tabText = d
+            self._pluginTabs.append(frame)
         
         self._menuBar = tkinter.Menu(self._frame)
     
@@ -54,8 +56,8 @@ class ImageEncryption(object):
         '''
         tabs = ttk.Notebook(self._frame)
         for plugin in self._pluginTabs:
-            tabs.add(plugin)
-            tabs.pack(plugin)
+            tabs.add(plugin, text=plugin.tabText)
+        tabs.pack(fill="both")
         
         self._frame.config(menu=self._menuBar)
     
