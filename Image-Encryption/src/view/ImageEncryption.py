@@ -4,9 +4,10 @@ Created on 13 janv. 2017
 @author: dubaipie
 '''
 import tkinter
+import sys
+import os
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM
-from tkinter import BooleanVar, StringVar
 
 class ImageEncryption(object):
     '''
@@ -67,7 +68,7 @@ class ImageEncryption(object):
         #Ajout de a barre des menus.
         self._frame.config(menu=self._menuBar)
     
-    def createController(self):
+    def createController(self): #SECTION A RETRAVAILLER
         '''
         Initialisation du contrôleur de la fenêtre.
         '''
@@ -87,13 +88,23 @@ class ImageEncryption(object):
             languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
             if loc == self._model.getSelectedLocale():
                 localeChoosed.set(loc)
-        localeChoosed.trace("w", lambda *args:
-            self._model.setSelectedLocale(localeChoosed.get()))
+        localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get(), args))
         
         optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
           
         self._menuBar.add_cascade(label=_("Option"), menu=optMenu)
-        
+    
+    def _restart(self):
+        '''
+        Redémarrer le programme.
+        '''
+        pgrm = sys.executable
+        os.execl(pgrm, pgrm, *sys.argv)
+    
+    def _reloadWithLocale(self, loc, *args):
+        self._model.setSelectedLocale(loc)
+        self._restart()
+
 if __name__ == "__main__":
     app = ImageEncryption()
     app.display()
