@@ -5,8 +5,8 @@ Created on 13 janv. 2017
 '''
 import tkinter
 import tkinter.ttk as ttk
-import controller.ImageEncryptionController as IEC
 import model.ImageEncryptionModel as IEM
+from tkinter import BooleanVar, StringVar
 
 class ImageEncryption(object):
     '''
@@ -71,8 +71,6 @@ class ImageEncryption(object):
         '''
         Initialisation du contrôleur de la fenêtre.
         '''
-        #Controleur de l'application.
-        self._controller = IEC.ImageEncryptionController(self._model, self)
         
         #Ajout des controleurs au menu 'File'.
         fileMenu = tkinter.Menu(self._menuBar, tearoff=False)
@@ -82,9 +80,16 @@ class ImageEncryption(object):
         #Ajout de controleurs au menu 'Option'
         optMenu = tkinter.Menu(self._menuBar, tearoff=False)
         languageMenu = tkinter.Menu(optMenu, tearoff=False)
+        
+        localeChoosed = tkinter.StringVar()
         for loc in self._model.getAvailableLocales():
             print("Locale : " + loc)
-            languageMenu.add_radiobutton(label=loc, command=lambda: self._controller.changeLocale(loc))
+            languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
+            if loc == self._model.getSelectedLocale():
+                localeChoosed.set(loc)
+        localeChoosed.trace("w", lambda *args:
+            self._model.setSelectedLocale(localeChoosed.get()))
+        
         optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
           
         self._menuBar.add_cascade(label=_("Option"), menu=optMenu)
