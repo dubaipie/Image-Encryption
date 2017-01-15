@@ -23,4 +23,8 @@ class ImageEncryptionController(object):
         self._model = model
         self._view = view
     
-    
+    def changeLocale(self, loc):
+        '''
+        Permet de changer la langue.
+        '''
+        self._model.setSelectedLocale(loc)

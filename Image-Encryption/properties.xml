@@ -1,2 +1,4 @@
 <properties>
-	<plugins>../../plugins</plugins></properties>
+   <plugins>../../plugins</plugins>
+   <locales selected="fr">../../locales</locales>
+   <app_name>image_encryption</app_name></properties>
