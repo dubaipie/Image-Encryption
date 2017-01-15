@@ -1,0 +1,54 @@
+\documentclass{report}
+
+\usepackage[utf8]{inputenc} % un package
+\usepackage[T1]{fontenc}      % un second package
+\usepackage[francais]{babel}  % un troisième package
+
+\title{Compte-rendus des réunions}
+\author{Pierre DUBAILLAY}
+
+\begin{document}
+\maketitle
+
+\part*{Semaine du 09/01}
+\section*{Introduction}
+Cette première réunion a permis de poser les bases du projet, en définissant le cadre, les attentes et les limites attendus.
+
+\section*{Documents demandés}
+Les documents suivants sont à rendre à la fin du projet :
+\begin{itemize}
+	\item[.] une vidéo de démonstration de l'utilisation du programme à des fins publicitaires pour l'université
+	\item[.] un rapport de projet, décrivant l'ensemble du projet (des choix d'implentation aux problèmes rencontrés)
+	\item[.] le code source du projet
+\end{itemize}
+
+\section*{Choix du langage}
+Le langage choisit est le python. Il est imposé un code robuste (qui peut faire face à une utilisation non prévue) et maintenable.
+
+\section*{Fonctionnalités imposées}
+Le programme doit pouvoir prendre une image dans n'importe quel format et la formatter pour une utilisation. Il doit être possible de fournir une clé pour chiffrer une image.
+
+\section*{Fonctionnalités souhaitées}
+Un mode enfant, simple d'accès, et qui permet de dessiner sa propre image.
+
+\section*{DeadLines}
+Une première échéance est début février, pour une démonstration aux portes ouvertes de l'université de Rouen.
+La seconde échéance est, pour le moment, début avril.
+
+\section*{Structure du programme}
+La structure n'est pas encore arrêtée, mais certaines pistes on été levées :
+\begin{itemize}
+	\item[.] un système de gestion des mises à jour ainsi que des paquets nécessaires
+	\item[.] un système de module (plugin), où chaque fonctionnalité (cryptage, génération de clé ...) est dans son propre module. Cela permettrait de mmodulariser le programme, et permettre de nouvelles fonctionnalités non prévues
+	\item[.] un représentation des-dits modules sous forme d'onglets
+	\item[.] les librairies graphiques et de gestion d'image ne sont pas arrêtées
+\end{itemize}
+
+\section*{Réflexions sur les algorithmes}
+Il a été soulevé deux interrogations sur les algorithmes :
+\begin{itemize}
+	\item[.] doit-on diviser chaque pixel en 4 ou bien n'est-ce pas nécessaire
+	\item[.] une possibilité d'effectuer l'algorithme XOR avec des couleurs
+\end{itemize}
+
+\end{document}
