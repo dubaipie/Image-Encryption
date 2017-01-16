@@ -44,6 +44,7 @@ class ImageEncryption(object):
         #La fenêtre principale
         self._frame = tkinter.Tk()
         self._frame.title(_("Image Encryption"))
+        self._frame.minsize(600, 400)
         
         #Les différents onglets pour chaque plugin
         self._pluginTabs = []
