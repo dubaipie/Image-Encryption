@@ -25,7 +25,7 @@ class ImageEncryptionModel(object):
     def getPlugins(self):
         '''
         Permet de récupérer les différents plugins sous forme de dictionnaire
-        ou la clé est le nom du plugin et la valeur sont IHM.
+        ou la clé est le nom du plugin et la valeur son IHM.
         @raise NotADirectoryError: Levée lorsque le dossier des plugins n'est pas trouvé.
         '''
         path = os.path.abspath(self._root.find("plugins").text)

@@ -14,7 +14,7 @@ class MismatchFormatException(Exception):
     pass
 
 
-class DeCyphererModel(object):
+class DecyphererModel(object):
     '''
     Modèle du chiffreur.
     '''
@@ -59,7 +59,7 @@ class DeCyphererModel(object):
         @param resultPath: le chemin qui pointera sur l'image résultante.
         @precondition: getKeyPath() is not None
         @precondition : getImagepath() is not None
-        @raise IOError: L'image ou la clé n'a pas pu être chargée.
+        @raise IOError: L'image ou la clé n'a pas pu être chargée ou si l'écriture a échoué.
         '''
         if self.getKeyPath() is None or self.getImagePath() is None:
             raise AssertionError
