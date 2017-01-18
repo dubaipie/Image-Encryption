@@ -5,6 +5,7 @@ Created on 18 janv. 2017
 '''
 
 import PIL.Image as Image
+from builtins import IOError
 
 class ImageFormaterModel(object):
     '''
@@ -90,7 +91,7 @@ class ImageFormaterModel(object):
         if path_file == None:
             raise AssertionError("Chemin du fichier null")
         try:
-            self.getImageConvert().save(path_file,PPM)
-            
-        
-                     
+            self.getImageConvert().save(path_file,'PPM')
+        except IOError:
+            print ("Probleme de lecture/écritue")
+            raise IOError                               
