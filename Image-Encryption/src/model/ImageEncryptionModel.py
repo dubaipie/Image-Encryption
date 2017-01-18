@@ -18,15 +18,19 @@ class ImageEncryptionModel(object):
     def __init__(self):
         '''
         Constructeur
+        @raise ParseError: si le fichier de propriétés ne peut pas être analysé.
         '''
         self._root = ET.parse(ImageEncryptionModel.PROPERTIES_PATH)       
     
     def getPlugins(self):
         '''
         Permet de récupérer les différents plugins sous forme de dictionnaire
-        ou la clé est le nom du plugin et la valeur sont IHM.
+        ou la clé est le nom du plugin et la valeur son IHM.
+        @raise NotADirectoryError: Levée lorsque le dossier des plugins n'est pas trouvé.
         '''
         path = os.path.abspath(self._root.find("plugins").text)
+        if not os.path.exists(path):
+            raise NotADirectoryError
         return {d : None for d in os.listdir(path)}
         
     def getSelectedLocale(self):
@@ -42,12 +46,13 @@ class ImageEncryptionModel(object):
         print(l)
         loc = self._root.find("locales")
         loc.set("selected", l)
-        self._root.write(ImageEncryptionModel.PROPERTIES_PATH)
+        self._root.write(ImageEncryptionModel.PROPERTIES_PATH)#IOException ?
         self._setLocale(l)
     
     def getAvailableLocales(self):
         '''
         Permet de récupérer toutes les langues disponibles.
+        @raise NotADirectoryError: Levée lorsque le dossier des langues n'est pas trouvé.
         '''
         path = os.path.abspath(self._root.find("locales").text)
         return [d for d in os.listdir(path)]
@@ -55,6 +60,7 @@ class ImageEncryptionModel(object):
     def _setLocale(self, l):
         '''
         Change la langue du programme pour celle donnée.
+        @raise NotADirectoryError: Utilise getAvailableLocales
         '''
         path = os.path.abspath(self._root.find("locales").text)
         appname = self._root.find("app_name").text

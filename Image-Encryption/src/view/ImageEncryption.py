@@ -8,6 +8,7 @@ import sys
 import os
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM
+import xml.etree.ElementTree as ET
 
 class ImageEncryption(object):
     '''
@@ -34,9 +35,13 @@ class ImageEncryption(object):
         '''
         Initialisation du model.
         '''
-        self._model = IEM.ImageEncryptionModel()
-        self._model.setSelectedLocale(self._model.getSelectedLocale())
-    
+        try:
+            self._model = IEM.ImageEncryptionModel()
+            self._model.setSelectedLocale(self._model.getSelectedLocale())
+        except ET.ParseError:
+            tkinter.messagebox.showerror(_("Properties file error"),
+                                         _("An error occurs during properties file parsing"))
+                
     def createView(self):
         '''
         Création des différents widgets de la fenêtre.
@@ -48,10 +53,14 @@ class ImageEncryption(object):
         
         #Les différents onglets pour chaque plugin
         self._pluginTabs = []
-        for d in self._model.getPlugins():
-            frame = tkinter.Frame()
-            frame.tabText = d
-            self._pluginTabs.append(frame)
+        try:
+            for d in self._model.getPlugins():
+                frame = tkinter.Frame()
+                frame.tabText = d
+                self._pluginTabs.append(frame)
+        except NotADirectoryError:
+            tkinter.messagebox.showerror(_("Plugin directory error"),
+                                         _("Plugin directory not found"))
         
         #La barre des menus de l'application
         self._menuBar = tkinter.Menu(self._frame)
@@ -66,7 +75,7 @@ class ImageEncryption(object):
             tabs.add(plugin, text=plugin.tabText)
         tabs.pack(fill="both")
         
-        #Ajout de a barre des menus.
+        #Ajout de la barre des menus.
         self._frame.config(menu=self._menuBar)
     
     def createController(self): #SECTION A RETRAVAILLER
