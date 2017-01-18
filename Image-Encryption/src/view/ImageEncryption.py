@@ -53,7 +53,7 @@ class ImageEncryption(object):
         
         self._tabs = ttk.Notebook(self._frame)
         
-        #Les différents onglets pour chaque plugin
+        #Les différents onglets correspondant à chaque plugin
         self._pluginTabs = []
         try:
             for d, cl in self._model.getPlugins().items():
@@ -62,6 +62,7 @@ class ImageEncryption(object):
                     frame.tabText = d
                     self._pluginTabs.append(frame)
                 except:
+                    #les modules non conforme sont ignorés
                     pass
         except NotADirectoryError:
             tkinter.messagebox.showerror(_("Plugin directory error"),
@@ -77,7 +78,7 @@ class ImageEncryption(object):
         #Placement des onglets dans la fenêtre.
         for plugin in self._pluginTabs:
             self._tabs.add(plugin, text=plugin.tabText)
-        self._tabs.pack(fill="both")
+        self._tabs.pack(fill="both", expand=True)
         
         #Ajout de la barre des menus.
         self._frame.config(menu=self._menuBar)
@@ -86,27 +87,7 @@ class ImageEncryption(object):
         '''
         Initialisation du contrôleur de la fenêtre.
         '''
-        
-        #Ajout des controleurs au menu 'File'.
-        fileMenu = tkinter.Menu(self._menuBar, tearoff=False)
-        fileMenu.add_command(label=_("Quit"), command=self._frame.quit)
-        self._menuBar.add_cascade(label=_("File"), menu=fileMenu)
-        
-        #Ajout de controleurs au menu 'Option'
-        optMenu = tkinter.Menu(self._menuBar, tearoff=False)
-        languageMenu = tkinter.Menu(optMenu, tearoff=False)
-        
-        localeChoosed = tkinter.StringVar()
-        for loc in self._model.getAvailableLocales():
-            print("Locale : " + loc)
-            languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
-            if loc == self._model.getSelectedLocale():
-                localeChoosed.set(loc)
-        localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get(), args))
-        
-        optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
-          
-        self._menuBar.add_cascade(label=_("Option"), menu=optMenu)
+        self._createMenu()        
     
     def _restart(self):
         '''
@@ -118,6 +99,29 @@ class ImageEncryption(object):
     def _reloadWithLocale(self, loc, *args):
         self._model.setSelectedLocale(loc)
         self._restart()
+    
+    def _createMenu(self):
+        #-- Ajout des controleurs au menu 'File'. --#
+        fileMenu = tkinter.Menu(self._menuBar, tearoff=False)
+        #  Ajout de l'item quitter  #
+        fileMenu.add_command(label=_("Quit"), command=self._frame.quit)
+        self._menuBar.add_cascade(label=_("File"), menu=fileMenu)
+        #-------------------------------------------#
+        
+        #-- Ajout de controleurs au menu 'Option' --#
+        optMenu = tkinter.Menu(self._menuBar, tearoff=False)
+        #  Ajout du sous-menu langage  #
+        languageMenu = tkinter.Menu(optMenu, tearoff=False)
+        localeChoosed = tkinter.StringVar()
+        for loc in self._model.getAvailableLocales():
+            languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
+            if loc == self._model.getSelectedLocale():
+                localeChoosed.set(loc)
+        localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get(), args))
+        optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
+        #-------------------------------------------#
+        
+        self._menuBar.add_cascade(label=_("Option"), menu=optMenu)
 
 if __name__ == "__main__":
     app = ImageEncryption()

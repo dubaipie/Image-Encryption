@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Image-Encryption\n"
-"POT-Creation-Date: 2017-01-13 20:34+0100\n"
-"PO-Revision-Date: 2017-01-13 20:37+0100\n"
+"POT-Creation-Date: 2017-01-18 21:19+0100\n"
+"PO-Revision-Date: 2017-01-18 21:21+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -15,18 +15,38 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ImageEncryption.py\n"
 
-#: ImageEncryption.py:45
+#: ImageEncryption.py:42
+msgid "Properties file error"
+msgstr "Erreur sur le fichier de configuration"
+
+#: ImageEncryption.py:43
+msgid "An error occurs during properties file parsing"
+msgstr "Une erreur s'est produite durant l'analyse du fichier de configuration"
+
+#: ImageEncryption.py:51
 msgid "Image Encryption"
 msgstr "Cryptage d'image"
 
-#: ImageEncryption.py:79
+#: ImageEncryption.py:67
+msgid "Plugin directory error"
+msgstr "Erreur sur le chemin du dossier des plugins"
+
+#: ImageEncryption.py:68
+msgid "Plugin directory not found"
+msgstr "Dossier des plugins non trouvé"
+
+#: ImageEncryption.py:107
 msgid "Quit"
 msgstr "Quitter"
 
-#: ImageEncryption.py:80
+#: ImageEncryption.py:108
 msgid "File"
 msgstr "Fichier"
 
-#: ImageEncryption.py:84
+#: ImageEncryption.py:122
+msgid "Languages"
+msgstr "Langues"
+
+#: ImageEncryption.py:125
 msgid "Option"
 msgstr "Option"

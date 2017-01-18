@@ -34,19 +34,19 @@ class Decypherer(tkinter.Frame):
         self._imgEntry = tkinter.Entry(self)
         self._imgEntry.config(state="readonly")
         
-        self._keyButton = tkinter.Button(self, text="Parcourir")
-        self._imgButton = tkinter.Button(self, text="Parcourir")
+        self._keyButton = tkinter.Button(self, text=_("Find"))
+        self._imgButton = tkinter.Button(self, text=_("Find"))
         
         self._resultCanvas = tkinter.Canvas(self, bg="blue")
         
-        self._decypherButton = tkinter.Button(self, text="Déchiffrer")
+        self._decypherButton = tkinter.Button(self, text=_("Decypher"))
     
     def _placeComponents(self):
-        tkinter.Label(self, text="Clé").grid(row=1, column=1)
+        tkinter.Label(self, text=_("Key")).grid(row=1, column=1)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3)
         
-        tkinter.Label(self, text="Image chiffrée").grid(row=2, column=1)
+        tkinter.Label(self, text=_("Cyphered Picture")).grid(row=2, column=1)
         self._imgEntry.grid(row=2, column=2)
         self._imgButton.grid(row=2, column=3)
         

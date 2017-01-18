@@ -8,7 +8,6 @@ import os
 import gettext
 import locale
 import sys
-import inspect
 
 class ImageEncryptionModel(object):
     '''
@@ -45,7 +44,6 @@ class ImageEncryptionModel(object):
         '''
         Permet de fixer la langue sélectionnée.
         '''
-        print(l)
         loc = self._root.find("locales")
         loc.set("selected", l)
         self._root.write(ImageEncryptionModel.PROPERTIES_PATH)#IOException ?
@@ -74,6 +72,10 @@ class ImageEncryptionModel(object):
         (gettext.translation(appname, path, languages=[loc])).install()
     
     def _loadModules(self, path):
+        '''
+        Charger les modules dans le dossier path. Renvoie un dictionnaire clé=nomDossier, valeur=module
+        @raise NotADirectoryError: Levée si path n'est pas un dossier
+        '''
         result = {}
         for d in os.listdir(path):
             p = os.path.join(path, os.path.join(d, os.path.join("view", d)))
