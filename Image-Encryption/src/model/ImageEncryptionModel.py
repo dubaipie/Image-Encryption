@@ -4,9 +4,11 @@ Created on 13 janv. 2017
 @author: dubaipie
 '''
 import xml.etree.ElementTree as ET
-import os.path
+import os
 import gettext
 import locale
+import sys
+import inspect
 
 class ImageEncryptionModel(object):
     '''
@@ -31,7 +33,7 @@ class ImageEncryptionModel(object):
         path = os.path.abspath(self._root.find("plugins").text)
         if not os.path.exists(path):
             raise NotADirectoryError
-        return {d : None for d in os.listdir(path)}
+        return self._loadModules(path)
         
     def getSelectedLocale(self):
         '''
@@ -70,4 +72,11 @@ class ImageEncryptionModel(object):
             if not loc in self.getAvailableLocales():
                 loc = "en_GB"
         (gettext.translation(appname, path, languages=[loc])).install()
-        
+    
+    def _loadModules(self, path):
+        result = {}
+        for d in os.listdir(path):
+            p = os.path.join(path, os.path.join(d, os.path.join("view", d)))
+            sys.path.append(p)
+            result[d] = __import__(d)
+        return result 

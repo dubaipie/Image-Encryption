@@ -5,21 +5,16 @@ from tkinter.messagebox import *
 from tkinter.filedialog import *
 from Generator.model import GeneratorModel
 
-class GeneratorView(object):
-    def __init__(self):
+class GeneratorView(Frame):
+    def __init__(self, master=None):
         '''
         Constructeur de la fenêtre.
         '''
+        Frame.__init__(self, master)
         self.createModel()
         self.createView()
         self.placeComponents()
         self.createController()
-        
-    def display(self):
-        '''
-        Afficher la fenêtre.
-        '''
-        self._frame.mainloop()
     
     def createModel(self):
         '''
@@ -28,20 +23,19 @@ class GeneratorView(object):
         self._model = GeneratorModel.GeneratorModel()
     
     def createView(self):
-        self._frame = Tk()
-        self._width = Entry(self._frame, textvariable="", width=5)
-        self._height = Entry(self._frame, textvariable="", width=5)
-        self._bouton_generer = Button(self._frame, text = "Générer")
-        self._bouton_saveas = Button(self._frame, text = "Enregistrer sous :")
-        self._image = Canvas(self._frame, width=250, height=50, bg='ivory')
+        self._width = Entry(self, textvariable="", width=5)
+        self._height = Entry(self, textvariable="", width=5)
+        self._bouton_generer = Button(self, text = "Générer")
+        self._bouton_saveas = Button(self, text = "Enregistrer sous :")
+        self._image = Canvas(self, width=250, height=50, bg='ivory')
         
     def placeComponents(self):
-        label = Label(self._frame, text = "Taille :")
+        label = Label(self, text = "Taille :")
         label.grid(row = 1, column = 1)
         
         self._width.grid(row = 1, column = 2)
         
-        label = Label(self._frame, text = " x ")
+        label = Label(self, text = " x ")
         label.grid(row = 1, column = 3)
         self._height.grid(row = 1, column = 4)
         
@@ -84,8 +78,4 @@ class GeneratorView(object):
         photo = ImageTk.PhotoImage(monimage) 
         self._image.create_image(85, 85, image = photo)
         os.remove('tmp_image')
-        '''             
-                    
-if __name__ == "__main__":
-    app = GeneratorView()
-    app.display()
+        '''

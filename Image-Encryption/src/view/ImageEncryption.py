@@ -51,13 +51,18 @@ class ImageEncryption(object):
         self._frame.title(_("Image Encryption"))
         self._frame.minsize(600, 400)
         
+        self._tabs = ttk.Notebook(self._frame)
+        
         #Les différents onglets pour chaque plugin
         self._pluginTabs = []
         try:
-            for d in self._model.getPlugins():
-                frame = tkinter.Frame()
-                frame.tabText = d
-                self._pluginTabs.append(frame)
+            for d, cl in self._model.getPlugins().items():
+                try:
+                    frame = cl.getView(self._tabs)
+                    frame.tabText = d
+                    self._pluginTabs.append(frame)
+                except:
+                    pass
         except NotADirectoryError:
             tkinter.messagebox.showerror(_("Plugin directory error"),
                                          _("Plugin directory not found"))
@@ -70,10 +75,9 @@ class ImageEncryption(object):
         Placement des composants sur la fenêtre.
         '''
         #Placement des onglets dans la fenêtre.
-        tabs = ttk.Notebook(self._frame)
         for plugin in self._pluginTabs:
-            tabs.add(plugin, text=plugin.tabText)
-        tabs.pack(fill="both")
+            self._tabs.add(plugin, text=plugin.tabText)
+        self._tabs.pack(fill="both")
         
         #Ajout de la barre des menus.
         self._frame.config(menu=self._menuBar)
