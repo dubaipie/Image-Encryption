@@ -125,3 +125,4 @@ class ImageEncryption(object):
 
 if __name__ == "__main__":
     app = ImageEncryption()
+    app.display()

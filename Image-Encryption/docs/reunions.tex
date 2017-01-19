@@ -51,4 +51,33 @@ Il a été soulevé deux interrogations sur les algorithmes :
 	\item[.] une possibilité d'effectuer l'algorithme XOR avec des couleurs
 \end{itemize}
 
+\part*{Semaine du 18/01}
+\section*{Indroduction}
+Le but de cette réunion était de présenter nos avancées sur le projet ainsi que faire part d'éventuelles difficultés / questions.
+
+\section*{Questions posées}
+Les questions suivantes ont été posées : 
+\begin{itemize}
+	\item[.] doit-on diviser chaque pixel en 4 ou bien n'est-ce pas nécessaire ?
+	\item[.] est-il possible d'effectuer les algorithmes sur les images en couleur ?
+	\item[.] pourquoi ne pas ajouter les combinaisons en ligne et en colonne lors de la génération de la clé ?
+\end{itemize}
+
+\section*{Réponses apportées}
+\paragraph*{}
+Concernant la nécessité de diviser chaque pixel en 4, il a été montré que par le fait que l'algorithme utilise un XOR, un pixel noir apporterait la certitude que celui-ci est bien noir sur l'image d'origine. En effet, pour qu'un pixel soit noir sur le chiffré, il faut que l'addition modulo 2 soit de la forme noir .. ?
+\paragraph*{}
+Concernant l'application de l'algorithme sur les couleurs, il semblerait que cela affaiblisse la sécurité, notamment parce qu'on peut deviner la couleur d'origine.
+\paragraph*{}
+Enfin concernant l'ajout des combinaisons en ligne et en colonne, cela peut créer des distortions sur l'image déchiffrée.
+
+\section*{Structure du programme}
+La structure du programme a été validée lors de la réunion.
+
+\section*{Précisions sur les algorithmes}
+Le phénomène d'apparition des deux images originale lorsque deux imagees chiffrées par la même clé sont supperposées a été expliqué.
+Le principe repose sur l'associativité à doite et à gauche de l'opérateur XOR.
+
+\section*{Documents fournis}
+De nombreux documents ont été fournis sur la cryptographie, le phénomène de distortion ainsi que sur l'utilisation de \LaTeX
 \end{document}
