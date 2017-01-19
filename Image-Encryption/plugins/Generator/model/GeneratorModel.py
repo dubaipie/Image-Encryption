@@ -43,5 +43,5 @@ class GeneratorModel(object):
         return self._key
     
     def setSize(self, w, h):
-        self._width = w * 2
-        self._height = w * 2
+        self._width = w
+        self._height = h 

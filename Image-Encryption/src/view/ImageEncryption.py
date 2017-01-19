@@ -57,13 +57,13 @@ class ImageEncryption(object):
         self._pluginTabs = []
         try:
             for d, cl in self._model.getPlugins().items():
-                try:
-                    frame = cl.getView(self._tabs)
-                    frame.tabText = d
-                    self._pluginTabs.append(frame)
-                except:
+                #try:
+                frame = cl.getView(self._tabs)
+                frame.tabText = d
+                self._pluginTabs.append(frame)
+                #except:
                     #les modules non conforme sont ignorés
-                    pass
+                    #pass
         except NotADirectoryError:
             tkinter.messagebox.showerror(_("Plugin directory error"),
                                          _("Plugin directory not found"))

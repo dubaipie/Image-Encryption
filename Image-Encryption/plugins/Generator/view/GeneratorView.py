@@ -23,31 +23,34 @@ class GeneratorView(Frame):
         self._model = GeneratorModel.GeneratorModel()
     
     def createView(self):
-        self._width = Entry(self, textvariable="", width=5)
-        self._height = Entry(self, textvariable="", width=5)
+        self._frame1 = Frame(self)
+        self._width = Entry(self._frame1, textvariable="", width=5)
+        self._height = Entry(self._frame1, textvariable="", width=5)
+        
         self._bouton_generer = Button(self, text = "Générer")
         self._bouton_saveas = Button(self, text = "Enregistrer sous :")
-        self._image = Canvas(self, width=250, height=50, bg='ivory')
+        self._image = Canvas(self, bg='ivory')
         
-    def placeComponents(self):
-        label = Label(self, text = "Taille :")
+    def placeComponents(self):    
+        label = Label(self._frame1, text = "Taille :")
         label.grid(row = 1, column = 1)
-        
-        self._width.grid(row = 1, column = 2)
-        
-        label = Label(self, text = " x ")
+        label = Label(self._frame1, text = " x ")
         label.grid(row = 1, column = 3)
+        self._width.grid(row = 1, column = 2)
         self._height.grid(row = 1, column = 4)
         
-        self._image.grid(row = 3, columnspan = 4, column = 1)
-        self._bouton_generer.grid(row = 2, column = 2)
+        self._frame1.grid(row = 1, column = 1, columnspan = 4)
         
-        self._bouton_saveas.grid(row = 4, column = 2)
-        
+        self._image.grid(row = 3, columnspan = 4, column = 1, sticky = W + E + N + S, padx = 5)
+        self._bouton_generer.grid(row = 2, columnspan = 4, column = 1, sticky = W + E)
+        self._bouton_saveas.grid(row = 4, column = 1, columnspan = 4, sticky = W + E)
         
     def createController(self):
         self._bouton_generer.config(command = self._genererCommand)
         self._bouton_saveas.config(command = self._saveas)
+        
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_rowconfigure(3, weight = 1)
     
     def _saveas(self):
         repfic = asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
