@@ -8,31 +8,27 @@ import PIL.Image as Image
 from builtins import IOError
 
 class ImageFormaterModel(object):
-    '''
-    classdocs
-    '''
     
-    '''
-    Le model permettant de formater une image
-    ''' 
-
-    def __init__(self):
-        self.image_to_convert
-        self.image_convert = self.image_to_convert
+    def setImageToConvert(self, img):
+        self._image_to_convert = img
     
-    '''
-    Retourne l'image à convertir
-    '''
-    
-    def getImageToConvert(self):
+    def setKey(self, img):
+        self._key = img
+        
+    def getKey(self):
+        '''
+        Retourne la clé
+        '''
+        if self._key is None:
+            raise AssertionError("Pas de clé")
         return self.image_to_convert    
     
-    
-    '''
-    Retourne l'image convertit.
-    '''
-    
     def getImageConvert(self):
+        '''
+        Retourne l'image convertit.
+        '''
+        if self._image_to_convert is None:
+            raise AssertionError("Pas d'image à chiffrer")
         return self.image_convert
     
     '''
