@@ -99,4 +99,3 @@ class Decypherer(tkinter.Frame):
         self._model.decypher(self._rslVar.get())
         
         self._resultCanvas.picture = ImageTk.PhotoImage(file=self._rslVar.get())
-        self._resultCanvas.create_image(0,0, image=self._resultCanvas.picture)
