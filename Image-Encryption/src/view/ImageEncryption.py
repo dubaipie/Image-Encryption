@@ -9,6 +9,7 @@ import os
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM
 import xml.etree.ElementTree as ET
+import traceback
 
 class ImageEncryption(object):
     '''
@@ -16,11 +17,11 @@ class ImageEncryption(object):
     '''
     
 
-    def __init__(self):
+    def __init__(self, api):
         '''
         Constructeur de la fenêtre.
         '''
-        self.createModel()
+        self.createModel(api)
         self.createView()
         self.placeComponents()
         self.createController()
@@ -31,12 +32,12 @@ class ImageEncryption(object):
         '''
         self._frame.mainloop()
     
-    def createModel(self):
+    def createModel(self, api):
         '''
         Initialisation du model.
         '''
         try:
-            self._model = IEM.ImageEncryptionModel()
+            self._model = IEM.ImageEncryptionModel(api)
             self._model.setSelectedLocale(self._model.getSelectedLocale())
         except ET.ParseError:
             tkinter.messagebox.showerror(_("Properties file error"),
@@ -56,14 +57,16 @@ class ImageEncryption(object):
         #Les différents onglets correspondant à chaque plugin
         self._pluginTabs = []
         try:
-            for d, cl in self._model.getPlugins().items():
-                #try:
-                frame = cl.getView(self._tabs)
-                frame.tabText = d
-                self._pluginTabs.append(frame)
-                #except:
+            for init in self._model.getPlugins():
+                try:
+                    frame = init.getFrame(self._tabs)
+                    frame.tabText = init.getName()
+                    self._pluginTabs.append(frame)
+                except :
                     #les modules non conforme sont ignorés
-                    #pass
+                    #print("error")
+                    #traceback.print_exc()
+                    pass
         except NotADirectoryError:
             tkinter.messagebox.showerror(_("Plugin directory error"),
                                          _("Plugin directory not found"))

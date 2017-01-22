@@ -1,0 +1,65 @@
+'''
+Created on 21 janv. 2017
+
+@author: dubaipie
+'''
+from view.ImageEncryption import ImageEncryption
+from API.PropertiesManager import PropertiesManager
+from API.PluginManager import PluginManager
+
+import os
+from API.LocaleManager import LocaleManager
+
+class AppLauncher(object):
+    '''
+    Lanceur de l'application, se charge d'initialiser l'application, de
+    la lancer et enfin d'effectuer toutes les opérations nécessaires avant de terminer
+    l'application.
+    '''
+
+
+    def __init__(self):
+        '''
+        Constructeur.
+        '''
+    
+    def init(self):
+        '''
+        Ensemble des opérations à effectuer avant de lancer l'application
+        principale.
+        '''
+        self._properties = PropertiesManager(os.path.abspath(os.path.join(os.getcwd(), "../..")))
+        self._pluginManager = PluginManager(self)
+        self._localeManager = LocaleManager(self)
+        
+        self._pluginManager.loadPlugins()
+    
+    def getPluginManager(self):
+        '''
+        Donne le pluginManager utilisé.
+        '''
+        return self._pluginManager
+    
+    def getPropertiesManager(self):
+        '''
+        Donne le PropertiesManager utilisé.
+        '''
+        return self._properties
+    
+    def getLocaleManager(self):
+        '''
+        Donne le localeManager utilisé.
+        '''
+        return self._localeManager
+    
+    def launch(self):
+        '''
+        Lancement de l'application.
+        '''
+        self._frame = ImageEncryption(self)
+        self._frame.display()
+
+if __name__ == "__main__":
+    app = AppLauncher()
+    app.init()
+    app.launch()
