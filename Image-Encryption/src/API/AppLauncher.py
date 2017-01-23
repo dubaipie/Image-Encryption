@@ -9,6 +9,7 @@ from API.PluginManager import PluginManager
 
 import os
 from API.LocaleManager import LocaleManager
+from API.LibManager import LibManager
 
 class AppLauncher(object):
     '''
@@ -31,8 +32,10 @@ class AppLauncher(object):
         self._properties = PropertiesManager(os.path.abspath(os.path.join(os.getcwd(), "../..")))
         self._pluginManager = PluginManager(self)
         self._localeManager = LocaleManager(self)
+        self._libManager = LibManager(self)
         
         self._pluginManager.loadPlugins()
+        self._libManager.loadLibs()
     
     def getPluginManager(self):
         '''
@@ -51,6 +54,12 @@ class AppLauncher(object):
         Donne le localeManager utilisé.
         '''
         return self._localeManager
+    
+    def getLibManager(self):
+        '''
+        Donne le chargeur de bibliothèque utilisé.
+        '''
+        return self._libManager
     
     def launch(self):
         '''
