@@ -34,12 +34,13 @@ class ImageFormater(Frame):
     '''
     
     def createView(self):
-        self.saveButton = tkinter.Button(self,"Sauvegarder",command = self._saveCmd)
-        self._loadButton = tkinter.Button(self,text= "Charger",command = self._loadCmd)
-        self._loadButton.pack()
-        self._canvas = tkinter.Canvas(self,width = 500,height = 500, bg = 'blue')
-        self._canvas.pack()
-        self._resolutionButton(self,"Changer la résolution",command = self._changeResolution)
+        #self.saveButton = tkinter.Button(self,"Sauvegarder",command = self._saveCmd)
+        #self._loadButton = tkinter.Button(self,text= "Charger",command = self._loadCmd)
+        #self._loadButton.pack()
+        #self._canvas = tkinter.Canvas(self,width = 500,height = 500, bg = 'blue')
+        #self._canvas.pack()
+        #self._resolutionButton(self,"Changer la résolution",command = self._changeResolution)
+        pass
     
     '''
     Création des controlleurs

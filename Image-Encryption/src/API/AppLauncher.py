@@ -34,7 +34,7 @@ class AppLauncher(object):
         self._libManager = LibManager(self)
 
         print(self._libManager.availableLibs)
-        self._libManager.loadLib('PIL')
+        self._libManager.loadLibs()
 
         self._pluginManager.loadPlugins()
 
