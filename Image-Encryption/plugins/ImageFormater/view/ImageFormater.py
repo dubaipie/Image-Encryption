@@ -4,6 +4,7 @@ Created on 18 janv. 2017
 @author: havarjos
 '''
 import tkinter
+from PIL import ImageTk
 import ImageFormater.model.ImageFormaterModel as IFM
 from tkinter.filedialog import *
 from tkinter import messagebox
@@ -19,7 +20,7 @@ class ImageFormater(Frame):
         self.createModel()
         self.createView()
         'self.placeComponents()'
-        #self.createController() 
+        #self.creteController() 
     
     
     '''

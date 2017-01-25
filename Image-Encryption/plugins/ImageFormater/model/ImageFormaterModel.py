@@ -4,7 +4,7 @@ Created on 18 janv. 2017
 @author: havarjos
 '''
 
-import PIL.Image as Image
+from PIL import ImageTk
 from builtins import IOError
 
 class ImageFormaterModel(object):

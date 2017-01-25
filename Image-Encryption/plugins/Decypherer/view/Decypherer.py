@@ -10,11 +10,11 @@ from tkinter import messagebox
 import Decypherer.model.DecyphererModel as DM
 from tkinter import W, E
 
+
 class Decypherer(tkinter.Frame):
     '''
     Vue du modèle DecyphererModel.
     '''
-
 
     def __init__(self, master=None):
         '''
@@ -101,7 +101,8 @@ class Decypherer(tkinter.Frame):
                 or self._model.getImagePath() is None
                 or self._rslVar.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
-        self._model.decypher(self._rslVar.get())
-        
-        self._resultCanvas.picture = ImageTk.PhotoImage(file=self._rslVar.get())
-        self._resultCanvas.create_image(0, 0, image=self._resultCanvas.picture)
+        else:
+            self._model.decypher(self._rslVar.get())
+
+            self._resultCanvas.picture = ImageTk.PhotoImage(file=self._rslVar.get())
+            self._resultCanvas.create_image(0, 0, image=self._resultCanvas.picture)

@@ -9,6 +9,7 @@ import os
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM
 import xml.etree.ElementTree as ET
+import traceback
 
 class ImageEncryption(object):
     '''
@@ -16,11 +17,11 @@ class ImageEncryption(object):
     '''
     
 
-    def __init__(self):
+    def __init__(self, api):
         '''
         Constructeur de la fenêtre.
         '''
-        self.createModel()
+        self.createModel(api)
         self.createView()
         self.placeComponents()
         self.createController()
@@ -31,13 +32,13 @@ class ImageEncryption(object):
         '''
         self._frame.mainloop()
     
-    def createModel(self):
+    def createModel(self, api):
         '''
         Initialisation du model.
         '''
         try:
-            self._model = IEM.ImageEncryptionModel()
-            self._model.setSelectedLocale(self._model.getSelectedLocale())
+            self._model = IEM.ImageEncryptionModel(api)
+            self._model.selectedLocale = self._model.selectedLocale
         except ET.ParseError:
             tkinter.messagebox.showerror(_("Properties file error"),
                                          _("An error occurs during properties file parsing"))
@@ -55,18 +56,20 @@ class ImageEncryption(object):
         
         #Les différents onglets correspondant à chaque plugin
         self._pluginTabs = []
-        try:
-            for d, cl in self._model.getPlugins().items():
-                #try:
-                frame = cl.getView(self._tabs)
-                frame.tabText = d
-                self._pluginTabs.append(frame)
-                #except:
+        #try:
+        for init in self._model.plugins:
+            #try:
+            frame = init.getFrame(self._tabs)
+            frame.tabText = init.getName()
+            self._pluginTabs.append(frame)
+                #except :
                     #les modules non conforme sont ignorés
+                    #print("error")
+                    #traceback.print_exc()
                     #pass
-        except NotADirectoryError:
-            tkinter.messagebox.showerror(_("Plugin directory error"),
-                                         _("Plugin directory not found"))
+        #except NotADirectoryError:
+        #    tkinter.messagebox.showerror(_("Plugin directory error"),
+        #                                 _("Plugin directory not found"))
         
         #La barre des menus de l'application
         self._menuBar = tkinter.Menu(self._frame)
@@ -97,7 +100,7 @@ class ImageEncryption(object):
         os.execl(pgrm, pgrm, *sys.argv)
     
     def _reloadWithLocale(self, loc, *args):
-        self._model.setSelectedLocale(loc)
+        self._model.selectedLocale = loc
         self._restart()
     
     def _createMenu(self):
@@ -113,9 +116,9 @@ class ImageEncryption(object):
         #  Ajout du sous-menu langage  #
         languageMenu = tkinter.Menu(optMenu, tearoff=False)
         localeChoosed = tkinter.StringVar()
-        for loc in self._model.getAvailableLocales():
+        for loc in self._model.availableLocales:
             languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
-            if loc == self._model.getSelectedLocale():
+            if loc == self._model.selectedLocale:
                 localeChoosed.set(loc)
         localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get(), args))
         optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
