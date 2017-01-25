@@ -56,20 +56,20 @@ class ImageEncryption(object):
         
         #Les différents onglets correspondant à chaque plugin
         self._pluginTabs = []
-        try:
-            for init in self._model.plugins:
-                try:
-                    frame = init.getFrame(self._tabs)
-                    frame.tabText = init.getName()
-                    self._pluginTabs.append(frame)
-                except :
+        #try:
+        for init in self._model.plugins:
+            #try:
+            frame = init.getFrame(self._tabs)
+            frame.tabText = init.getName()
+            self._pluginTabs.append(frame)
+                #except :
                     #les modules non conforme sont ignorés
                     #print("error")
                     #traceback.print_exc()
-                    pass
-        except NotADirectoryError:
-            tkinter.messagebox.showerror(_("Plugin directory error"),
-                                         _("Plugin directory not found"))
+                    #pass
+        #except NotADirectoryError:
+        #    tkinter.messagebox.showerror(_("Plugin directory error"),
+        #                                 _("Plugin directory not found"))
         
         #La barre des menus de l'application
         self._menuBar = tkinter.Menu(self._frame)

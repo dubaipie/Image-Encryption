@@ -16,7 +16,7 @@ class Initializer(object):
         Constructeur.
         '''
         self._loader = loader
-    
+
     def initPlugin(self):
         '''
         Initialiser le plugin (langues, configuration ...)
