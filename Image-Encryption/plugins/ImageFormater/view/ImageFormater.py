@@ -6,6 +6,7 @@ Created on 18 janv. 2017
 import tkinter
 import ImageFormater.model.ImageFormaterModel as IFM
 from tkinter.filedialog import *
+from tkinter import messagebox
 import tkinter.ttk as ttk
 
 class ImageFormater(Frame):
@@ -60,6 +61,9 @@ class ImageFormater(Frame):
     
     def _changeResolution(self):
         if self._model.getImageToConvert() == None:
+            messagebox.showerror("Erreur","Impossible de trouver l'image à convertir")
+        else:
+            self._model.upImageResolution()    
             
                 
           
