@@ -38,14 +38,16 @@ class PluginManager(object):
                     initializer.initPlugin()
                 except:
                     pass
-    
-    def getAPI(self):
+
+    @property
+    def API(self):
         '''
         Donne l'interface utilisée pour manipuler le programme principal.
         '''
         return self._app
 
-    def getLoadedPlugins(self):
+    @property
+    def loadedPlugins(self):
         '''
         Donne un liste de tous les plugins chargés.
         '''

@@ -17,10 +17,12 @@ class LocaleManager(object):
         Constructeur.
         '''
         self._api = api
-    
-    def getInstalledLocale(self):
+
+    @property
+    def installedLocale(self):
         '''
         Donne la langue actuellement installée.
+        :return:
         '''
         return self._api.getPropertiesManager().getProperty("locales:selected")[0]
     
@@ -33,11 +35,12 @@ class LocaleManager(object):
             raise NotADirectoryError
         
         return [d for d in os.listdir(path)]
-    
-    def setInstalledLocale(self, loc):
+
+    @installedLocale.setter
+    def installedLocale(self, loc):
         '''
         Installe la langue donnée en paramètre.
-        @precondition: local in getAvailableLocales()
+        :precondition: local in getAvailableLocales()
         '''
         if not loc in self.getAvailableLocales():
             raise AssertionError

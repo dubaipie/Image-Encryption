@@ -4,6 +4,7 @@ Created on 18 janv. 2017
 @author: havarjos
 '''
 import tkinter
+from PIL import ImageTk
 import ImageFormater.model.ImageFormaterModel as IFM
 from tkinter.filedialog import *
 import tkinter.ttk as ttk
@@ -18,7 +19,7 @@ class ImageFormater(Frame):
         self.createModel()
         self.createView()
         'self.placeComponents()'
-        #self.createController() 
+        #self.creteController() 
     
     
     '''
@@ -47,6 +48,7 @@ class ImageFormater(Frame):
                                                         filetypes = [('gif files','.gif')])
         picture = tkinter.filedialog.PhotoImage(file = picture_path) 
         self._canvas.create_image(0,0,anchor = CENTER,image = picture )
+        self._canvas.image = picture
         self._canvas.pack()
         
                     

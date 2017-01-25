@@ -16,8 +16,9 @@ class ImageEncryptionModel(object):
         '''
         self._api = api
         #self._root = ET.parse(ImageEncryptionModel.PROPERTIES_PATH)       
-    
-    def getPlugins(self):
+
+    @property
+    def plugins(self):
         '''
         Permet de récupérer les différents plugins sous forme de dictionnaire
         ou la clé est le nom du plugin et la valeur son IHM.
@@ -27,16 +28,18 @@ class ImageEncryptionModel(object):
         #if not os.path.exists(path):
         #    raise NotADirectoryError
         #return self._loadModules(path)
-        return self._api.getPluginManager().getLoadedPlugins()
-        
-    def getSelectedLocale(self):
+        return self._api.getPluginManager().loadedPlugins
+
+    @property
+    def selectedLocale(self):
         '''
         Permet de récupérer la langue sélectionnée.
+        :return: la langue sélectionnée (sous forme de string)
         '''
         return self._api.getPropertiesManager().getProperty("locales:selected")[0]
-        #return self._root.find("locales").attrib.get("selected")
-    
-    def setSelectedLocale(self, l):
+
+    @selectedLocale.setter
+    def selectedLocale(self, l):
         '''
         Permet de fixer la langue sélectionnée.
         '''
@@ -44,12 +47,14 @@ class ImageEncryptionModel(object):
         #loc.set("selected", l)
         #self._root.write(ImageEncryptionModel.PROPERTIES_PATH)#IOException ?
         #self._setLocale(l)
-        self._api.getLocaleManager().setInstalledLocale(l)
-    
-    def getAvailableLocales(self):
+        self._api.getLocaleManager().installedLocale = l
+
+    @property
+    def availableLocales(self):
         '''
         Permet de récupérer toutes les langues disponibles.
-        @raise NotADirectoryError: Levée lorsque le dossier des langues n'est pas trouvé.
+        :return: Une liste de string, représentant l'ensemble des langues.
+        :raise: NotADirectoryError: Levée lorsque le dossier des langues n'est pas trouvé.
         '''
         return self._api.getLocaleManager().getAvailableLocales()
     
