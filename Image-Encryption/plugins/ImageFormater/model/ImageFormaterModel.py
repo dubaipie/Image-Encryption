@@ -19,17 +19,13 @@ class ImageFormaterModel(object):
         '''
         Retourne la clé
         '''
-        if self._key is None:
-            raise AssertionError("Pas de clé")
         return self.image_to_convert    
     
-    def getImageConvert(self):
+    def getImageToConvert(self):
         '''
         Retourne l'image convertit.
         '''
-        if self._image_to_convert is None:
-            raise AssertionError("Pas d'image à chiffrer")
-        return self.image_convert
+        return self.image_to_convert
     
     '''
     Permet de changer l'image à convertir
@@ -57,7 +53,7 @@ class ImageFormaterModel(object):
                     self.image_convert.height == 2 * self.image_to_convert.height
     '''
     
-    def uppImageResolution(self):
+    def upImageResolution(self):
         if self.image_to_convert == None:
             raise AssertionError("Il n'y a pas d'image!")
         self.image_convert = Image.new(1,
