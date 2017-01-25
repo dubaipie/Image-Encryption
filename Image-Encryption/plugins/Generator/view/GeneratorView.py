@@ -66,8 +66,8 @@ class GeneratorView(Frame):
         try:
             w = int (self._width.get())
             h = int (self._height.get())
-            if w < 0 or h < 0:
-                showerror("Générateur", "Veuillez entrer des entiers > 0")
+            if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
+                showerror("Générateur", "Veuillez entrer des entiers pair")
             else:
                 self._model.setSize(int (self._width.get()), int (self._height.get()))
                 self._model.generatorKey()

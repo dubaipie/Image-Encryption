@@ -40,8 +40,24 @@ class GeneratorModel(object):
                 self._key.putpixel((x + 1, y + 1), img.getpixel((1, 1)))
     
     def getKey(self):
+        '''
+        Renvoie la clé 
+        @raise IOError: la clé n'a pas encore été généré
+        '''
+        
+        if self._key is None:
+            raise AssertionError
         return self._key
     
     def setSize(self, w, h):
+        '''
+        Permet de fixer la taille de la clé.
+        @param w,h: la largeur et la hauteur de l'image
+        @precondition: w < 0 && w % 2 == 0
+        @precondition : h < 0 && h % 2 == 0
+        @raise IOError: La largeur ou la hauteur ne sont pas correct.
+        '''
+        if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
+            raise AssertionError
         self._width = w
         self._height = h 
