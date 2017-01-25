@@ -31,10 +31,10 @@ class LibManager(object):
 
     def _lookInto(self, path):
         for d in os.listdir(path):
-            self._availableLibs[d] = os.path.abspath(path)
+            self._availableLibs.append(os.path.abspath(os.path.join(path, d)))
 
     def loadLibs(self):
         '''
         Charger les librairies.
         '''
-        sys.path.append(self._path)
+        sys.path.insert(1, self._path)
