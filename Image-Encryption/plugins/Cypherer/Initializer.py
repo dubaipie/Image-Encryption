@@ -3,7 +3,7 @@ Created on 20 janv. 2017
 
 @author: dubaipie
 '''
-from Cypherer.view.Cypherer import Decypherer
+from Cypherer.view.Cypherer import Cypherer
 
 class Initializer(object):
     '''
@@ -26,7 +26,7 @@ class Initializer(object):
         '''
         Récupérer la fenêtre.
         '''
-        return Decypherer(master)
+        return Cypherer(master)
     
     def getName(self):
         '''

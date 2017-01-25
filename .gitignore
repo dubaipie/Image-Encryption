@@ -1,0 +1,8 @@
+*.pyc
+*.iml
+*.xml
+*.project
+*.aux
+*.bbl
+*.blg
+*.log
