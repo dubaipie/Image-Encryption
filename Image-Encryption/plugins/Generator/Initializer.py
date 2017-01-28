@@ -4,11 +4,12 @@ Created on 20 janv. 2017
 @author: dubaipie
 '''
 from Generator.view.GeneratorView import GeneratorView
+
+
 class Initializer(object):
     '''
     La classe d'initialisation du plugin.
     '''
-
 
     def __init__(self, loader):
         '''

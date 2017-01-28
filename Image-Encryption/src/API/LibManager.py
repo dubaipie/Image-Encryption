@@ -17,7 +17,7 @@ class LibManager(object):
         '''
         self._api = api
         self._availableLibs = []
-        self._path = os.path.abspath(self._api.getPropertiesManager().getProperty("libs")[0])
+        self._path = os.path.abspath(self._api.getPropertiesManager().getProperty(api, "libs")[0])
 
     @property
     def availableLibs(self):

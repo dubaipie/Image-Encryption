@@ -36,7 +36,7 @@ class ImageEncryptionModel(object):
         Permet de récupérer la langue sélectionnée.
         :return: la langue sélectionnée (sous forme de string)
         '''
-        return self._api.getPropertiesManager().getProperty("locales:selected")[0]
+        return self._api.getPropertiesManager().getProperty(self._api, "locales:selected")[0]
 
     @selectedLocale.setter
     def selectedLocale(self, l):

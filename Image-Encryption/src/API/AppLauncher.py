@@ -28,12 +28,15 @@ class AppLauncher(object):
         Ensemble des opérations à effectuer avant de lancer l'application
         principale.
         '''
-        self._properties = PropertiesManager(os.path.abspath(os.path.join(os.getcwd(), "../..")))
+        self._properties = PropertiesManager()
+        self._properties.addPropertiesFile(self,
+                                           os.path.abspath(os.path.join(os.getcwd(), "../..")),
+                                           "properties.xml")
+
         self._pluginManager = PluginManager(self)
         self._localeManager = LocaleManager(self)
         self._libManager = LibManager(self)
 
-        print(self._libManager.availableLibs)
         self._libManager.loadLibs()
 
         self._pluginManager.loadPlugins()

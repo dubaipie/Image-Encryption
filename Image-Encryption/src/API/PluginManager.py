@@ -24,7 +24,7 @@ class PluginManager(object):
         Charge les plugins à partir du chemin fourni par l'API. Si le module Initializer
         du plugin n'est pas correctement défini, le plugin est ignoré.
         '''
-        path = self._api.getPropertiesManager().getProperty("plugins")[0]
+        path = self._api.getPropertiesManager().getProperty(self._api, "plugins")[0]
         for d in os.listdir(path):
             m = os.path.abspath(os.path.join(path, os.path.join(d, "Initializer.py")))
             if os.path.isfile(m):
