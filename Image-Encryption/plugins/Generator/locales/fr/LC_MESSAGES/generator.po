@@ -1,0 +1,60 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2017-01-29 10:41+0100\n"
+"PO-Revision-Date: 2017-01-29 10:43+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ../../../view\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: GeneratorView.py\n"
+
+#: GeneratorView.py:30
+msgid "Generate"
+msgstr "Générer"
+
+#: GeneratorView.py:31
+msgid "Save as ..."
+msgstr "Sauvegarder sous ..."
+
+#: GeneratorView.py:35
+msgid "Size :"
+msgstr "Taille :"
+
+#: GeneratorView.py:37
+msgid " x "
+msgstr " * "
+
+#: GeneratorView.py:56
+msgid "Save as"
+msgstr "Sauvegarder sous"
+
+#: GeneratorView.py:61 GeneratorView.py:63
+msgid "Saving Error"
+msgstr "Erreur de sauvegarde"
+
+#: GeneratorView.py:61
+msgid "Please generate a key before saving"
+msgstr "Générez une un clé avant d'enregister"
+
+#: GeneratorView.py:63
+msgid "Saving failed, please check your file name"
+msgstr "La sauvegarde a échouée, vérifiez le nom du fichier"
+
+#: GeneratorView.py:70 GeneratorView.py:75
+msgid "Generator"
+msgstr "Générateur"
+
+#: GeneratorView.py:70
+msgid "Please type even values"
+msgstr "Entrez des nombres pairs"
+
+#: GeneratorView.py:75
+msgid "Please type integer values"
+msgstr "Entrez des nombres entiers"

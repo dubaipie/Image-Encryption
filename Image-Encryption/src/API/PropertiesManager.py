@@ -189,15 +189,16 @@ class PropertiesManager(object):
         if hasAttrib:
             elem = prop.split(":")[0]
             attribute = prop.split(":")[1]
-
-        if root != None:
+        
+        elemProp = root.find(elem)
+        if elemProp is not None:
             if hasAttrib:
-                root.set(attribute, value)
+                elemProp.set(attribute, value)
             else:
-                root.text = value
+                elemProp.text = value
         else:
             raise PropertyFormatException
-
+        
         self._propertyTrees[app].write(self._pathDict[app])
     
     def _lookIntoDir(self, path, filename):

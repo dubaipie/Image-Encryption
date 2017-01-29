@@ -33,12 +33,14 @@ class AppLauncher(object):
                                            os.path.abspath(os.path.join(os.getcwd(), "../..")),
                                            "properties.xml")
 
-        self._pluginManager = PluginManager(self)
         self._localeManager = LocaleManager(self)
-        self._libManager = LibManager(self)
+        self._localeManager.addLocalePath(self._properties.getProperty(self, "app_name")[0],
+                                          self._properties.getProperty(self, "locales")[0])
 
+        self._libManager = LibManager(self)
         self._libManager.loadLibs()
 
+        self._pluginManager = PluginManager(self)
         self._pluginManager.loadPlugins()
 
 

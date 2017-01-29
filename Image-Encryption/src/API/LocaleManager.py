@@ -53,11 +53,10 @@ class LocaleManager(object):
         for _, path in self._localePaths.items():
             for d in os.listdir(path):
                 rtrn.add(d)
-        
         return rtrn
 
     @installedLocale.setter
-    def installedLocale(self, app, loc):
+    def installedLocale(self, loc):
         '''
         Installe la langue donnée en paramètre.
         :raise AssertionError: si loc n'est pas dans l'ensemble des langues disponibles.
@@ -66,7 +65,7 @@ class LocaleManager(object):
         if not loc in self.getAvailableLocales():
             raise AssertionError
         
-        for appname, path in self._localePaths:
+        for appname, path in self._localePaths.items():
             (gettext.translation(appname, path, languages=[loc])).install()
         
         self._api.getPropertiesManager().setPropertyValue(self._api, "locales:selected", loc)

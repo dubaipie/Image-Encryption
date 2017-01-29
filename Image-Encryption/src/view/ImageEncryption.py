@@ -15,7 +15,6 @@ class ImageEncryption(object):
     '''
     La classe principale de l'application.
     '''
-    
 
     def __init__(self, api):
         '''
@@ -99,7 +98,7 @@ class ImageEncryption(object):
         pgrm = sys.executable
         os.execl(pgrm, pgrm, *sys.argv)
     
-    def _reloadWithLocale(self, loc, *args):
+    def _reloadWithLocale(self, loc):
         self._model.selectedLocale = loc
         self._restart()
     
@@ -120,7 +119,7 @@ class ImageEncryption(object):
             languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
             if loc == self._model.selectedLocale:
                 localeChoosed.set(loc)
-        localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get(), args))
+        localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get()))
         optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
         #-------------------------------------------#
         

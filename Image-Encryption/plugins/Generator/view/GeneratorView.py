@@ -27,14 +27,14 @@ class GeneratorView(Frame):
         self._width = Entry(self._frame1, textvariable="", width=5)
         self._height = Entry(self._frame1, textvariable="", width=5)
         
-        self._bouton_generer = Button(self, text = "Générer")
-        self._bouton_saveas = Button(self, text = "Enregistrer sous :")
+        self._bouton_generer = Button(self, text=_("Generate"))
+        self._bouton_saveas = Button(self, text=_("Save as ..."))
         self._image = Canvas(self, bg='ivory')
         
     def placeComponents(self):    
-        label = Label(self._frame1, text = "Taille :")
+        label = Label(self._frame1, text=_("Size :"))
         label.grid(row = 1, column = 1)
-        label = Label(self._frame1, text = " x ")
+        label = Label(self._frame1, text = _(" x "))
         label.grid(row = 1, column = 3)
         self._width.grid(row = 1, column = 2)
         self._height.grid(row = 1, column = 4)
@@ -53,26 +53,26 @@ class GeneratorView(Frame):
         self.grid_rowconfigure(3, weight = 1)
     
     def _saveas(self):
-        repfic = asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
+        repfic = asksaveasfilename(title=_("Save as"), defaultextension=".ppm")
         if len(repfic) > 0:
             try:
                 self._model.getKey().save(repfic)
             except AttributeError:
-                showerror("Sauvegarde", "Veuillez générer une clé avant de sauvegarder")
+                showerror(_("Saving Error"), _("Please generate a key before saving"))
             except KeyError:
-                showerror("Sauvegarde", "Sauvegarde échoué veuillez vérifier que le nom du fichier est correct")
+                showerror(_("Saving Error"), _("Saving failed, please check your file name"))
         
     def _genererCommand(self):
         try:
             w = int (self._width.get())
             h = int (self._height.get())
             if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
-                showerror("Générateur", "Veuillez entrer des entiers pair")
+                showerror(_("Generator"), _("Please type even values"))
             else:
                 self._model.setSize(int (self._width.get()), int (self._height.get()))
                 self._model.generatorKey()
         except ValueError:
-            showerror("Générateur", "Veuillez entrer des décimaux")
+            showerror(_("Generator"), _("Please type integer values"))
         '''
          Insertion de l'image après génération besoin de ImageTk à modifier
         

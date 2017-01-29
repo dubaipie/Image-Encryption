@@ -44,7 +44,7 @@ class PluginManager(object):
         '''
         Donne l'interface utilisée pour manipuler le programme principal.
         '''
-        return self._app
+        return self._api
 
     @property
     def loadedPlugins(self):
