@@ -3,7 +3,7 @@ Created on 18 janv. 2017
 
 @author: havarjos
 '''
-from tkinter import Frame, Entry, Label, Canvas, Button, Scrollbar
+from tkinter import Frame, Entry, Label, Canvas, Button, Scrollbar, LabelFrame
 from tkinter import StringVar, HORIZONTAL, VERTICAL
 from tkinter import filedialog, messagebox
 from PIL import ImageTk
@@ -73,9 +73,9 @@ class ImageFormater(Frame):
         ("Bitmap", "*.bmp"),
         ("Encapsulated PostScript", "*.eps"),
         ("Graphics Interchange Format", "*.gif"),
-        ("Joint Photographic Experts Group", "*.jpg, *.jpeg"),
+        ("Joint Photographic Experts Group", ("*.jpg", "*.jpeg")),
         ("Portable Network Graphics", "*.png"),
-        ("Portable pixmap", " *.ppm, *.pgm, *.pbm"),
+        ("Portable pixmap", ("*.ppm", "*.pgm", "*.pbm")),
         ("All file", "*.*")
     )
 
@@ -153,7 +153,7 @@ class ImageFormater(Frame):
 
     def _onOriginalButtonClick(self):
         """
-        Action déclenchée lors du clique sur le bouton originalButton
+        Action déclenchée lors du clic sur le bouton originalButton
         """
         dlg = filedialog.askopenfilename(filetypes=ImageFormater.FORMATS)
 
@@ -170,7 +170,7 @@ class ImageFormater(Frame):
 
     def _onConvertedButtonClick(self):
         """
-        Action déclenchée lors du clique sur le bouton convertedButton
+        Action déclenchée lors du clic sur le bouton convertedButton
         """
         dlg = filedialog.asksaveasfilename(defaultextension=".ppm")
 
@@ -179,7 +179,7 @@ class ImageFormater(Frame):
 
     def _onConvertButtonClick(self):
         """
-        Action effectuée lors du clique sur le bouton convertButton
+        Action effectuée lors du clic sur le bouton convertButton
         """
         if self._model.originalPicture is not None and self._convertedStrVar is not None:
             self._model.convert()
