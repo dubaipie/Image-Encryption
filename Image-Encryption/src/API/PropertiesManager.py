@@ -52,6 +52,7 @@ class PropertiesManager(object):
         :raise ET.ParseError: le fichier n'a pas pu être chargé
         """
         # :raise PropertiesFileNotFoundException:
+        path = os.path.abspath(path)
         path_to_file = self._lookIntoDir(path, filename)
 
         # :raise ET.ParseError:
@@ -106,68 +107,6 @@ class PropertiesManager(object):
             raise PropertyFormatException
         
         return rtrn
-
-    def addProperty(self, app, prop, value):
-        """
-        Permet d'ajouter une nouvelle propriété dans le fichier des propriétés.
-        Si une propriété correspondante est trouvée, la valeur sera ajoutée aux autres
-        déjà définies, sinon la propriété sera ajoutée à la racine de l'arbre.
-        :param app: l'application à laquelle s'applique la nouvelle propriété.
-        :param prop: la propriété, de format 'element[:attribut]' où element est le nom
-            de la propriété et attribut l'attribut qui lui sera ajouté (optionnel).
-        :param value: la valeur de la propriété ou, si un attribut a été défini, l valeur de celui-ci.
-        :raise PropertiesFileNotFoundException: si app n'a aucun fichier de propriétés associé.
-        """
-        if not app in self._propertyTrees:
-            raise PropertiesFileNotFoundException
-
-        # la racine de l'arbre représentant le fichier de propriétés de l'application.
-        root = self._propertyTrees[app]
-
-        # on analyse la propriété.
-        elem, attrib = self._parseProperty(prop)
-
-        # on initialise le dictionnaire des attributs.
-        attribute = {}
-        if attrib is not None:
-            attribute[attrib] = value
-
-        nameLikeProperty = root.find(elem)
-        if nameLikeProperty is None:
-            newElement = ET.SubElement(root.getRoot(), elem, attribute)
-            if attrib is None:
-                newElement.text = value
-        else:
-            nameLikeProperty = self._lookIntoTree(root, elem)
-            newElement = ET.SubElement(nameLikeProperty, elem, attribute)
-            if attrib is None:
-                newElement.text = value
-
-        root.write(self._pathDict[app])
-
-    def addAttribute(self, app, property, attribute, value):
-        """
-        Ajouter un attribut à la propriété donnée, ainsi que lui associer une valeur.
-        :param app: le nom de l'application.
-        :param property: le nom de la propriété
-        :param attribute: le nom de l'attribut
-        :param value: la valeur associée à l'attribut
-        :raise PropertiesFileNotFoundException: si app n'a aucun fichier de propriétés associé.
-        :raise PropertyFormatException: si la propriété n'a pas pu être trouvée.
-        """
-        if not app in self._propertyTrees:
-            raise PropertiesFileNotFoundException
-
-        root = self._propertyTrees[app]
-        values = root.findall(property)
-
-        if values == []:
-            raise PropertyFormatException
-
-        for elem in values:
-            elem.set(attribute, value)
-
-        root.write(self._pathDict[app])
 
     def setPropertyValue(self, app, prop, value):
         """
@@ -244,17 +183,3 @@ class PropertiesManager(object):
             else:
                 attribute = prop.split(":")[1]
         return elem, attribute
-
-    def _lookIntoTree(self, root, element):
-        """
-        Permet de chercher dans un arbre XML un élément dans le but d'en
-        sortir le père.
-        :param root: la racine à partir de laquelle on cherche
-        :param element: l'élément recherché.
-        :return: le père de l'élément recherché.
-        """
-        if element in root:
-            return root
-        else:
-            for elem in root:
-                self._lookIntoTree(elem, element)
