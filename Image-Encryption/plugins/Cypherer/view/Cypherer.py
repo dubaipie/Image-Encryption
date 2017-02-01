@@ -7,8 +7,13 @@ from tkinter import Entry, Button, Scrollbar, StringVar, Frame, Canvas, Label
 from PIL import ImageTk
 from tkinter import filedialog
 from tkinter import messagebox
+import PIL
+from Generator.model.GeneratorModel import GeneratorModel
 import Cypherer.model.CyphererModel as DM
-from tkinter import W, E, HORIZONTAL, VERTICAL
+from Cypherer.model.CyphererModel import MismatchFormatException
+from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
+from argparse import FileType
+from Cypherer.model.CyphererModel import CyphererModel
 
 
 class Cypherer(Frame):
@@ -36,86 +41,170 @@ class Cypherer(Frame):
         self._rslVar = StringVar()
     
     def _createView(self):
-        self._keyEntry = Entry(self)
+        #Frame
+        self._frame1 = Frame(self)
+        self._frame2 = Frame(self)
+        self._frame3 = Frame(self)
+        self._frame4 = Frame(self)
+        self._frame5 = Frame(self)
+        self._frame6 = Frame(self)
+        
+        #les boutons de recherche de fichiers
+        self._keyEntry = Entry(self._frame1)
         self._keyEntry.config(state="readonly", textvariable=self._keyVar)
-       
-        self._imgEntry = Entry(self)
+        
+        self._imgEntry = Entry(self._frame2)
         self._imgEntry.config(state="readonly", textvariable=self._imgVar)
         
-        self._rslEntry = Entry(self)
+        self._rslEntry = Entry(self._frame3)
         self._rslEntry.config(state="readonly", textvariable=self._rslVar)
         
-        self._keyButton = Button(self, text=_("Find"))
-        self._imgButton = Button(self, text=_("Find"))
-        self._rslButton = Button(self, text=_("Save as"))
-        
-        self._resultCanvas = Canvas(self, bg="white")
-        
+        #Boutons
+        self._keyButton = Button(self._frame1, text=_("Find"))
+        self._imgButton = Button(self._frame2, text=_("Find"))
+        self._rslButton = Button(self._frame3, text=_("Save as"))
         self._cypherButton = Button(self, text=_("Cypher"))
-
+        
+        #Canvas
+        self._resultCanvas = Canvas(self._frame6, bg="white")
+        self._keyCanvas = Canvas(self._frame4, bg="white")
+        self._imgCanvas = Canvas(self._frame5, bg="white")
+        
         # horizontal scrollbar
-        self._hbar = Scrollbar(self, orient=HORIZONTAL)
-
+        self._hbar = Scrollbar(self._frame4, orient=HORIZONTAL)
+        self._hbar2 = Scrollbar(self._frame5, orient=HORIZONTAL)
+        self._hbar3 = Scrollbar(self._frame6, orient=HORIZONTAL)
+        
         # vertical scrollbar
-        self._vbar = Scrollbar(self, orient=VERTICAL)
-    
+        self._vbar = Scrollbar(self._frame4, orient=VERTICAL)
+        self._vbar2 = Scrollbar(self._frame5, orient=VERTICAL)
+        self._vbar3 = Scrollbar(self._frame6, orient=VERTICAL)
+        
     def _placeComponents(self):
-        Label(self, text=_("Key : ")).grid(row=1, column=1, sticky=W)
+        #FRAME1
+        Label(self._frame1, text=_("Key : ")).grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
+        self._frame1.grid(row=1, column=1)
         
-        Label(self, text=_("Cyphered Picture : ")).grid(row=2, column=1, sticky=W)
-        self._imgEntry.grid(row=2, column=2)
-        self._imgButton.grid(row=2, column=3, sticky=E+W, padx=5, pady=5)
+        #FRAME4
+        self._keyCanvas.grid(row = 1, column = 1, sticky=NW+SE)
+        self._hbar.grid(row=2, column=1, sticky=W+E)
+        self._vbar.grid(row=1, column=2, sticky=N+S)
+        self._frame4.grid(row=2, column=1, sticky=NW+SE)
         
-        Label(self, text=_("Destination file : ")).grid(row=3, column=1, sticky=W)
-        self._rslEntry.grid(row=3, column=2)
-        self._rslButton.grid(row=3, column=3, sticky=E+W, padx=5, pady=5)
+        #FRAME2
+        Label(self._frame2, text=_("Cyphered Picture : ")).grid(row=1, column=1, sticky=W)
+        self._imgEntry.grid(row=1, column=2)
+        self._imgButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
+        self._frame2.grid(row=1, column=2)
+                
+        #FRAME5
+        self._imgCanvas.grid(row = 1, column = 1, sticky=NW+SE)
+        self._hbar2.grid(row=2, column=1, sticky=W+E)
+        self._vbar2.grid(row=1, column=2, sticky=N+S)
+        self._frame5.grid(row=2, column=2, sticky=NW+SE)
         
-        self._cypherButton.grid(row=4, column=1, columnspan=3, sticky=E+W)
+        #FRAME3
+        Label(self._frame3, text=_("Destination file : ")).grid(row=1, column=1, sticky=W)
+        self._rslEntry.grid(row=1, column=2)
+        self._rslButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
+        self._frame3.grid(row=1, column=3)
         
-        self._resultCanvas.grid(row=1, rowspan=4, column=4, columnspan=3)
+        #FRAME6
+        self._resultCanvas.grid(row = 1, column = 1, sticky=NW+SE)
+        self._hbar3.grid(row=2, column=1, sticky=W+E)
+        self._vbar3.grid(row=1, column=2, sticky=N+S)
+        self._frame6.grid(row=2, column=3, sticky=NW+SE)
+        
+        self._cypherButton.grid(row=3, column=1, columnspan=3, sticky=E+W)
+        
     
     def _createController(self):
         self._keyButton.config(command=self._chooseKey)
         self._imgButton.config(command=self._chooseImg)
         self._rslButton.config(command=self._chooseRsl)
         self._cypherButton.config(command=self._cypher)
-
-        self._resultCanvas.config(
+        
+        self.grid_rowconfigure(2, weight = 1)
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_columnconfigure(2, weight = 1)
+        self.grid_rowconfigure(3, weight = 1)
+        
+        self._frame4.grid_columnconfigure(1, weight = 1)
+        self._frame4.grid_rowconfigure(1, weight = 1)
+        
+        self._frame5.grid_columnconfigure(1, weight = 1)
+        self._frame5.grid_rowconfigure(1, weight = 1)
+        
+        self._frame6.grid_columnconfigure(1, weight = 1)
+        self._frame6.grid_rowconfigure(1, weight = 1)
+        
+        self._keyCanvas.configure(
             xscrollcommand=self._hbar.set,
             yscrollcommand=self._vbar.set
         )
-        self._hbar.configure(command=self._resultCanvas.xview)
-        self._vbar.configure(command=self._resultCanvas.yview)
+        self._hbar.configure(command=self._keyCanvas.xview)
+        self._vbar.configure(command=self._keyCanvas.yview)
+        
+        self._imgCanvas.configure(
+            xscrollcommand=self._hbar2.set,
+            yscrollcommand=self._vbar2.set
+        )
+        self._hbar2.configure(command=self._imgCanvas.xview)
+        self._vbar2.configure(command=self._imgCanvas.yview)
+        
+        self._resultCanvas.configure(
+            xscrollcommand=self._hbar3.set,
+            yscrollcommand=self._vbar3.set
+        )
+        self._hbar3.configure(command=self._resultCanvas.xview)
+        self._vbar3.configure(command=self._resultCanvas.yview)
         
     def _chooseKey(self):
-        dlg = filedialog.askopenfilename()
+        dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         
         if dlg != "":
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
-    
+            self._keyCanvas.picture = ImageTk.PhotoImage(file=dlg)
+            self._keyCanvas.create_image(0, 0, image=self._keyCanvas.picture)
+            im = PIL.Image.open(dlg)
+            x,y = im.size
+            im.close()
+            self._keyCanvas.config(scrollregion=(0,0,x,y))
+            
     def _chooseImg(self):
-        dlg = filedialog.askopenfilename()
-        
+        dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
+    
         if dlg != "":
             self._model.imagePath = dlg
             self._imgVar.set(dlg)
+            self._imgCanvas.picture = ImageTk.PhotoImage(file=dlg)
+            self._imgCanvas.create_image(0, 0, image=self._imgCanvas.picture)
+            im = PIL.Image.open(dlg)
+            x,y = im.size
+            im.close()
+            self._imgCanvas.config(scrollregion=(0,0,x,y))
     
     def _chooseRsl(self):
-        dlg = filedialog.asksaveasfilename()
-        
+        dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
         if dlg != "":
             self._rslVar.set(dlg)
     
     def _cypher(self):
-        if (self._model.keyPath is None
-                or self._model.imagePath is None
+        if (self._model.keyPath is None  or self._model.imagePath is None
                 or self._rslVar.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
-        else:
-            self._model.cypher(self._rslVar.get())
-
-            self._resultCanvas.picture = ImageTk.PhotoImage(file=self._rslVar.get())
-            self._resultCanvas.create_image(0, 0, image=self._resultCanvas.picture)
+        else :
+            
+            try :
+                self._model.cypher(self._rslVar.get())
+                self._resultCanvas.picture = ImageTk.PhotoImage(file=self._rslVar.get())
+                self._resultCanvas.create_image(0, 0, image=self._resultCanvas.picture)
+                im = PIL.Image.open(self._rslVar.get())
+                x,y = im.size
+                im.close()
+                self._resultCanvas.config(scrollregion=(0,0,x,y))
+            except MismatchFormatException:
+                messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
