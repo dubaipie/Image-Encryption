@@ -37,7 +37,7 @@ except ImportError:
 i16 = _binary.i16be
 
 
-##
+# #
 # Image plugin for the GD uncompressed format.  Note that this format
 # is not supported by the standard <b>Image.open</b> function.  To use
 # this plugin, you have to import the <b>GdImageFile</b> module and
@@ -63,7 +63,7 @@ class GdImageFile(ImageFile.ImageFile):
 
         self.palette = ImagePalette.raw("RGB", s[7:])
 
-        self.tile = [("raw", (0, 0)+self.size, 775, ("L", 0, -1))]
+        self.tile = [("raw", (0, 0) + self.size, 775, ("L", 0, -1))]
 
 
 def open(fp, mode="r"):

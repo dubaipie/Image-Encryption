@@ -18,7 +18,7 @@
 from PIL import EpsImagePlugin
 import sys
 
-##
+# #
 # Simple Postscript graphics interface.
 
 
@@ -70,7 +70,7 @@ class PSDraw(object):
         """
         if font not in self.isofont:
             # reencode font
-            self._fp_write("/PSDraw-%s ISOLatin1Encoding /%s E\n" %
+            self._fp_write("/PSDraw-%s ISOLatin1Encoding /%s E\n" % 
                            (font, font))
             self.isofont[font] = 1
         # rough

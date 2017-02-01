@@ -49,7 +49,7 @@ def _accept(prefix):
     return prefix[:8] == olefile.MAGIC
 
 
-##
+# #
 # Image plugin for the FlashPix images.
 
 class FpxImageFile(ImageFile.ImageFile):
@@ -105,7 +105,7 @@ class FpxImageFile(ImageFile.ImageFile):
         colors = []
         for i in range(i32(s, 4)):
             # note: for now, we ignore the "uncalibrated" flag
-            colors.append(i32(s, 8+i*4) & 0x7fffffff)
+            colors.append(i32(s, 8 + i * 4) & 0x7fffffff)
 
         self.mode, self.rawmode = MODES[tuple(colors)]
 
@@ -161,16 +161,16 @@ class FpxImageFile(ImageFile.ImageFile):
 
         for i in range(0, len(s), length):
 
-            compression = i32(s, i+8)
+            compression = i32(s, i + 8)
 
             if compression == 0:
-                self.tile.append(("raw", (x, y, x+xtile, y+ytile),
+                self.tile.append(("raw", (x, y, x + xtile, y + ytile),
                                  i32(s, i) + 28, (self.rawmode)))
 
             elif compression == 1:
 
                 # FIXME: the fill decoder is not implemented
-                self.tile.append(("fill", (x, y, x+xtile, y+ytile),
+                self.tile.append(("fill", (x, y, x + xtile, y + ytile),
                                  i32(s, i) + 28, (self.rawmode, s[12:16])))
 
             elif compression == 2:
@@ -193,7 +193,7 @@ class FpxImageFile(ImageFile.ImageFile):
                     # The image is stored as defined by rawmode
                     jpegmode = rawmode
 
-                self.tile.append(("jpeg", (x, y, x+xtile, y+ytile),
+                self.tile.append(("jpeg", (x, y, x + xtile, y + ytile),
                                  i32(s, i) + 28, (rawmode, jpegmode)))
 
                 # FIXME: jpeg tables are tile dependent; the prefix
@@ -217,7 +217,7 @@ class FpxImageFile(ImageFile.ImageFile):
     def load(self):
 
         if not self.fp:
-            self.fp = self.ole.openstream(self.stream[:2] +
+            self.fp = self.ole.openstream(self.stream[:2] + 
                                           ["Subimage 0000 Data"])
 
         return ImageFile.ImageFile.load(self)

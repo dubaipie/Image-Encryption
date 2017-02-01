@@ -183,11 +183,11 @@ class Dib(object):
         return self.image.tobytes()
 
     def fromstring(self, *args, **kw):
-        raise NotImplementedError("fromstring() has been removed. " +
+        raise NotImplementedError("fromstring() has been removed. " + 
                                   "Please use frombytes() instead.")
 
     def tostring(self, *args, **kw):
-        raise NotImplementedError("tostring() has been removed. " +
+        raise NotImplementedError("tostring() has been removed. " + 
                                   "Please use tobytes() instead.")
 
 

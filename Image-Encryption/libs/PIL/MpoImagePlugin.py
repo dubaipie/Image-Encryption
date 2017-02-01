@@ -32,7 +32,7 @@ def _save(im, fp, filename):
     return JpegImagePlugin._save(im, fp, filename)
 
 
-##
+# #
 # Image plugin for MPO images.
 
 class MpoImageFile(JpegImagePlugin.JpegImageFile):

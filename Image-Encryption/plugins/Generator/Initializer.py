@@ -37,4 +37,5 @@ class Initializer(object):
         '''
         Récupérer le nom du plugin.
         '''
-        return self._loader.API.getPropertiesManager().getProperty(self, "appname")
+        #return self._loader.API.getPropertiesManager().getProperty(self, "appname")
+        return "Generator"

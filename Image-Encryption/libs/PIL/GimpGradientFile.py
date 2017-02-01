@@ -71,7 +71,7 @@ class GradientFile(object):
 
         for i in range(entries):
 
-            x = i / float(entries-1)
+            x = i / float(entries - 1)
 
             while x1 < x:
                 ix += 1
@@ -96,7 +96,7 @@ class GradientFile(object):
         return b"".join(palette), "RGBA"
 
 
-##
+# #
 # File handler for GIMP's gradient format.
 
 class GimpGradientFile(GradientFile):

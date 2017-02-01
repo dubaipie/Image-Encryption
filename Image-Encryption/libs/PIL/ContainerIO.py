@@ -14,7 +14,7 @@
 # See the README file for information on usage and redistribution.
 #
 
-##
+# #
 # A file object that provides read access to a part of an existing
 # file (for example a TAR file).
 
@@ -35,7 +35,7 @@ class ContainerIO(object):
         self.length = length
         self.fh.seek(offset)
 
-    ##
+    # #
     # Always false.
 
     def isatty(self):

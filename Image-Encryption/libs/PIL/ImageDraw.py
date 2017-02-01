@@ -88,15 +88,15 @@ class ImageDraw(object):
         self.font = None
 
     def setink(self, ink):
-        raise NotImplementedError("setink() has been removed. " +
+        raise NotImplementedError("setink() has been removed. " + 
                                   "Please use keyword arguments instead.")
 
     def setfill(self, onoff):
-        raise NotImplementedError("setfill() has been removed. " +
+        raise NotImplementedError("setfill() has been removed. " + 
                                   "Please use keyword arguments instead.")
 
     def setfont(self, font):
-        warnings.warn("setfont() is deprecated. " +
+        warnings.warn("setfont() is deprecated. " + 
                       "Please set the attribute directly instead.")
         # compatibility
         self.font = font
@@ -279,7 +279,7 @@ class ImageDraw(object):
         for line in lines:
             line_width, line_height = self.textsize(line, font)
             max_width = max(max_width, line_width)
-        return max_width, len(lines)*line_spacing
+        return max_width, len(lines) * line_spacing
 
 
 def Draw(im, mode=None):
@@ -356,7 +356,7 @@ def floodfill(image, xy, value, border=None):
         while edge:
             newedge = []
             for (x, y) in edge:
-                for (s, t) in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+                for (s, t) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
                     try:
                         p = pixel[s, t]
                     except IndexError:
@@ -370,7 +370,7 @@ def floodfill(image, xy, value, border=None):
         while edge:
             newedge = []
             for (x, y) in edge:
-                for (s, t) in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+                for (s, t) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
                     try:
                         p = pixel[s, t]
                     except IndexError:

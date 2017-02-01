@@ -281,7 +281,7 @@ def _conv_type_shape(im):
     if extra is None:
         return shape, typ
     else:
-        return shape+(extra,), typ
+        return shape + (extra,), typ
 
 
 MODES = sorted(_MODEINFO.keys())
@@ -568,7 +568,7 @@ class Image(object):
         import tempfile
         suffix = ''
         if format:
-            suffix = '.'+format
+            suffix = '.' + format
         if not file:
             f, file = tempfile.mkstemp(suffix)
             os.close(f)
@@ -693,7 +693,7 @@ class Image(object):
         return b"".join(data)
 
     def tostring(self, *args, **kw):
-        raise NotImplementedError("tostring() has been removed. " +
+        raise NotImplementedError("tostring() has been removed. " + 
                         "Please call tobytes() instead.")
 
     def tobitmap(self, name="image"):
@@ -744,7 +744,7 @@ class Image(object):
             raise ValueError("cannot decode image data")
 
     def fromstring(self, *args, **kw):
-        raise NotImplementedError("fromstring() has been removed. " +
+        raise NotImplementedError("fromstring() has been removed. " + 
                         "Please call frombytes() instead.")
 
     def load(self):
@@ -867,8 +867,8 @@ class Image(object):
                 t = self.info['transparency']
                 if isinstance(t, bytes):
                     # Dragons. This can't be represented by a single color
-                    warnings.warn('Palette images with Transparency  ' +
-                                  ' expressed in bytes should be converted ' +
+                    warnings.warn('Palette images with Transparency  ' + 
+                                  ' expressed in bytes should be converted ' + 
                                   'to RGBA images')
                     delete_trns = True
                 else:
@@ -881,7 +881,7 @@ class Image(object):
                             try:
                                 t = trns_im.palette.getcolor(t)
                             except:
-                                raise ValueError("Couldn't allocate a palette " +
+                                raise ValueError("Couldn't allocate a palette " + 
                                                  "color for transparency")
                     trns_im.putpixel((0, 0), t)
 
@@ -902,7 +902,7 @@ class Image(object):
                 elif isinstance(t, int):
                     self.im.putpalettealpha(t, 0)
                 else:
-                    raise ValueError("Transparency for P mode should" +
+                    raise ValueError("Transparency for P mode should" + 
                                      " be bytes or int")
 
         if mode == "P" and palette == ADAPTIVE:
@@ -921,7 +921,7 @@ class Image(object):
                     # if we can't make a transparent color, don't leave the old
                     # transparency hanging around to mess us up.
                     del(new.info['transparency'])
-                    warnings.warn("Couldn't allocate palette entry " +
+                    warnings.warn("Couldn't allocate palette entry " + 
                                   "for transparency")
             return new
 
@@ -949,7 +949,7 @@ class Image(object):
                     new_im.info['transparency'] = new_im.palette.getcolor(trns)
                 except:
                     del(new_im.info['transparency'])
-                    warnings.warn("Couldn't allocate palette entry " +
+                    warnings.warn("Couldn't allocate palette entry " + 
                                   "for transparency")
             else:
                 new_im.info['transparency'] = trns
@@ -982,7 +982,7 @@ class Image(object):
         if self.mode == 'RGBA' and method not in (2, 3):
             # Caller specified an invalid mode.
             raise ValueError(
-                'Fast Octree (method == 2) and libimagequant (method == 3) ' +
+                'Fast Octree (method == 2) and libimagequant (method == 3) ' + 
                 'are the only valid methods for quantizing RGBA images')
 
         if palette:
@@ -1036,7 +1036,7 @@ class Image(object):
         if y1 < y0:
             y1 = y0
 
-        return self._new(self.im.crop(( x0, y0, x1, y1)))
+        return self._new(self.im.crop((x0, y0, x1, y1)))
 
 
     def draft(self, mode, size):
@@ -1075,7 +1075,7 @@ class Image(object):
         if isinstance(filter, collections.Callable):
             filter = filter()
         if not hasattr(filter, "filter"):
-            raise TypeError("filter argument should be ImageFilter.Filter " +
+            raise TypeError("filter argument should be ImageFilter.Filter " + 
                             "instance or class")
 
         if self.im.bands == 1:
@@ -1256,7 +1256,7 @@ class Image(object):
         return self.im.histogram()
 
     def offset(self, xoffset, yoffset=None):
-        raise NotImplementedError("offset() has been removed. " +
+        raise NotImplementedError("offset() has been removed. " + 
                         "Please call ImageChops.offset() instead.")
 
     def paste(self, im, box=None, mask=None):
@@ -1318,7 +1318,7 @@ class Image(object):
                 raise ValueError(
                     "cannot determine region size; use 4-item box"
                     )
-            box += (box[0]+size[0], box[1]+size[1])
+            box += (box[0] + size[0], box[1] + size[1])
 
         if isStringType(im):
             from PIL import ImageColor
@@ -1619,14 +1619,14 @@ class Image(object):
         if center is None:
             center = [w / 2.0, h / 2.0]
 
-        angle = - math.radians(angle)
+        angle = -math.radians(angle)
         matrix = [
             round(math.cos(angle), 15), round(math.sin(angle), 15), 0.0,
             round(-math.sin(angle), 15), round(math.cos(angle), 15), 0.0
         ]
         def transform(x, y, matrix):
             (a, b, c, d, e, f) = matrix
-            return a*x + b*y + c, d*x + e*y + f
+            return a * x + b * y + c, d * x + e * y + f
         matrix[2], matrix[5] = transform(-center[0] - translate[0], -center[1] - translate[1], matrix)
         matrix[2] += center[0]
         matrix[5] += center[1]
@@ -1899,7 +1899,7 @@ class Image(object):
             for box, quad in data:
                 im.__transformer(box, self, QUAD, quad, resample, fill)
         else:
-            im.__transformer((0, 0)+size, self, method, data, resample, fill)
+            im.__transformer((0, 0) + size, self, method, data, resample, fill)
 
         return im
 
@@ -1932,10 +1932,10 @@ class Image(object):
             x0, y0 = nw
             As = 1.0 / w
             At = 1.0 / h
-            data = (x0, (ne[0]-x0)*As, (sw[0]-x0)*At,
-                    (se[0]-sw[0]-ne[0]+x0)*As*At,
-                    y0, (ne[1]-y0)*As, (sw[1]-y0)*At,
-                    (se[1]-sw[1]-ne[1]+y0)*As*At)
+            data = (x0, (ne[0] - x0) * As, (sw[0] - x0) * At,
+                    (se[0] - sw[0] - ne[0] + x0) * As * At,
+                    y0, (ne[1] - y0) * As, (sw[1] - y0) * At,
+                    (se[1] - sw[1] - ne[1] + y0) * As * At)
 
         else:
             raise ValueError("unknown transformation method")
@@ -2102,7 +2102,7 @@ def frombytes(mode, size, data, decoder_name="raw", *args):
 
 
 def fromstring(*args, **kw):
-    raise NotImplementedError("fromstring() has been removed. " +
+    raise NotImplementedError("fromstring() has been removed. " + 
                     "Please call frombytes() instead.")
 
 
@@ -2269,7 +2269,7 @@ def _decompression_bomb_check(size):
     if pixels > MAX_IMAGE_PIXELS:
         warnings.warn(
             "Image size (%d pixels) exceeds limit of %d pixels, "
-            "could be decompression bomb DOS attack." %
+            "could be decompression bomb DOS attack." % 
             (pixels, MAX_IMAGE_PIXELS),
             DecompressionBombWarning)
 

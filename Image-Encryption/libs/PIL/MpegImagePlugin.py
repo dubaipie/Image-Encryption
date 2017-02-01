@@ -55,7 +55,7 @@ class BitStream(object):
         return v
 
 
-##
+# #
 # Image plugin for MPEG streams.  This plugin can identify a stream,
 # but it cannot read it.
 

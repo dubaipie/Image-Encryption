@@ -4,12 +4,14 @@ Created on 1 févr. 2017
 @author: havarjos
 '''
 
+import PIL
 import Cypherer.model.CyphererModel as DM
 from tkinter import Entry, Button, Scrollbar, StringVar, Frame, Canvas, Label
 from PIL import ImageTk
+from Cypherer.model.CyphererModel import MismatchFormatException
 from tkinter import filedialog
 from tkinter import messagebox
-from tkinter import W, E, HORIZONTAL, VERTICAL
+from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 
 class Decypherer(Frame):
     
@@ -38,86 +40,178 @@ class Decypherer(Frame):
         self._img_Decypher_Var = StringVar()
         
     def _createView(self):
-        self._keyEntry = Entry(self)
+        #Frame
+        self._frame1 = Frame(self)
+        self._frame2 = Frame(self)
+        self._frame3 = Frame(self)
+        self._frame4 = Frame(self)
+        self._frame5 = Frame(self)
+        self._frame6 = Frame(self)
+        
+        #Les barres de texte pour la recherche de fichier
+        
+        self._keyEntry = Entry(self._frame1)
         self._keyEntry.config(state="readonly", textvariable=self._keyVar)
        
-        self._imgCypherEntry = Entry(self)
+        self._imgCypherEntry = Entry(self._frame2)
         self._imgCypherEntry.config(state="readonly", textvariable=self._img_Cypher_Var)
         
-        self._imgDecypherEntry = Entry(self)
+        self._imgDecypherEntry = Entry(self._frame3)
         self._imgDecypherEntry.config(state="readonly", textvariable=self._img_Decypher_Var)
         
-        self._keyButton = Button(self, text=_("Find"))
-        self._imgCypherButton = Button(self, text=_("Find"))
-        self._imgDecypherButton = Button(self, text=_("Save as"))
+        #Les Boutons
         
-        self._resultCanvas = Canvas(self, bg="white")
+        self._keyButton = Button(self._frame1, text=_("Find"))
+        self._imgCypherButton = Button(self._frame2, text=_("Find"))
+        self._imgDecypherButton = Button(self._frame3, text=_("Save as"))
+        self._decypherButton = Button(self, text=_("Decypher"))
+        
+        #Les Canvas
+        
+        self._keyCanvas = Canvas(self._frame4, bg="white")
+        self._imgCypherCanvas = Canvas(self._frame5, bg="white")
+        self._imgDecypherCanvas = Canvas(self._frame6, bg="white")
         
         self._DecypherButton = Button(self, text=_("Decypher"))
         
         # horizontal scrollbar
-        self._hbar = Scrollbar(self, orient=HORIZONTAL)
+        self._hbar1 = Scrollbar(self._frame4, orient=HORIZONTAL)
+        self._hbar2 = Scrollbar(self._frame5, orient=HORIZONTAL)
+        self._hbar3 = Scrollbar(self._frame6, orient=HORIZONTAL)
 
         # vertical scrollbar
-        self._vbar = Scrollbar(self, orient=VERTICAL)
-        
+        self._vbar1 = Scrollbar(self._frame4, orient=VERTICAL)
+        self._vbar2 = Scrollbar(self._frame5, orient=VERTICAL)
+        self._vbar3 = Scrollbar(self._frame6, orient=VERTICAL)
+        self._frame1.grid(row=1, column=1)
     def _placeComponents(self):
-        Label(self, text=_("Key : ")).grid(row=1, column=1, sticky=W)
+        
+        #FRAME1
+        Label(self._frame1, text=_("Key : ")).grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
+        self._frame1.grid(row=1, column=1)
         
-        Label(self, text=_("Cyphered Picture : ")).grid(row=2, column=1, sticky=W)
+        #FRAME2
+        Label(self._frame2, text=_("Cyphered Picture : ")).grid(row=2, column=1, sticky=W)
         self._imgCypherEntry.grid(row=2, column=2)
         self._imgCypherButton.grid(row=2, column=3, sticky=E+W, padx=5, pady=5)
+        self._frame2.grid(row=1,column=2)
         
-        Label(self, text=_("Destination file : ")).grid(row=3, column=1, sticky=W)
+        #FRAME3
+        Label(self._frame3, text=_("Destination file : ")).grid(row=3, column=1, sticky=W)
         self._imgDecypherEntry.grid(row=3, column=2)
         self._imgDecypherButton.grid(row=3, column=3, sticky=E+W, padx=5, pady=5)
+        self._frame3.grid(row=1,column=3)
         
-        self._DecypherButton.grid(row=4, column=1, columnspan=3, sticky=E+W)
+        #FRAME4
+        self._keyCanvas.grid(row = 1, column = 1, sticky=NW+SE)
+        self._hbar1.grid(row=2, column=1, sticky=W+E)
+        self._vbar1.grid(row=1, column=2, sticky=N+S)
+        self._frame4.grid(row=2, column=1, sticky=NW+SE)
         
-        self._resultCanvas.grid(row=1, rowspan=4, column=4, columnspan=3)     
+        #FRAME5
+        self._imgCypherCanvas.grid(row = 1, column = 1, sticky=NW+SE)
+        self._hbar2.grid(row=2, column=1, sticky=W+E)
+        self._vbar2.grid(row=1, column=2, sticky=N+S)
+        self._frame5.grid(row=2, column=2, sticky=NW+SE)
+        
+        #FRAME6
+        self._imgDecypherCanvas.grid(row = 1, column = 1, sticky=NW+SE)
+        self._hbar3.grid(row=2, column=1, sticky=W+E)
+        self._vbar3.grid(row=1, column=2, sticky=N+S)
+        self._frame6.grid(row=2, column=3, sticky=NW+SE)
+        
+        self._decypherButton.grid(row=3, column=1, columnspan=3, sticky=E+W)
+           
           
     def _createController(self):
         self._keyButton.config(command=self._chooseKey)
         self._imgCypherButton.config(command=self._chooseImgCypher)
         self._imgDecypherButton.config(command=self._chooseDecypher)
-        self._DecypherButton.config(command=self._decypher)
+        self._decypherButton.config(command=self._decypher)
 
-        self._resultCanvas.config(
-            xscrollcommand=self._hbar.set,
-            yscrollcommand=self._vbar.set
+        self.grid_rowconfigure(2, weight = 1)
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_columnconfigure(2, weight = 1)
+        self.grid_rowconfigure(3, weight = 1)
+        
+        self._frame4.grid_columnconfigure(1, weight = 1)
+        self._frame4.grid_rowconfigure(1, weight = 1)
+        
+        self._frame5.grid_columnconfigure(1, weight = 1)
+        self._frame5.grid_rowconfigure(1, weight = 1)
+        
+        self._frame6.grid_columnconfigure(1, weight = 1)
+        self._frame6.grid_rowconfigure(1, weight = 1)
+        
+        self._keyCanvas.configure(
+            xscrollcommand=self._hbar1.set,
+            yscrollcommand=self._vbar1.set
         )
-        self._hbar.configure(command=self._resultCanvas.xview)
-        self._vbar.configure(command=self._resultCanvas.yview)
-    
+        
+        self._hbar1.configure(command=self._keyCanvas.xview)
+        self._vbar1.configure(command=self._keyCanvas.yview)
+        
+        self._imgCypherCanvas.configure(
+            xscrollcommand=self._hbar2.set,
+            yscrollcommand=self._vbar2.set
+        )
+        
+        self._hbar2.configure(command=self._imgCypherCanvas.xview)
+        self._vbar2.configure(command=self._imgCypherCanvas.yview)
+        
+        self._imgDecypherCanvas.configure(
+            xscrollcommand=self._hbar3.set,
+            yscrollcommand=self._vbar3.set
+        )
+        self._hbar3.configure(command=self._imgDecypherCanvas.xview)
+        self._vbar3.configure(command=self._imgDecypherCanvas.yview)
+        
     def _chooseKey(self):
-        dlg = filedialog.askopenfilename()
+        dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         
         if dlg != "":
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
+            self._keyCanvas.picture = ImageTk.PhotoImage(file=dlg)
+            self._keyCanvas.create_image(0, 0, image=self._keyCanvas.picture)
+            im = PIL.Image.open(dlg)
+            x,y = im.size
+            im.close()
+            self._keyCanvas.config(scrollregion=(0,0,x,y))
     
     def _chooseImgCypher(self):
-        dlg = filedialog.askopenfilename()
-        
+        dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
+    
         if dlg != "":
             self._model.imagePath = dlg
             self._img_Cypher_Var.set(dlg)
+            self._imgCypherCanvas.picture = ImageTk.PhotoImage(file=dlg)
+            self._imgCypherCanvas.create_image(0, 0, image=self._imgCypherCanvas.picture)
+            im = PIL.Image.open(dlg)
+            x,y = im.size
+            im.close()
+            self._imgCypherCanvas.config(scrollregion=(0,0,x,y))
     
     def _chooseDecypher(self):
-        dlg = filedialog.asksaveasfilename()
-        
+        dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
         if dlg != "":
-            self._img_Decypher_Var.set(dlg) 
+            self._img_Decypher_Var.set(dlg)
     
     def _decypher(self):
-        if (self._model.keyPath is None
-                or self._model.imagePath is None
+        if (self._model.keyPath is None  or self._model.imagePath is None
                 or self._img_Decypher_Var.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
-        else:
-            self._model.cypher(self._img_Decypher_Var.get())
-
-            self._resultCanvas.picture = ImageTk.PhotoImage(file=self._img_Decypher_Var.get())
-            self._resultCanvas.create_image(0, 0, image=self._resultCanvas.picture)   
+        else :
+            
+            try :
+                self._model.cypher(self._img_Decypher_Var.get())
+                self._imgDecypherCanvas.picture = ImageTk.PhotoImage(file=self._img_Decypher_Var.get())
+                self._imgDecypherCanvas.create_image(0, 0, image=self._imgDecypherCanvas.picture)
+                im = PIL.Image.open(self._img_Decypher_Var.get())
+                x,y = im.size
+                im.close()
+                self._imgDecypherCanvas.config(scrollregion=(0,0,x,y))
+            except MismatchFormatException:
+                messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")

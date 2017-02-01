@@ -43,17 +43,17 @@ def getrgb(color):
     # check for known string formats
     if re.match('#[a-f0-9]{3}$', color):
         return (
-            int(color[1]*2, 16),
-            int(color[2]*2, 16),
-            int(color[3]*2, 16),
+            int(color[1] * 2, 16),
+            int(color[2] * 2, 16),
+            int(color[3] * 2, 16),
             )
 
     if re.match('#[a-f0-9]{4}$', color):
         return (
-            int(color[1]*2, 16),
-            int(color[2]*2, 16),
-            int(color[3]*2, 16),
-            int(color[4]*2, 16),
+            int(color[1] * 2, 16),
+            int(color[2] * 2, 16),
+            int(color[3] * 2, 16),
+            int(color[4] * 2, 16),
             )
 
     if re.match('#[a-f0-9]{6}$', color):
@@ -131,7 +131,7 @@ def getcolor(color, mode):
 
     if Image.getmodebase(mode) == "L":
         r, g, b = color
-        color = (r*299 + g*587 + b*114)//1000
+        color = (r * 299 + g * 587 + b * 114) // 1000
         if mode[-1] == 'A':
             return (color, alpha)
     else:

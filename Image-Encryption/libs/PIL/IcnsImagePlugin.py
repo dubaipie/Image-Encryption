@@ -246,7 +246,7 @@ class IcnsFile(object):
         return im
 
 
-##
+# #
 # Image plugin for Mac OS icons.
 
 class IcnsImageFile(ImageFile.ImageFile):
@@ -320,10 +320,10 @@ def _save(im, fp, filename):
             im_scaled = last_im
         else:
             im_scaled = im.resize((w, w), Image.LANCZOS)
-        im_scaled.save(os.path.join(iconset, prefix+'.png'))
+        im_scaled.save(os.path.join(iconset, prefix + '.png'))
 
-        im_scaled = im.resize((w*2, w*2), Image.LANCZOS)
-        im_scaled.save(os.path.join(iconset, prefix+'@2x.png'))
+        im_scaled = im.resize((w * 2, w * 2), Image.LANCZOS)
+        im_scaled.save(os.path.join(iconset, prefix + '@2x.png'))
         last_im = im_scaled
 
     # iconutil -c icns -o {} {}

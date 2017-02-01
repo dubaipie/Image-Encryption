@@ -32,7 +32,7 @@ def _accept(prefix):
     return prefix[:8] == olefile.MAGIC
 
 
-##
+# #
 # Image plugin for Microsoft's Image Composer file format.
 
 class MicImageFile(TiffImagePlugin.TiffImageFile):

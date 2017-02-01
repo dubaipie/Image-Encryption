@@ -55,7 +55,7 @@ __version__ = "0.6"
 # Parser
 
 def Skip(self, marker):
-    n = i16(self.fp.read(2))-2
+    n = i16(self.fp.read(2)) - 2
     ImageFile._safe_read(self.fp, n)
 
 
@@ -64,7 +64,7 @@ def APP(self, marker):
     # Application marker.  Store these in the APP dictionary.
     # Also look for well-known application markers.
 
-    n = i16(self.fp.read(2))-2
+    n = i16(self.fp.read(2)) - 2
     s = ImageFile._safe_read(self.fp, n)
 
     app = "APP%d" % (marker & 15)
@@ -126,7 +126,7 @@ def APP(self, marker):
 def COM(self, marker):
     #
     # Comment marker.  Store these in the APP dictionary.
-    n = i16(self.fp.read(2))-2
+    n = i16(self.fp.read(2)) - 2
     s = ImageFile._safe_read(self.fp, n)
 
     self.app["COM"] = s  # compatibility
@@ -141,7 +141,7 @@ def SOF(self, marker):
     # mode.  Note that this could be made a bit brighter, by
     # looking for JFIF and Adobe APP markers.
 
-    n = i16(self.fp.read(2))-2
+    n = i16(self.fp.read(2)) - 2
     s = ImageFile._safe_read(self.fp, n)
     self.size = i16(s[3:]), i16(s[1:])
 
@@ -176,9 +176,9 @@ def SOF(self, marker):
         self.icclist = None
 
     for i in range(6, len(s), 3):
-        t = s[i:i+3]
+        t = s[i:i + 3]
         # 4-tuples: id, vsamp, hsamp, qtable
-        self.layer.append((t[0], i8(t[1])//16, i8(t[1]) & 15, i8(t[2])))
+        self.layer.append((t[0], i8(t[1]) // 16, i8(t[1]) & 15, i8(t[2])))
 
 
 def DQT(self, marker):
@@ -190,13 +190,13 @@ def DQT(self, marker):
     # FIXME: The quantization tables can be used to estimate the
     # compression quality.
 
-    n = i16(self.fp.read(2))-2
+    n = i16(self.fp.read(2)) - 2
     s = ImageFile._safe_read(self.fp, n)
     while len(s):
         if len(s) < 65:
             raise SyntaxError("bad quantization table marker")
         v = i8(s[0])
-        if v//16 == 0:
+        if v // 16 == 0:
             self.quantization[v & 15] = array.array("B", s[1:65])
             s = s[65:]
         else:
@@ -278,7 +278,7 @@ def _accept(prefix):
     return prefix[0:1] == b"\377"
 
 
-##
+# #
 # Image plugin for JPEG and JFIF images.
 
 class JpegImageFile(ImageFile.ImageFile):
@@ -359,8 +359,8 @@ class JpegImageFile(ImageFile.ImageFile):
             for s in [8, 4, 2, 1]:
                 if scale >= s:
                     break
-            e = e[0], e[1], (e[2]-e[0]+s-1)//s+e[0], (e[3]-e[1]+s-1)//s+e[1]
-            self.size = ((self.size[0]+s-1)//s, (self.size[1]+s-1)//s)
+            e = e[0], e[1], (e[2] - e[0] + s - 1) // s + e[0], (e[3] - e[1] + s - 1) // s + e[1]
+            self.size = ((self.size[0] + s - 1) // s, (self.size[1] + s - 1) // s)
             scale = s
 
         self.tile = [(d, e, o, a)]
@@ -499,11 +499,11 @@ def _getmp(self):
                       'EntryNo2')
             mpentry = dict(zip(labels, unpackedentry))
             mpentryattr = {
-                'DependentParentImageFlag': bool(mpentry['Attribute'] &
+                'DependentParentImageFlag': bool(mpentry['Attribute'] & 
                                                  (1 << 31)),
-                'DependentChildImageFlag': bool(mpentry['Attribute'] &
+                'DependentChildImageFlag': bool(mpentry['Attribute'] & 
                                                 (1 << 30)),
-                'RepresentativeImageFlag': bool(mpentry['Attribute'] &
+                'RepresentativeImageFlag': bool(mpentry['Attribute'] & 
                                                 (1 << 29)),
                 'Reserved': (mpentry['Attribute'] & (3 << 27)) >> 27,
                 'ImageDataFormat': (mpentry['Attribute'] & (7 << 24)) >> 24,
@@ -548,9 +548,9 @@ RAWMODE = {
     "YCbCr": "YCbCr",
 }
 
-zigzag_index = (0,  1,  5,  6, 14, 15, 27, 28,
-                2,  4,  7, 13, 16, 26, 29, 42,
-                3,  8, 12, 17, 25, 30, 41, 43,
+zigzag_index = (0, 1, 5, 6, 14, 15, 27, 28,
+                2, 4, 7, 13, 16, 26, 29, 42,
+                3, 8, 12, 17, 25, 30, 41, 43,
                 9, 11, 18, 24, 31, 40, 44, 53,
                10, 19, 23, 32, 39, 45, 52, 54,
                20, 22, 33, 38, 46, 51, 55, 60,
@@ -646,7 +646,7 @@ def _save(im, fp, filename):
             except ValueError:
                 raise ValueError("Invalid quantization table")
             else:
-                qtables = [lines[s:s+64] for s in range(0, len(lines), 64)]
+                qtables = [lines[s:s + 64] for s in range(0, len(lines), 64)]
         if isinstance(qtables, (tuple, list, dict)):
             if isinstance(qtables, dict):
                 qtables = convert_dict_qtables(qtables)
@@ -686,7 +686,7 @@ def _save(im, fp, filename):
         i = 1
         for marker in markers:
             size = struct.pack(">H", 2 + ICC_OVERHEAD_LEN + len(marker))
-            extra += (b"\xFF\xE2" + size + b"ICC_PROFILE\0" + o8(i) +
+            extra += (b"\xFF\xE2" + size + b"ICC_PROFILE\0" + o8(i) + 
                       o8(len(markers)) + marker)
             i += 1
 
@@ -731,7 +731,7 @@ def _save(im, fp, filename):
     # Ensure that our buffer is big enough
     bufsize = max(ImageFile.MAXBLOCK, bufsize, len(info.get("exif", b"")) + 5)
 
-    ImageFile._save(im, fp, [("jpeg", (0, 0)+im.size, 0, rawmode)], bufsize)
+    ImageFile._save(im, fp, [("jpeg", (0, 0) + im.size, 0, rawmode)], bufsize)
 
 
 def _save_cjpeg(im, fp, filename):
@@ -746,7 +746,7 @@ def _save_cjpeg(im, fp, filename):
         pass
 
 
-##
+# #
 # Factory for making JPEG and MPO instances
 def jpeg_factory(fp=None, filename=None):
     im = JpegImageFile(fp, filename)

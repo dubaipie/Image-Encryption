@@ -93,7 +93,7 @@ class ImageFont(object):
             self.info.append(s)
 
         # read PILfont metrics
-        data = file.read(256*20)
+        data = file.read(256 * 20)
 
         # check image
         if image.mode not in ("1", "L"):
@@ -108,7 +108,7 @@ class ImageFont(object):
         self.getmask = self.font.getmask
 
 
-##
+# #
 # Wrapper for FreeType fonts.  Application code should use the
 # <b>truetype</b> factory function to create font objects.
 

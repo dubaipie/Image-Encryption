@@ -51,7 +51,7 @@ def _save(im, fp, filename):
                    sizes)
     sizes = list(sizes)
     fp.write(struct.pack("<H", len(sizes)))  # idCount(2)
-    offset = fp.tell() + len(sizes)*16
+    offset = fp.tell() + len(sizes) * 16
     for size in sizes:
         width, height = size
         # 0 means 256
@@ -127,7 +127,7 @@ class IcoFile(object):
                                                     2))) or 256)
 
             icon_header['dim'] = (icon_header['width'], icon_header['height'])
-            icon_header['square'] = (icon_header['width'] *
+            icon_header['square'] = (icon_header['width'] * 
                                      icon_header['height'])
 
             self.entry.append(icon_header)
@@ -197,11 +197,11 @@ class IcoFile(object):
 
                 # convert to an 8bpp grayscale image
                 mask = Image.frombuffer(
-                    'L',            # 8bpp
-                    im.size,        # (w, h)
-                    alpha_bytes,    # source chars
-                    'raw',          # raw decoder
-                    ('L', 0, -1)    # 8bpp inverted, unpadded, reversed
+                    'L',  # 8bpp
+                    im.size,  # (w, h)
+                    alpha_bytes,  # source chars
+                    'raw',  # raw decoder
+                    ('L', 0, -1)  # 8bpp inverted, unpadded, reversed
                 )
             else:
                 # get AND image from end of bitmap
@@ -213,7 +213,7 @@ class IcoFile(object):
                 # the total mask data is
                 # padded row size * height / bits per char
 
-                and_mask_offset = o + int(im.size[0] * im.size[1] *
+                and_mask_offset = o + int(im.size[0] * im.size[1] * 
                                           (bpp / 8.0))
                 total_bytes = int((w * im.size[1]) / 8)
 
@@ -222,11 +222,11 @@ class IcoFile(object):
 
                 # convert raw data to image
                 mask = Image.frombuffer(
-                    '1',            # 1 bpp
-                    im.size,        # (w, h)
-                    mask_data,      # source chars
-                    'raw',          # raw decoder
-                    ('1;I', int(w/8), -1)  # 1bpp inverted, padded, reversed
+                    '1',  # 1 bpp
+                    im.size,  # (w, h)
+                    mask_data,  # source chars
+                    'raw',  # raw decoder
+                    ('1;I', int(w / 8), -1)  # 1bpp inverted, padded, reversed
                 )
 
                 # now we have two images, im is XOR image and mask is AND image
@@ -238,7 +238,7 @@ class IcoFile(object):
         return im
 
 
-##
+# #
 # Image plugin for Windows Icon files.
 
 class IcoImageFile(ImageFile.ImageFile):

@@ -42,7 +42,7 @@ def grab(bbox=None):
         im = Image.frombytes(
             "RGB", size, data,
             # RGB, 32-bit line padding, origin lower left corner
-            "raw", "BGR", (size[0]*3 + 3) & -4, -1
+            "raw", "BGR", (size[0] * 3 + 3) & -4, -1
             )
     if bbox:
         im = im.crop(bbox)
@@ -54,7 +54,7 @@ def grabclipboard():
         fh, filepath = tempfile.mkstemp('.jpg')
         os.close(fh)
         commands = [
-            "set theFile to (open for access POSIX file \""+filepath+"\" with write permission)",
+            "set theFile to (open for access POSIX file \"" + filepath + "\" with write permission)",
             "try",
                 "write (the clipboard as JPEG picture) to theFile",
             "end try",

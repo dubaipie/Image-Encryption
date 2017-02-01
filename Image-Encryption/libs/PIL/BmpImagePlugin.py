@@ -93,7 +93,7 @@ class BmpImageFile(ImageFile.ImageFile):
                 file_info['y_flip'] = i8(header_data[7]) == 0xff
                 file_info['direction'] = 1 if file_info['y_flip'] else -1
                 file_info['width'] = i32(header_data[0:4])
-                file_info['height'] = i32(header_data[4:8]) if not file_info['y_flip'] else 2**32 - i32(header_data[4:8])
+                file_info['height'] = i32(header_data[4:8]) if not file_info['y_flip'] else 2 ** 32 - i32(header_data[4:8])
                 file_info['planes'] = i16(header_data[8:10])
                 file_info['bits'] = i16(header_data[10:12])
                 file_info['compression'] = i32(header_data[12:16])
@@ -107,7 +107,7 @@ class BmpImageFile(ImageFile.ImageFile):
                 if file_info['compression'] == self.BITFIELDS:
                     if len(header_data) >= 52:
                         for idx, mask in enumerate(['r_mask', 'g_mask', 'b_mask', 'a_mask']):
-                            file_info[mask] = i32(header_data[36+idx*4:40+idx*4])
+                            file_info[mask] = i32(header_data[36 + idx * 4:40 + idx * 4])
                     else:
                         # 40 byte headers only have the three components in the bitfields masks,
                         # ref: https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376(v=vs.85).aspx
@@ -127,7 +127,7 @@ class BmpImageFile(ImageFile.ImageFile):
         # -------- If color count was not found in the header, compute from bits
         file_info['colors'] = file_info['colors'] if file_info.get('colors', 0) else (1 << file_info['bits'])
         # -------------------------------- Check abnormal values for DOS attacks
-        if file_info['width'] * file_info['height'] > 2**31:
+        if file_info['width'] * file_info['height'] > 2 ** 31:
             raise IOError("Unsupported BMP Size: (%dx%d)" % self.size)
         # ----------------------- Check bit depth for unusual unsupported values
         self.mode, raw_mode = BIT2MODE.get(file_info['bits'], (None, None))
@@ -176,7 +176,7 @@ class BmpImageFile(ImageFile.ImageFile):
                 indices = (0, 255) if file_info['colors'] == 2 else list(range(file_info['colors']))
                 # ------------------ Check if greyscale and ignore palette if so
                 for ind, val in enumerate(indices):
-                    rgb = palette[ind*padding:ind*padding + 3]
+                    rgb = palette[ind * padding:ind * padding + 3]
                     if rgb != o8(val) * 3:
                         greyscale = False
                 # -------- If all colors are grey, white or black, ditch palette
@@ -246,30 +246,30 @@ def _save(im, fp, filename, check=0):
     # 1 meter == 39.3701 inches
     ppm = tuple(map(lambda x: int(x * 39.3701), dpi))
 
-    stride = ((im.size[0]*bits+7)//8+3) & (~3)
+    stride = ((im.size[0] * bits + 7) // 8 + 3) & (~3)
     header = 40  # or 64 for OS/2 version 2
     offset = 14 + header + colors * 4
     image = stride * im.size[1]
 
     # bitmap header
-    fp.write(b"BM" +                      # file type (magic)
-             o32(offset+image) +          # file size
-             o32(0) +                     # reserved
-             o32(offset))                 # image data offset
+    fp.write(b"BM" +  # file type (magic)
+             o32(offset + image) +  # file size
+             o32(0) +  # reserved
+             o32(offset))  # image data offset
 
     # bitmap info header
-    fp.write(o32(header) +                # info header size
-             o32(im.size[0]) +            # width
-             o32(im.size[1]) +            # height
-             o16(1) +                     # planes
-             o16(bits) +                  # depth
-             o32(0) +                     # compression (0=uncompressed)
-             o32(image) +                 # size of bitmap
+    fp.write(o32(header) +  # info header size
+             o32(im.size[0]) +  # width
+             o32(im.size[1]) +  # height
+             o16(1) +  # planes
+             o16(bits) +  # depth
+             o32(0) +  # compression (0=uncompressed)
+             o32(image) +  # size of bitmap
              o32(ppm[0]) + o32(ppm[1]) +  # resolution
-             o32(colors) +                # colors used
-             o32(colors))                 # colors important
+             o32(colors) +  # colors used
+             o32(colors))  # colors important
 
-    fp.write(b"\0" * (header - 40))       # padding (for OS/2 format)
+    fp.write(b"\0" * (header - 40))  # padding (for OS/2 format)
 
     if im.mode == "1":
         for i in (0, 255):
@@ -280,7 +280,7 @@ def _save(im, fp, filename, check=0):
     elif im.mode == "P":
         fp.write(im.im.getpalette("RGB", "BGRX"))
 
-    ImageFile._save(im, fp, [("raw", (0, 0)+im.size, 0,
+    ImageFile._save(im, fp, [("raw", (0, 0) + im.size, 0,
                     (rawmode, stride, -1))])
 
 #

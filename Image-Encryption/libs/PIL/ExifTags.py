@@ -9,12 +9,12 @@
 # See the README file for information on usage and redistribution.
 #
 
-##
+# #
 # This module provides constants and clear-text names for various
 # well-known EXIF tags.
-##
+# #
 
-##
+# #
 # Maps EXIF tags to tag names.
 
 TAGS = {
@@ -276,7 +276,7 @@ TAGS = {
     0xc761: "NoiseProfile"
 }
 
-##
+# #
 # Maps EXIF GPS tags to tag names.
 
 GPSTAGS = {

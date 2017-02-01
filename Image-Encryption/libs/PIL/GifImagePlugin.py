@@ -46,7 +46,7 @@ def _accept(prefix):
     return prefix[:6] in [b"GIF87a", b"GIF89a"]
 
 
-##
+# #
 # Image plugin for GIF images.  This plugin supports both GIF87 and
 # GIF89 images.
 
@@ -81,7 +81,7 @@ class GifImageFile(ImageFile.ImageFile):
             # check if palette contains colour indices
             p = self.fp.read(3 << bits)
             for i in range(0, len(p), 3):
-                if not (i//3 == i8(p[i]) == i8(p[i+1]) == i8(p[i+2])):
+                if not (i // 3 == i8(p[i]) == i8(p[i + 1]) == i8(p[i + 2])):
                     p = ImagePalette.raw("RGB", p)
                     self.global_palette = self.palette = p
                     break
@@ -231,7 +231,7 @@ class GifImageFile(ImageFile.ImageFile):
 
                 if flags & 128:
                     bits = (flags & 7) + 1
-                    self.palette =\
+                    self.palette = \
                         ImagePalette.raw("RGB", self.fp.read(3 << bits))
 
                 # image data
@@ -357,7 +357,7 @@ def _save(im, fp, filename, save_all=False):
         else:
             duration = None
         frame_count = 0
-        for imSequence in [im]+append_images:
+        for imSequence in [im] + append_images:
             for im_frame in ImageSequence.Iterator(imSequence):
                 encoderinfo = im.encoderinfo.copy()
                 im_frame = _convert_mode(im_frame)
@@ -407,7 +407,7 @@ def _save(im, fp, filename, save_all=False):
         _get_local_header(fp, im, (0, 0), flags)
 
         im_out.encoderconfig = (8, get_interlace(im))
-        ImageFile._save(im_out, fp, [("gif", (0, 0)+im.size, 0,
+        ImageFile._save(im_out, fp, [("gif", (0, 0) + im.size, 0,
                                       RAWMODE[im_out.mode])])
 
         fp.write(b"\0")  # end of image data
@@ -462,29 +462,29 @@ def _get_local_header(fp, im, offset, flags):
         if not transparent_color_exists:
             transparency = 0
 
-        fp.write(b"!" +
-                 o8(249) +                # extension intro
-                 o8(4) +                  # length
+        fp.write(b"!" + 
+                 o8(249) +  # extension intro
+                 o8(4) +  # length
                  o8(transparency_flag) +  # packed fields
-                 o16(duration) +          # duration
-                 o8(transparency) +       # transparency index
+                 o16(duration) +  # duration
+                 o8(transparency) +  # transparency index
                  o8(0))
 
     if "comment" in im.encoderinfo and 1 <= len(im.encoderinfo["comment"]) <= 255:
-        fp.write(b"!" +
-                 o8(254) +                # extension intro
-                 o8(len(im.encoderinfo["comment"])) +
-                 im.encoderinfo["comment"] +
+        fp.write(b"!" + 
+                 o8(254) +  # extension intro
+                 o8(len(im.encoderinfo["comment"])) + 
+                 im.encoderinfo["comment"] + 
                  o8(0))
     if "loop" in im.encoderinfo:
         number_of_loops = im.encoderinfo["loop"]
-        fp.write(b"!" +
-                 o8(255) +                # extension intro
-                 o8(11) +
-                 b"NETSCAPE2.0" +
-                 o8(3) +
-                 o8(1) +
-                 o16(number_of_loops) +   # number of loops
+        fp.write(b"!" + 
+                 o8(255) +  # extension intro
+                 o8(11) + 
+                 b"NETSCAPE2.0" + 
+                 o8(3) + 
+                 o8(1) + 
+                 o16(number_of_loops) +  # number of loops
                  o8(0))
     include_color_table = im.encoderinfo.get('include_color_table')
     if include_color_table:
@@ -495,18 +495,18 @@ def _get_local_header(fp, im, offset, flags):
         palette_bytes = _get_palette_bytes(im, palette, im.encoderinfo)[0]
         color_table_size = _get_color_table_size(palette_bytes)
         if color_table_size:
-            flags = flags | 128               # local color table flag
+            flags = flags | 128  # local color table flag
             flags = flags | color_table_size
 
-    fp.write(b"," +
-             o16(offset[0]) +             # offset
-             o16(offset[1]) +
-             o16(im.size[0]) +            # size
-             o16(im.size[1]) +
-             o8(flags))                   # flags
+    fp.write(b"," + 
+             o16(offset[0]) +  # offset
+             o16(offset[1]) + 
+             o16(im.size[0]) +  # size
+             o16(im.size[1]) + 
+             o8(flags))  # flags
     if include_color_table and color_table_size:
         fp.write(_get_header_palette(palette_bytes))
-    fp.write(o8(8))                       # bits
+    fp.write(o8(8))  # bits
 
 
 def _save_netpbm(im, fp, filename):
@@ -596,7 +596,7 @@ def _get_used_palette_colors(im):
 def _get_color_table_size(palette_bytes):
     # calculate the palette size for the header
     import math
-    color_table_size = int(math.ceil(math.log(len(palette_bytes)//3, 2)))-1
+    color_table_size = int(math.ceil(math.log(len(palette_bytes) // 3, 2))) - 1
     if color_table_size < 0:
         color_table_size = 0
     return color_table_size
@@ -606,7 +606,7 @@ def _get_header_palette(palette_bytes):
 
     # add the missing amount of bytes
     # the palette has to be 2<<n in size
-    actual_target_size_diff = (2 << color_table_size) - len(palette_bytes)//3
+    actual_target_size_diff = (2 << color_table_size) - len(palette_bytes) // 3
     if actual_target_size_diff > 0:
         palette_bytes += o8(0) * 3 * actual_target_size_diff
     return palette_bytes
@@ -621,18 +621,18 @@ def _get_palette_bytes(im, palette, info):
         if palette and isinstance(palette, bytes):
             source_palette = palette[:768]
         else:
-            source_palette = bytearray(i//3 for i in range(768))
+            source_palette = bytearray(i // 3 for i in range(768))
 
     palette_bytes = None
 
     used_palette_colors = _get_optimize(im, info)
     if used_palette_colors is not None:
         palette_bytes = b""
-        new_positions = [0]*256
+        new_positions = [0] * 256
 
         # pick only the used colors from the palette
         for i, oldPosition in enumerate(used_palette_colors):
-            palette_bytes += source_palette[oldPosition*3:oldPosition*3+3]
+            palette_bytes += source_palette[oldPosition * 3:oldPosition * 3 + 3]
             new_positions[oldPosition] = i
 
         # replace the palette color id of all pixel with the new id
@@ -659,10 +659,10 @@ def _get_palette_bytes(im, palette, info):
         m_im.mode = 'P'
 
         m_im.palette = ImagePalette.ImagePalette("RGB",
-                                               palette=mapping_palette*3,
+                                               palette=mapping_palette * 3,
                                                size=768)
-        #possibly set palette dirty, then
-        #m_im.putpalette(mapping_palette, 'L')  # converts to 'P'
+        # possibly set palette dirty, then
+        # m_im.putpalette(mapping_palette, 'L')  # converts to 'P'
         # or just force it.
         # UNDONE -- this is part of the general issue with palettes
         m_im.im.putpalette(*m_im.palette.getdata())
@@ -670,7 +670,7 @@ def _get_palette_bytes(im, palette, info):
         m_im = m_im.convert('L')
 
         # Internally, we require 768 bytes for a palette.
-        new_palette_bytes = (palette_bytes +
+        new_palette_bytes = (palette_bytes + 
                              (768 - len(palette_bytes)) * b'\x00')
         m_im.putpalette(new_palette_bytes)
         m_im.palette = ImagePalette.ImagePalette("RGB",
@@ -706,9 +706,9 @@ def getheader(im, palette=None, info=None):
             version = b"89a"
 
     header = [
-        b"GIF"+version +        # signature + version
-        o16(im.size[0]) +       # canvas width
-        o16(im.size[1])         # canvas height
+        b"GIF" + version +  # signature + version
+        o16(im.size[0]) +  # canvas width
+        o16(im.size[1])  # canvas height
     ]
 
     palette_bytes, used_palette_colors = _get_palette_bytes(im, palette, info)
@@ -757,7 +757,7 @@ def getdata(im, offset=(0, 0), **params):
         # local image header
         _get_local_header(fp, im, offset, 0)
 
-        ImageFile._save(im, fp, [("gif", (0, 0)+im.size, 0, RAWMODE[im.mode])])
+        ImageFile._save(im, fp, [("gif", (0, 0) + im.size, 0, RAWMODE[im.mode])])
 
         fp.write(b"\0")  # end of image data
 
