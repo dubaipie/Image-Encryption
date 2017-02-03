@@ -3,13 +3,14 @@ Created on 18 janv. 2017
 
 @author: dubaipie
 '''
+import PIL
+import Cypherer.model.CyphererModel as DM
+import os
 from tkinter import Entry, Button, Scrollbar, StringVar, Frame, Canvas, Label
 from PIL import ImageTk
 from tkinter import filedialog
 from tkinter import messagebox
-import PIL
 from Generator.model.GeneratorModel import GeneratorModel
-import Cypherer.model.CyphererModel as DM
 from Cypherer.model.CyphererModel import MismatchFormatException
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from argparse import FileType
@@ -127,9 +128,9 @@ class Cypherer(Frame):
         self._cypherButton.config(command=self._cypher)
         
         self.grid_rowconfigure(2, weight = 1)
-        #self.grid_columnconfigure(1, weight = 1)
-        #self.grid_columnconfigure(2, weight = 1)
-        #self.grid_rowconfigure(3, weight = 1)
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_columnconfigure(2, weight = 1)
+        self.grid_rowconfigure(3, weight = 1)
         
         self._frame4.grid_columnconfigure(1, weight = 1)
         self._frame4.grid_rowconfigure(1, weight = 1)
@@ -183,16 +184,17 @@ class Cypherer(Frame):
             self._rslVar.set(dlg)
     
     def _cypher(self):
-        if (self._model.keyPath is None  or self._model.imagePath is None
+        if (self._model.imagePath is None
                 or self._rslVar.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
-        else :
-            
-            try :
-                self._model.cypher(self._rslVar.get())
-                self._addImageInCanvas(self._resultCanvas, self._rslVar.get())
-            except MismatchFormatException:
-                messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
+            return
+        if (self._model.keyPath is None):
+            self._generateKey()
+        try :
+            self._model.cypher(self._rslVar.get())
+            self._addImageInCanvas(self._resultCanvas, self._rslVar.get())
+        except MismatchFormatException:
+            messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
                 
     def _addImageInCanvas(self, canvas, img):
         im = PIL.Image.open(img)
@@ -201,3 +203,20 @@ class Cypherer(Frame):
         canvas.picture = ImageTk.PhotoImage(file=img)
         canvas.create_image(x/2, y/2, image=canvas.picture)
         canvas.config(scrollregion=(0,0,x,y))
+        
+    def _generateKey(self):
+        obj = GeneratorModel()
+        #Récuperation de la taille de l'image
+        im = PIL.Image.open(self._model.imagePath)
+        x, y = im.size
+        im.close()
+        obj.setSize(x,y)
+        obj.generatorKey()
+        #voir où l'enregistrer
+        img = "tmp_masque.ppm"
+        obj.getKey().save(img)
+        self._model.keyPath = img
+        self._keyVar.set(img)
+        self._addImageInCanvas(self._keyCanvas, img)
+        messagebox.showinfo("Masque", "La clé a été générer sous: " + os.getcwd() + "/" + img)
+        
