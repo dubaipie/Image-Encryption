@@ -1,4 +1,5 @@
 from PIL import Image
+import threading
 import PIL
 from PIL import ImageTk
 from tkinter import filedialog
@@ -40,7 +41,7 @@ class GeneratorView(Frame):
         self._bouton_saveas = Button(self, text = "Enregistrer sous")
         self._bouton_setSize1 = Button(self._frame1, text = "Ok")
         self._bouton_setSize2 = Button(self._frame1, text = "Parcourir")
-        self._image = Canvas(self, bg='ivory')
+        self._image = Canvas(self)
         
         # horizontal scrollbar
         self._hbar = Scrollbar(self, orient=HORIZONTAL)
@@ -108,22 +109,29 @@ class GeneratorView(Frame):
                 showerror("Générateur", "Veuillez entrer des entiers pair")
             else:
                 self._model.setSize(int (self._width.get()), int (self._height.get()))
-                self._model.generatorKey()
-                '''Gestion de l'affichage de l'image dans le canvas, le canvas prend la taille de l'image '''
-                self._model.getKey().save("tmp_image.ppm")
-                monimage = "tmp_image.ppm"
-                photo = ImageTk.PhotoImage(file = monimage)
-                im = PIL.Image.open(monimage)
-                x, y = im.size
-                im.close()
-                self._image.config(width = x, height = y)
-                self._image.config(scrollregion=(0,0,x,y))
-                self._image.create_image(x / 2, y / 2, image = photo)
-                self._image.image = photo
-                os.remove("tmp_image.ppm")
+                t = threading.Thread(target=self._execute)
+                t.start()
         except ValueError:
             showerror("Générateur", "Veuillez entrer des décimaux")
     
+    #OUTILS
+    def _execute(self):
+        self._bouton_generer.config(state=DISABLED)
+        self._model.generatorKey()
+        '''Gestion de l'affichage de l'image dans le canvas, le canvas prend la taille de l'image '''
+        self._model.getKey().save("tmp_image.ppm")
+        monimage = "tmp_image.ppm"
+        photo = ImageTk.PhotoImage(file = monimage)
+        im = PIL.Image.open(monimage)
+        x, y = im.size
+        im.close()
+        self._image.config(width = x, height = y)
+        self._image.config(scrollregion=(0,0,x,y))
+        self._image.create_image(x / 2, y / 2, image = photo)
+        self._image.image = photo
+        os.remove("tmp_image.ppm")
+        self._bouton_generer.config(state=NORMAL)
+          
     def _setSizeWithNumber(self):
         w = int (self._width.get())
         h = int (self._height.get())

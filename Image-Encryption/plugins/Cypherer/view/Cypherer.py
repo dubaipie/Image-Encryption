@@ -6,7 +6,9 @@ Created on 18 janv. 2017
 import PIL
 import Cypherer.model.CyphererModel as DM
 import os
-from tkinter import Entry, Button, Scrollbar, StringVar, Frame, Canvas, Label
+import threading
+from tkinter import Entry, Button, Scrollbar, StringVar, Frame, Canvas, Label,\
+    LabelFrame
 from PIL import ImageTk
 from tkinter import filedialog
 from tkinter import messagebox
@@ -15,6 +17,7 @@ from Cypherer.model.CyphererModel import MismatchFormatException
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from argparse import FileType
 from Cypherer.model.CyphererModel import CyphererModel
+from tkinter.constants import DISABLED, NORMAL
 
 
 class Cypherer(Frame):
@@ -37,6 +40,7 @@ class Cypherer(Frame):
     def _createModel(self):
         self._model = DM.CyphererModel()
         
+        self._l = [None,None,None]
         self._keyVar = StringVar()
         self._imgVar = StringVar()
         self._rslVar = StringVar()
@@ -65,11 +69,12 @@ class Cypherer(Frame):
         self._imgButton = Button(self._frame2, text=_("Find"))
         self._rslButton = Button(self._frame3, text=_("Save as"))
         self._cypherButton = Button(self, text=_("Cypher"))
+        self._resetButton = Button(self._frame3, text=("Reset"))
         
         #Canvas
-        self._resultCanvas = Canvas(self._frame6, bg="white")
-        self._keyCanvas = Canvas(self._frame4, bg="white")
-        self._imgCanvas = Canvas(self._frame5, bg="white")
+        self._resultCanvas = Canvas(self._frame6)
+        self._keyCanvas = Canvas(self._frame4)
+        self._imgCanvas = Canvas(self._frame5)
         
         # horizontal scrollbar
         self._hbar = Scrollbar(self._frame4, orient=HORIZONTAL)
@@ -110,6 +115,7 @@ class Cypherer(Frame):
         Label(self._frame3, text=_("Destination file : ")).grid(row=1, column=1, sticky=W)
         self._rslEntry.grid(row=1, column=2)
         self._rslButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
+        self._resetButton.grid(row=1, column=4)
         self._frame3.grid(row=1, column=3)
         
         #FRAME6
@@ -120,12 +126,13 @@ class Cypherer(Frame):
         
         self._cypherButton.grid(row=3, column=1, columnspan=3, sticky=E+W)
         
-    
+        self._imgCanvas.delete()
     def _createController(self):
         self._keyButton.config(command=self._chooseKey)
         self._imgButton.config(command=self._chooseImg)
         self._rslButton.config(command=self._chooseRsl)
         self._cypherButton.config(command=self._cypher)
+        self._resetButton.config(command=self._reset)
         
         self.grid_rowconfigure(2, weight = 1)
         self.grid_columnconfigure(1, weight = 1)
@@ -168,7 +175,7 @@ class Cypherer(Frame):
         if dlg != "":
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
-            self._addImageInCanvas(self._keyCanvas, dlg)
+            self._addImageInCanvas(self._keyCanvas, dlg, 0)
             
     def _chooseImg(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
@@ -176,7 +183,7 @@ class Cypherer(Frame):
         if dlg != "":
             self._model.imagePath = dlg
             self._imgVar.set(dlg)
-            self._addImageInCanvas(self._imgCanvas, dlg)
+            self._addImageInCanvas(self._imgCanvas, dlg, 1)
     
     def _chooseRsl(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
@@ -189,22 +196,30 @@ class Cypherer(Frame):
             messagebox.showerror("Data error", "Please fill all inputs")
             return
         if (self._model.keyPath is None):
-            self._generateKey()
+            t2 = threading.Thread(target=self._generateKey())
+            t2.start()
         try :
-            self._model.cypher(self._rslVar.get())
-            self._addImageInCanvas(self._resultCanvas, self._rslVar.get())
+            t = threading.Thread(target=self._execute)
+            t.start()
         except MismatchFormatException:
             messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
-                
-    def _addImageInCanvas(self, canvas, img):
+    
+    def _execute(self):
+        self._cypherButton.config(state=DISABLED)
+        self._model.cypher(self._rslVar.get())
+        self._addImageInCanvas(self._resultCanvas, self._rslVar.get(), 2)
+        self._cypherButton.config(state=NORMAL)
+            
+    def _addImageInCanvas(self, canvas, img, i):
         im = PIL.Image.open(img)
         x,y = im.size
         im.close()
         canvas.picture = ImageTk.PhotoImage(file=img)
-        canvas.create_image(x/2, y/2, image=canvas.picture)
+        self._l[i] = canvas.create_image(x/2, y/2, image=canvas.picture)
         canvas.config(scrollregion=(0,0,x,y))
-        
+
     def _generateKey(self):
+        self._cypherButton.config(state=DISABLED)
         obj = GeneratorModel()
         #Récuperation de la taille de l'image
         im = PIL.Image.open(self._model.imagePath)
@@ -217,6 +232,20 @@ class Cypherer(Frame):
         obj.getKey().save(img)
         self._model.keyPath = img
         self._keyVar.set(img)
-        self._addImageInCanvas(self._keyCanvas, img)
+        self._addImageInCanvas(self._keyCanvas, img, 2)
         messagebox.showinfo("Masque", "La clé a été générer sous: " + os.getcwd() + "/" + img)
-        
+        self._cypherButton.config(state=NORMAL)
+    
+    def _reset(self):
+        if (self._l[0] is not None):
+            self._keyCanvas.delete(self._l[0])
+            self._keyCanvas.config(scrollregion=(0,0,0,0))
+        if (self._l[1] is not None):
+            self._imgCanvas.delete(self._l[1])
+            self._imgCanvas.config(scrollregion=(0,0,0,0))
+        if (self._l[2] is not None):
+            self._resultCanvas.delete(self._l[2])
+            self._resultCanvas.config(scrollregion=(0,0,0,0))
+        self._rslVar.set('')
+        self._imgVar.set('')
+        self._keyVar.set('')
