@@ -174,12 +174,7 @@ class Decypherer(Frame):
         if dlg != "":
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
-            self._keyCanvas.picture = ImageTk.PhotoImage(file=dlg)
-            self._keyCanvas.create_image(0, 0, image=self._keyCanvas.picture)
-            im = PIL.Image.open(dlg)
-            x,y = im.size
-            im.close()
-            self._keyCanvas.config(scrollregion=(0,0,x,y))
+            self._addImageInCanvas(self._keyCanvas, dlg)
     
     def _chooseImgCypher(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
@@ -187,12 +182,7 @@ class Decypherer(Frame):
         if dlg != "":
             self._model.imagePath = dlg
             self._img_Cypher_Var.set(dlg)
-            self._imgCypherCanvas.picture = ImageTk.PhotoImage(file=dlg)
-            self._imgCypherCanvas.create_image(0, 0, image=self._imgCypherCanvas.picture)
-            im = PIL.Image.open(dlg)
-            x,y = im.size
-            im.close()
-            self._imgCypherCanvas.config(scrollregion=(0,0,x,y))
+            self._addImageInCanvas(self._imgCypherCanvas, dlg)
     
     def _chooseDecypher(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
@@ -207,11 +197,14 @@ class Decypherer(Frame):
             
             try :
                 self._model.cypher(self._img_Decypher_Var.get())
-                self._imgDecypherCanvas.picture = ImageTk.PhotoImage(file=self._img_Decypher_Var.get())
-                self._imgDecypherCanvas.create_image(0, 0, image=self._imgDecypherCanvas.picture)
-                im = PIL.Image.open(self._img_Decypher_Var.get())
-                x,y = im.size
-                im.close()
-                self._imgDecypherCanvas.config(scrollregion=(0,0,x,y))
+                self._addImageInCanvas(self._imgDecypherCanvas, self._img_Decypher_Var.get())
             except MismatchFormatException:
                 messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
+    
+    def _addImageInCanvas(self, canvas, img):
+        im = PIL.Image.open(img)
+        x,y = im.size
+        im.close()
+        canvas.picture = ImageTk.PhotoImage(file=img)
+        canvas.create_image(x/2, y/2, image=canvas.picture)
+        canvas.config(scrollregion=(0,0,x,y))

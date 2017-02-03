@@ -127,9 +127,9 @@ class Cypherer(Frame):
         self._cypherButton.config(command=self._cypher)
         
         self.grid_rowconfigure(2, weight = 1)
-        self.grid_columnconfigure(1, weight = 1)
-        self.grid_columnconfigure(2, weight = 1)
-        self.grid_rowconfigure(3, weight = 1)
+        #self.grid_columnconfigure(1, weight = 1)
+        #self.grid_columnconfigure(2, weight = 1)
+        #self.grid_rowconfigure(3, weight = 1)
         
         self._frame4.grid_columnconfigure(1, weight = 1)
         self._frame4.grid_rowconfigure(1, weight = 1)
@@ -167,12 +167,7 @@ class Cypherer(Frame):
         if dlg != "":
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
-            self._keyCanvas.picture = ImageTk.PhotoImage(file=dlg)
-            self._keyCanvas.create_image(0, 0, image=self._keyCanvas.picture)
-            im = PIL.Image.open(dlg)
-            x,y = im.size
-            im.close()
-            self._keyCanvas.config(scrollregion=(0,0,x,y))
+            self._addImageInCanvas(self._keyCanvas, dlg)
             
     def _chooseImg(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
@@ -180,12 +175,7 @@ class Cypherer(Frame):
         if dlg != "":
             self._model.imagePath = dlg
             self._imgVar.set(dlg)
-            self._imgCanvas.picture = ImageTk.PhotoImage(file=dlg)
-            self._imgCanvas.create_image(0, 0, image=self._imgCanvas.picture)
-            im = PIL.Image.open(dlg)
-            x,y = im.size
-            im.close()
-            self._imgCanvas.config(scrollregion=(0,0,x,y))
+            self._addImageInCanvas(self._imgCanvas, dlg)
     
     def _chooseRsl(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
@@ -200,11 +190,14 @@ class Cypherer(Frame):
             
             try :
                 self._model.cypher(self._rslVar.get())
-                self._resultCanvas.picture = ImageTk.PhotoImage(file=self._rslVar.get())
-                self._resultCanvas.create_image(0, 0, image=self._resultCanvas.picture)
-                im = PIL.Image.open(self._rslVar.get())
-                x,y = im.size
-                im.close()
-                self._resultCanvas.config(scrollregion=(0,0,x,y))
+                self._addImageInCanvas(self._resultCanvas, self._rslVar.get())
             except MismatchFormatException:
                 messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
+                
+    def _addImageInCanvas(self, canvas, img):
+        im = PIL.Image.open(img)
+        x,y = im.size
+        im.close()
+        canvas.picture = ImageTk.PhotoImage(file=img)
+        canvas.create_image(x/2, y/2, image=canvas.picture)
+        canvas.config(scrollregion=(0,0,x,y))
