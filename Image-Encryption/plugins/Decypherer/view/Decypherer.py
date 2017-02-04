@@ -7,7 +7,7 @@ Created on 1 févr. 2017
 import PIL
 import threading
 import Cypherer.model.CyphererModel as DM
-from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFram
+from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame
 from PIL import ImageTk
 from Cypherer.model.CyphererModel import MismatchFormatException
 from tkinter import filedialog
