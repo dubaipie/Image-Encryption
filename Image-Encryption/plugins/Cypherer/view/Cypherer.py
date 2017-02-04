@@ -127,6 +127,7 @@ class Cypherer(Frame):
         self._cypherButton.grid(row=3, column=1, columnspan=3, sticky=E+W)
         
         self._imgCanvas.delete()
+
     def _createController(self):
         self._keyButton.config(command=self._chooseKey)
         self._imgButton.config(command=self._chooseImg)
@@ -137,6 +138,7 @@ class Cypherer(Frame):
         self.grid_rowconfigure(2, weight = 1)
         self.grid_columnconfigure(1, weight = 1)
         self.grid_columnconfigure(2, weight = 1)
+        self.grid_columnconfigure(3, weight = 1)
         self.grid_rowconfigure(3, weight = 1)
         
         self._frame4.grid_columnconfigure(1, weight = 1)

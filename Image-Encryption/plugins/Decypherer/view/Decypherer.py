@@ -139,6 +139,7 @@ class Decypherer(Frame):
         self.grid_rowconfigure(2, weight = 1)
         self.grid_columnconfigure(1, weight = 1)
         self.grid_columnconfigure(2, weight = 1)
+        self.grid_columnconfigure(3, weight = 1)
         self.grid_rowconfigure(3, weight = 1)
         
         self._frame4.grid_columnconfigure(1, weight = 1)

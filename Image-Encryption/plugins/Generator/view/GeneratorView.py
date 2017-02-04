@@ -1,4 +1,3 @@
-from PIL import Image
 import threading
 import PIL
 from PIL import ImageTk
@@ -53,15 +52,20 @@ class GeneratorView(Frame):
     def placeComponents(self):    
         label = Label(self._frame1, text = "Taille :")
         label.grid(row = 1, column = 1)
+
         label = Label(self._frame1, text = " x ")
         label.grid(row = 1, column = 3)
+
         self._width.grid(row = 1, column = 2)
         self._height.grid(row = 1, column = 4)
         self._bouton_setSize1.grid(row = 1, columnspan = 1 ,column = 5,sticky = W + E)
+
         label = Label(self._frame1, text = "          ")
         label.grid(row = 1, column = 6)
+
         label = Label(self._frame1, text = "Choisir une taille à partir d'une image : ")
         label.grid(row = 1, column = 7)
+
         self._imgEntry.grid(row = 1, column = 8)
         self._bouton_setSize2.grid(row = 1, columnspan = 1, column = 9, sticky = W + E)
         
