@@ -199,16 +199,16 @@ class Decypherer(Frame):
                 or self._img_Decypher_Var.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
             return 
-        try :
-            t = threading.Thread(target=self._execute)
-            t.start()
-        except MismatchFormatException:
-            messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
+        t = threading.Thread(target=self._execute)
+        t.start()
     
     def _execute(self):
         self._decypherButton.config(state=DISABLED)
-        self._model.cypher(self._img_Decypher_Var.get())
-        self._addImageInCanvas(self._imgDecypherCanvas, self._img_Decypher_Var.get(), 2)
+        try:
+            self._model.cypher(self._img_Decypher_Var.get())
+            self._addImageInCanvas(self._imgDecypherCanvas, self._img_Decypher_Var.get(), 2)
+        except MismatchFormatException:
+            messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
         self._decypherButton.config(state=NORMAL)
         
     def _addImageInCanvas(self, canvas, img, i):
@@ -231,4 +231,6 @@ class Decypherer(Frame):
             self._imgDecypherCanvas.config(scrollregion=(0,0,0,0))
         self._img_Decypher_Var.set('')
         self._img_Cypher_Var.set('')
+        self._model.keyPath = None
+        self._model.imagePath = None
         self._keyVar.set('')

@@ -198,16 +198,17 @@ class Cypherer(Frame):
         if (self._model.keyPath is None):
             t2 = threading.Thread(target=self._generateKey())
             t2.start()
-        try :
+        else:
             t = threading.Thread(target=self._execute)
             t.start()
-        except MismatchFormatException:
-            messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
     
     def _execute(self):
         self._cypherButton.config(state=DISABLED)
-        self._model.cypher(self._rslVar.get())
-        self._addImageInCanvas(self._resultCanvas, self._rslVar.get(), 2)
+        try :
+            self._model.cypher(self._rslVar.get())
+            self._addImageInCanvas(self._resultCanvas, self._rslVar.get(), 2)
+        except MismatchFormatException:
+            messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
         self._cypherButton.config(state=NORMAL)
             
     def _addImageInCanvas(self, canvas, img, i):
@@ -232,9 +233,10 @@ class Cypherer(Frame):
         obj.getKey().save(img)
         self._model.keyPath = img
         self._keyVar.set(img)
-        self._addImageInCanvas(self._keyCanvas, img, 2)
+        self._addImageInCanvas(self._keyCanvas, img, 0)
         messagebox.showinfo("Masque", "La clé a été générer sous: " + os.getcwd() + "/" + img)
         self._cypherButton.config(state=NORMAL)
+        self._execute()
     
     def _reset(self):
         if (self._l[0] is not None):
@@ -249,3 +251,5 @@ class Cypherer(Frame):
         self._rslVar.set('')
         self._imgVar.set('')
         self._keyVar.set('')
+        self._model.keyPath = None
+        self._model.imagePath = None
