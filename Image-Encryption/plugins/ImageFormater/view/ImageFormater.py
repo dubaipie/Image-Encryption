@@ -3,19 +3,20 @@ Created on 18 janv. 2017
 
 @author: havarjos
 '''
-from tkinter import Frame, Entry, Label, Canvas, Button, Scrollbar, LabelFrame
+from tkinter import Frame, Entry, Label, Canvas, Button, LabelFrame
 from tkinter import StringVar, HORIZONTAL, VERTICAL, E, W, N, S
 from tkinter import filedialog, messagebox
 from PIL import ImageTk
 from ImageFormater.model.ImageFormaterModel import *
+from Utils.AutoScrollbar import *
 
 
 class ImageFormater(Frame):
     FORMATS = [
+        ("Joint Photographic Experts Group", ("*.jpg", "*.jpeg")),
         ("Bitmap", "*.bmp"),
         ("Encapsulated PostScript", "*.eps"),
         ("Graphics Interchange Format", "*.gif"),
-        ("Joint Photographic Experts Group", ("*.jpg", "*.jpeg")),
         ("Portable Network Graphics", "*.png"),
         ("Portable pixmap", ("*.ppm", "*.pgm", "*.pbm")),
         ("All file", "*.*")
@@ -65,8 +66,8 @@ class ImageFormater(Frame):
         self._canvasLabelFrame = LabelFrame(self._rightFrame, text="Aperçu")
         self._canvas = Canvas(self._canvasLabelFrame)
 
-        self._hbar = Scrollbar(self._canvasLabelFrame, orient=HORIZONTAL)
-        self._vbar = Scrollbar(self._canvasLabelFrame, orient=VERTICAL)
+        self._hbar = AutoScrollbar(self._canvasLabelFrame, orient=HORIZONTAL)
+        self._vbar = AutoScrollbar(self._canvasLabelFrame, orient=VERTICAL)
 
     def _placeComponents(self):
         """

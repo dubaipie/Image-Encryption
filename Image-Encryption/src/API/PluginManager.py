@@ -36,8 +36,8 @@ class PluginManager(object):
                     initializer = initializerModule.Initializer(self)
                     self._plugins.append(initializer)
                     initializer.initPlugin()
-                except:
-                    pass
+                except ImportError as e:
+                    print(e.msg)
 
     @property
     def API(self):

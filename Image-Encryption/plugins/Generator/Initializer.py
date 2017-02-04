@@ -21,12 +21,13 @@ class Initializer(object):
         '''
         Initialiser le plugin (langues, configuration ...)
         '''
+        """
         self._loader.API.getPropertiesManager().addPropertiesFile(
             self, "../../plugins/Generator", "properties.xml")
         self._loader.getLocaleManager().addLocalePath(
             self._loader.API.getPropertiesManager().getProperty(self, "appname"),
             self._loader.API.getPropertiesManager().getProperty(self, "locales"))
-
+        """
     def getFrame(self, master=None):
         '''
         Récupérer la fenêtre.

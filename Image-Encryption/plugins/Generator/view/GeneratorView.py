@@ -5,6 +5,8 @@ from tkinter import filedialog
 from tkinter.messagebox import *
 from tkinter.filedialog import *
 from Generator.model import GeneratorModel
+from Utils.AutoScrollbar import *
+
 
 class GeneratorView(Frame):
     
@@ -42,11 +44,11 @@ class GeneratorView(Frame):
         self._bouton_setSize2 = Button(self._frame1, text = "Parcourir")
         self._image = Canvas(self)
         
-        # horizontal scrollbar
-        self._hbar = Scrollbar(self, orient=HORIZONTAL)
+        # horizontal AutoScrollbar
+        self._hbar = AutoScrollbar(self, orient=HORIZONTAL)
          
-        # vertical scrollbar
-        self._vbar = Scrollbar(self, orient=VERTICAL)
+        # vertical AutoScrollbar
+        self._vbar = AutoScrollbar(self, orient=VERTICAL)
          
         
     def placeComponents(self):    

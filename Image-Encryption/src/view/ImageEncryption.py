@@ -9,7 +9,6 @@ import os
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM
 import xml.etree.ElementTree as ET
-import traceback
 
 class ImageEncryption(object):
     '''

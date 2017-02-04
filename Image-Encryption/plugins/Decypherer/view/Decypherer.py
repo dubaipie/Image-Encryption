@@ -7,13 +7,14 @@ Created on 1 févr. 2017
 import PIL
 import threading
 import Cypherer.model.CyphererModel as DM
-from tkinter import Entry, Button, Scrollbar, StringVar, Frame, Canvas, Label
+from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFram
 from PIL import ImageTk
 from Cypherer.model.CyphererModel import MismatchFormatException
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
+from Utils.AutoScrollbar import *
 
 class Decypherer(Frame):
     
@@ -47,9 +48,9 @@ class Decypherer(Frame):
         self._frame1 = Frame(self)
         self._frame2 = Frame(self)
         self._frame3 = Frame(self)
-        self._frame4 = Frame(self)
-        self._frame5 = Frame(self)
-        self._frame6 = Frame(self)
+        self._frame4 = LabelFrame(self, text="Aperçu de la clé")
+        self._frame5 = LabelFrame(self, text="Aperçu du message chiffré")
+        self._frame6 = LabelFrame(self, text="Aperçu du résultat")
         
         #Les barres de texte pour la recherche de fichier
         
@@ -78,15 +79,15 @@ class Decypherer(Frame):
         
         self._DecypherButton = Button(self, text=_("Decypher"))
         
-        # horizontal scrollbar
-        self._hbar1 = Scrollbar(self._frame4, orient=HORIZONTAL)
-        self._hbar2 = Scrollbar(self._frame5, orient=HORIZONTAL)
-        self._hbar3 = Scrollbar(self._frame6, orient=HORIZONTAL)
+        # horizontal AutoScrollbar
+        self._hbar1 = AutoScrollbar(self._frame4, orient=HORIZONTAL)
+        self._hbar2 = AutoScrollbar(self._frame5, orient=HORIZONTAL)
+        self._hbar3 = AutoScrollbar(self._frame6, orient=HORIZONTAL)
 
-        # vertical scrollbar
-        self._vbar1 = Scrollbar(self._frame4, orient=VERTICAL)
-        self._vbar2 = Scrollbar(self._frame5, orient=VERTICAL)
-        self._vbar3 = Scrollbar(self._frame6, orient=VERTICAL)
+        # vertical AutoScrollbar
+        self._vbar1 = AutoScrollbar(self._frame4, orient=VERTICAL)
+        self._vbar2 = AutoScrollbar(self._frame5, orient=VERTICAL)
+        self._vbar3 = AutoScrollbar(self._frame6, orient=VERTICAL)
         self._frame1.grid(row=1, column=1)
     def _placeComponents(self):
         
