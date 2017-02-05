@@ -5,6 +5,8 @@ Created on 18 janv. 2017
 '''
 
 from PIL import Image
+from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport
+from Utils.Decorators import *
 import threading
 
 
@@ -15,23 +17,6 @@ class NoImageToConvert(Exception):
     pass
 
 
-def synchronized_with_attr(lock_name):
-    """
-    Décorateur permettant de synchroniser une méthode sur un attribut nommé
-    lock_name.
-    :param lock_name: le nom de l'attribut surlequel on se synchronise
-    :return: la méthode synchronisée
-    """
-    def decorator(method):
-        def synced_method(self, *args, **kws):
-            lock = getattr(self, lock_name)
-            with lock:
-                return method(self, *args, **kws)
-
-        return synced_method
-
-    return decorator
-
 class ImageFormaterModel(object):
     def __init__(self):
         """
@@ -40,6 +25,7 @@ class ImageFormaterModel(object):
         self._origin = None
         self._converted = None
         self._lock = threading.Lock()
+        self._support = PropertyChangeListenerSupport()
 
     @property
     @synchronized_with_attr("_lock")
@@ -61,8 +47,10 @@ class ImageFormaterModel(object):
         """
         if type(path_or_image) is str:
             self._origin = Image.open(path_or_image)
+            self._firePropertyStateChange("originalPicture")
         elif type(path_or_image) is Image:
             self._origin = path_or_image
+            self._firePropertyStateChange("originalPicture")
         else:
             raise TypeError
 
@@ -87,6 +75,21 @@ class ImageFormaterModel(object):
         """
         return self._converted
 
+    def addPropertyChangeListener(self, propertyChangeListener):
+        """
+        Enregistrer un ChangeListener au-près du modèle.
+        :param changelistener: le ChangeListener
+        :raise TypeError: l'objet n'est pas un ChangeListener
+        """
+        self._support.addPropertyChangeListener(propertyChangeListener)
+
+    def removePropertyChangeListener(self, propertyChangeListener):
+        """
+        Dé-enregistrer un ChangeListener au-près du modèle.
+        :param changeListener: le ChangeListener
+        """
+        self._support.removePropertyChangeListener(propertyChangeListener)
+
     @synchronized_with_attr("_lock")
     def _convertThread(self):
         """
@@ -97,3 +100,12 @@ class ImageFormaterModel(object):
         width *= 2
         height *= 2
         self._converted = self._converted.resize((width, height), Image.BILINEAR)
+        self._firePropertyStateChange("convertedPicture")
+
+    def _firePropertyStateChange(self, propName):
+        """
+        Lancer un événement de type PropertyChangeEvent lié à propName
+        :param propName: le nom de la propriété modifiée
+        """
+        for l in self._support.getPropertyChangeListener(propName):
+            l.execute(PropertyChangeEvent(self, propName))

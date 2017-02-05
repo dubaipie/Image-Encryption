@@ -9,6 +9,7 @@ from tkinter import filedialog, messagebox
 from PIL import ImageTk
 from ImageFormater.model.ImageFormaterModel import *
 from Utils.AutoScrollbar import *
+from Utils.EventSystem import PropertyChangeListener
 
 
 class ImageFormater(Frame):
@@ -128,6 +129,10 @@ class ImageFormater(Frame):
         self._hbar.config(command=self._canvas.xview)
         self._vbar.config(command=self._canvas.yview)
 
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            propertyName="convertedPicture",
+            target=lambda event: self.after(0, self._modelChangeListenerTarget, event)))
+
     def _onOriginalButtonClick(self):
         """
         Action déclenchée lors du clic sur le bouton originalButton
@@ -160,6 +165,13 @@ class ImageFormater(Frame):
         """
         if self._model.originalPicture is not None and self._convertedStrVar is not None:
             self._model.convert()
+
+    def _modelChangeListenerTarget(self, event):
+        """
+        Méthode appelée lorsqu'un changement est détecté au niveau du modèle.
+        :param event: l'événement reçu.
+        """
+        if self._model.convertedPicture is not None:
             picture = self._model.convertedPicture
             picture.save(self._convertedStrVar.get())
             picture = ImageTk.PhotoImage(picture)
