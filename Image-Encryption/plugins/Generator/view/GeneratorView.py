@@ -1,12 +1,13 @@
-import threading
 import PIL
 from PIL import ImageTk
+
 from tkinter import filedialog
 from tkinter.messagebox import *
 from tkinter.filedialog import *
+
 from Generator.model import GeneratorModel
 from Utils.AutoScrollbar import *
-
+from Utils.EventSystem import PropertyChangeListener
 
 class GeneratorView(Frame):
     
@@ -95,6 +96,11 @@ class GeneratorView(Frame):
         )
         self._hbar.configure(command=self._image.xview)
         self._vbar.configure(command=self._image.yview)
+
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            propertyName="key",
+            target=lambda event: self.after(0, self._updateCanvasDisplay, event)
+        ))
         
     def _saveas(self):
         repfic = asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
@@ -115,29 +121,31 @@ class GeneratorView(Frame):
                 showerror("Générateur", "Veuillez entrer des entiers pair")
             else:
                 self._model.setSize(int (self._width.get()), int (self._height.get()))
-                t = threading.Thread(target=self._execute)
-                t.start()
+                self._model.generatorKey()
         except ValueError:
             showerror("Générateur", "Veuillez entrer des décimaux")
+        self._bouton_generer.config(state=DISABLED)
     
     #OUTILS
-    def _execute(self):
-        self._bouton_generer.config(state=DISABLED)
-        self._model.generatorKey()
-        '''Gestion de l'affichage de l'image dans le canvas, le canvas prend la taille de l'image '''
+    def _updateCanvasDisplay(self, event):
+        """
+        Permet de mettre à jour l'image affichée lors de la génération
+        d'une nouvelle clé.
+        :param event: l'événement à l'origine du rafraichissement
+        """
         self._model.getKey().save("tmp_image.ppm")
         monimage = "tmp_image.ppm"
-        photo = ImageTk.PhotoImage(file = monimage)
+        photo = ImageTk.PhotoImage(file=monimage)
         im = PIL.Image.open(monimage)
         x, y = im.size
         im.close()
-        self._image.config(width = x, height = y)
-        self._image.config(scrollregion=(0,0,x,y))
-        self._image.create_image(x / 2, y / 2, image = photo)
+        self._image.config(width=x, height=y)
+        self._image.config(scrollregion=(0, 0, x, y))
+        self._image.create_image(x / 2, y / 2, image=photo)
         self._image.image = photo
         os.remove("tmp_image.ppm")
         self._bouton_generer.config(state=NORMAL)
-          
+
     def _setSizeWithNumber(self):
         w = int (self._width.get())
         h = int (self._height.get())

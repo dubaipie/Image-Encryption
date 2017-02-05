@@ -131,7 +131,7 @@ class ImageFormater(Frame):
 
         self._model.addPropertyChangeListener(PropertyChangeListener(
             propertyName="convertedPicture",
-            target=lambda event: self.after(0, self._modelChangeListenerTarget, event)))
+            target=lambda event: self.after(0, self._updateCanvasDisplay, event)))
 
     def _onOriginalButtonClick(self):
         """
@@ -166,7 +166,7 @@ class ImageFormater(Frame):
         if self._model.originalPicture is not None and self._convertedStrVar is not None:
             self._model.convert()
 
-    def _modelChangeListenerTarget(self, event):
+    def _updateCanvasDisplay(self, event):
         """
         Méthode appelée lorsqu'un changement est détecté au niveau du modèle.
         :param event: l'événement reçu.
