@@ -145,7 +145,6 @@ class Cypherer(Frame):
         self.grid_columnconfigure(1, weight = 1)
         self.grid_columnconfigure(2, weight = 1)
         self.grid_columnconfigure(3, weight = 1)
-        self.grid_rowconfigure(3, weight = 1)
         
         self._frame4.grid_columnconfigure(1, weight = 1)
         self._frame4.grid_rowconfigure(1, weight = 1)
@@ -266,7 +265,7 @@ class Cypherer(Frame):
 
         #  Enregistrement de la clé générée
         dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
-                                           filetypes=[("PPM", "*.ppm")])
+                                           defaultextension=".ppm")
 
         if len(dlg) > 0:
             self._keyVar.set(dlg)
