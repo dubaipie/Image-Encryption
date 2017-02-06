@@ -23,7 +23,8 @@ class CyphererModel(object):
     '''
     Modèle du chiffreur.
     '''
-
+    
+    #CONSTRUCTEUR
     def __init__(self, imagePath=None, keyPath=None):
         '''
         Constructeur
@@ -35,7 +36,8 @@ class CyphererModel(object):
         self._resultPath = None
         self._support = PropertyChangeListenerSupport()
         self._lock = threading.Lock()
-
+    
+    #REQUETES
     @property
     @synchronized_with_attr("_lock")
     def imagePath(self):
@@ -60,7 +62,8 @@ class CyphererModel(object):
         :return: un chemin
         """
         return self._resultPath
-
+    
+    #COMMANDES
     @resultPath.setter
     @synchronized_with_attr("_lock")
     def resultPath(self, path):
@@ -104,7 +107,14 @@ class CyphererModel(object):
         :param changeListener: le ChangeListener
         """
         self._support.removePropertyChangeListener(changeListener)
-
+    
+    def _firePropertyStateChanged(self, propName):
+        """
+        Permet de notifier les observeurs que le modèle a changé.
+        """
+        for l in self._support.getPropertyChangeListener(propName):
+            l.execute(PropertyChangeEvent(self, propName))
+            
     def cypher(self):
         """
         Permet de chiffrer l'image avec la clé.
@@ -118,7 +128,8 @@ class CyphererModel(object):
 
         thread = threading.Thread(target=self._cypher)
         thread.start()
-
+    
+    #OUTILS
     @synchronized_with_attr("_lock")
     def _cypher(self):
         """
@@ -140,10 +151,3 @@ class CyphererModel(object):
 
         result.save(self._resultPath)
         self._firePropertyStateChanged("resultUpdated")  # pas top, à changer
-
-    def _firePropertyStateChanged(self, propName):
-        """
-        Permet de notifier les observeurs que le modèle a changé.
-        """
-        for l in self._support.getPropertyChangeListener(propName):
-            l.execute(PropertyChangeEvent(self, propName))

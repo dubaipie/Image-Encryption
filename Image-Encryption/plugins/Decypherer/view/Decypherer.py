@@ -178,7 +178,7 @@ class Decypherer(Frame):
     def _chooseKey(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         
-        if dlg != "":
+        if len(dlg) > 0:
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
             self._addImageInCanvas(self._keyCanvas, dlg, 0)
@@ -186,14 +186,14 @@ class Decypherer(Frame):
     def _chooseImgCypher(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
     
-        if dlg != "":
+        if len(dlg) > 0:
             self._model.imagePath = dlg
             self._img_Cypher_Var.set(dlg)
             self._addImageInCanvas(self._imgCypherCanvas, dlg, 1)
     
     def _chooseDecypher(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
-        if dlg != "":
+        if len(dlg) > 0:
             self._img_Decypher_Var.set(dlg)
     
     def _decypher(self):

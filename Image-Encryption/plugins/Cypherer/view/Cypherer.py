@@ -190,20 +190,20 @@ class Cypherer(Frame):
     def _chooseKey(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         
-        if dlg != "":
+        if len(dlg) > 0:
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
             
     def _chooseImg(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
     
-        if dlg != "":
+        if len(dlg) > 0:
             self._model.imagePath = dlg
             self._imgVar.set(dlg)
     
     def _chooseRsl(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
-        if dlg != "":
+        if len(dlg) > 0:
             self._model.resultPath = dlg
             self._rslVar.set(dlg)
     
@@ -213,10 +213,8 @@ class Cypherer(Frame):
             messagebox.showerror("Data error", "Please fill all inputs")
             return
         if self._model.keyPath is None:
-            print("hello")
             self._generateKey()
         else:
-            print("hello there")
             self._execute()
     
     def _execute(self):

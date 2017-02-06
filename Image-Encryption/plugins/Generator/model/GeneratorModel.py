@@ -45,7 +45,6 @@ class GeneratorModel(object):
         self._lock = threading.Lock()
     
     #REQUETES
-    @synchronized_with_attr("_lock")
     def generatorKey(self):
         """
         Permet de générer une clé. Les calculs sont effectués avec un thread dédié.
@@ -72,12 +71,12 @@ class GeneratorModel(object):
         return self._width, self._height
     
     #COMMANDES
+    @synchronized_with_attr("_lock")
     def _generate(self):
         """
         Effectue les calculs pour générer la clé.
         """
         self._key = Image.new('1', (self._width, self._height))
-
         #  Parcours l'image pour insérer les blocs générés de façon aléatoire
         for y in range(0, self._height, 2):
             for x in range(0, self._width, 2):

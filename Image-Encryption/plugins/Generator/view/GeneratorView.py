@@ -119,7 +119,7 @@ class GeneratorView(Frame):
         
     def _genererCommand(self):
         try:
-            w = int(self._widthVar.get())
+            w = int (self._widthVar.get())
             h = int (self._heightVar.get())
             if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
                 showerror("Générateur", "Veuillez entrer des entiers pair")
@@ -127,8 +127,8 @@ class GeneratorView(Frame):
                 self._model.setSize(w, h)
                 self._progressBarValue.set(0)
                 self._progressBar.config(maximum=h// 2)
+                self._bouton_generer.config(state=DISABLED)
                 self._model.generatorKey()
-            self._bouton_generer.config(state=DISABLED)
         except ValueError:
             showerror("Générateur", "Veuillez entrer des décimaux")
             
