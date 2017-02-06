@@ -9,16 +9,18 @@ import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
 from Cypherer.model.CyphererModel import MismatchFormatException
 
-from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame
+from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame,\
+    IntVar
 from tkinter import filedialog, messagebox
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
+from tkinter.ttk import Progressbar
 
 import PIL
 from PIL import ImageTk
 
 from Utils.AutoScrollbar import *
-from Utils.EventSystem import PropertyChangeListener
+from Utils.EventSystem import PropertyChangeListener, ChangeListener
 
 
 class Cypherer(Frame):
@@ -45,7 +47,8 @@ class Cypherer(Frame):
         self._keyVar = StringVar()
         self._imgVar = StringVar()
         self._rslVar = StringVar()
-    
+        self._progressBarValue= IntVar()
+        
     def _createView(self):
         #Frame
         self._frame1 = Frame(self)
@@ -87,6 +90,9 @@ class Cypherer(Frame):
         self._vbar2 = AutoScrollbar(self._frame5, orient=VERTICAL)
         self._vbar3 = AutoScrollbar(self._frame6, orient=VERTICAL)
         
+        #ProgressBar
+        self._progressBar = Progressbar(self, variable=self._progressBarValue)
+        
     def _placeComponents(self):
         #FRAME1
         Label(self._frame1, text=_("Key : ")).grid(row=1, column=1, sticky=W)
@@ -125,9 +131,8 @@ class Cypherer(Frame):
         self._vbar3.grid(row=1, column=2, sticky=N+S)
         self._frame6.grid(row=2, column=3, sticky=NW+SE)
         
-        self._cypherButton.grid(row=3, column=1, columnspan=3, sticky=E+W)
-        
-        self._imgCanvas.delete()
+        self._cypherButton.grid(row=4, column=1, columnspan=3, sticky=E+W)
+        self._progressBar.grid(row=3, column=1, columnspan=3, sticky=E+W)
 
     def _createController(self):
         self._keyButton.config(command=self._chooseKey)
@@ -140,7 +145,6 @@ class Cypherer(Frame):
         self.grid_columnconfigure(1, weight = 1)
         self.grid_columnconfigure(2, weight = 1)
         self.grid_columnconfigure(3, weight = 1)
-        self.grid_rowconfigure(3, weight = 1)
         
         self._frame4.grid_columnconfigure(1, weight = 1)
         self._frame4.grid_rowconfigure(1, weight = 1)
@@ -187,6 +191,10 @@ class Cypherer(Frame):
             lambda event: self.after(0, self._updateImageCanvas, event)
         ))
         
+        self._model.addChangeListener(ChangeListener(
+            target=lambda event: self.after(0, self._updateProgressBarValue, event)
+        ))
+        
     def _chooseKey(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         
@@ -220,6 +228,11 @@ class Cypherer(Frame):
     def _execute(self):
         self._cypherButton.config(state=DISABLED)
         try :
+            im = PIL.Image.open(self._model.imagePath)
+            h = im.width
+            im.close()
+            self._progressBarValue.set(0)
+            self._progressBar.config(maximum=h)
             self._model.cypher()
         except MismatchFormatException:
             messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
@@ -264,8 +277,8 @@ class Cypherer(Frame):
         self._rslVar.set('')
         self._imgVar.set('')
         self._keyVar.set('')
-        self._model.keyPath = None
-        self._model.imagePath = None
+        self._model.reset()
+        self._progressBarValue.set(0)
 
     def _updateKeyCanvas(self, event):
         """
@@ -281,7 +294,7 @@ class Cypherer(Frame):
         :param event: l'événement déclencheur
         """
         if self._model.imagePath is not None:
-            self._addImageInCanvas(self._imgCanvas, self._model.imagePath, 0)
+            self._addImageInCanvas(self._imgCanvas, self._model.imagePath, 1)
 
     def _updateResultCanvas(self, event):
         """
@@ -289,5 +302,12 @@ class Cypherer(Frame):
         :param event: l'événement déclencheur
         """
         if self._model.resultPath is not None:
-            self._addImageInCanvas(self._resultCanvas, self._model.resultPath, 0)
+            self._addImageInCanvas(self._resultCanvas, self._model.resultPath, 2)
         self._cypherButton.config(state=NORMAL)
+    
+    def _updateProgressBarValue(self, event):
+        """
+        Mettre à jour la valeur de la barre de progression.
+        :param event: l'événement déclencheur
+        """
+        self._progressBarValue.set(self._progressBarValue.get() + 1)
