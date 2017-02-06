@@ -233,9 +233,9 @@ class Cypherer(Frame):
         self._switchButtonsState(DISABLED)
         try :
             im = self._imgCanvas.picture
-            h = im.height()
+            w = im.width()
             self._progressBarValue.set(0)
-            self._progressBar.config(maximum=h)
+            self._progressBar.config(maximum=w)
             self._model.cypher()
         except MismatchFormatException:
             messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
@@ -254,16 +254,24 @@ class Cypherer(Frame):
         im = self._imgCanvas.picture
         x, y = im.width(), im.height()
 
+        #  Configuration de la barre de progression
+        self._progressBarValue.set(0)
+        self._progressBar.config(maximum=y)
+
         #  Génération de la clé
         obj = GeneratorModel()
+        obj.addChangeListener(ChangeListener(
+            target=lambda event: self.after(0, self._updateProgressBarValue, event)
+        ))
         obj.setSize(x,y)
         obj.generatorKey()
 
         #  Enregistrement de la clé générée
-        dlg = filedialog.asksaveasfilename()
+        dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
+                                           filetypes=[("PPM", "*.ppm")])
 
         if len(dlg) > 0:
-            self._keyVar = dlg
+            self._keyVar.set(dlg)
             self._model.keyPath = dlg
 
         #  Poursuite de l'exécution
@@ -320,3 +328,10 @@ class Cypherer(Frame):
         self._keyButton.config(state=state)
         self._rslButton.config(state=state)
         self._resetButton.config(state=state)
+
+    def _updateProgressBarValue(self, event):
+        """
+        Mettre à jour la valeur de la barre de progression.
+        :param event: l'événement à l'origine de la mise à jour
+        """
+        self._progressBarValue.set(self._progressBarValue.get() + 1)
