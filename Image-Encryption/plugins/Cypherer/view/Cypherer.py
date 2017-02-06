@@ -3,7 +3,6 @@ Created on 18 janv. 2017
 
 @author: dubaipie
 '''
-import os
 
 import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
@@ -16,12 +15,11 @@ from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
 from tkinter.ttk import Progressbar
 
-import PIL
 from PIL import ImageTk
 
 import threading
 
-from Utils.AutoScrollbar import *
+from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
 
 

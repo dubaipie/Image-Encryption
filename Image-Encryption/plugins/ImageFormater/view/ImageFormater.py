@@ -3,12 +3,12 @@ Created on 18 janv. 2017
 
 @author: havarjos
 '''
-from tkinter import Frame, Entry, Label, Canvas, Button, LabelFrame
+from tkinter import Frame, Entry, Canvas, Button, LabelFrame
 from tkinter import StringVar, HORIZONTAL, VERTICAL, E, W, N, S
 from tkinter import filedialog, messagebox
 from PIL import ImageTk
 from ImageFormater.model.ImageFormaterModel import *
-from Utils.AutoScrollbar import *
+from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener
 
 
@@ -59,13 +59,19 @@ class ImageFormater(Frame):
         self._convertedEntry.config(state="readonly", textvariable=self._convertedStrVar)
 
         self._originalButton = Button(self._dataLabelFrame, text="Parcourir")
+        ToolTips(self._originalButton, text="Chercher l'image à formater")
+
         self._convertedButton = Button(self._dataLabelFrame, text="Parcourir")
+        ToolTips(self._convertedButton, text="Enregistrer l'image formatée sous ...")
 
         self._convertButton = Button(self._leftFrame, text="Convertir")
+        ToolTips(self._convertButton, text="Formater l'image")
 
         self._rightFrame = Frame(self)
         self._canvasLabelFrame = LabelFrame(self._rightFrame, text="Aperçu")
         self._canvas = Canvas(self._canvasLabelFrame)
+        ToolTips(self._canvasLabelFrame, text="L'image formatée apparaîtra dans cette zone un fois le bouton\n"
+                                    "'Convertir' pressé et les champs remplis")
 
         self._hbar = AutoScrollbar(self._canvasLabelFrame, orient=HORIZONTAL)
         self._vbar = AutoScrollbar(self._canvasLabelFrame, orient=VERTICAL)
@@ -80,6 +86,7 @@ class ImageFormater(Frame):
         Label(self._dataLabelFrame, text="Image originale").grid(row=1, column=1, sticky=E+W)
         self._originalEntry.grid(row=1, column=2, padx=5, sticky=E+W)
         self._originalButton.grid(row=1, column=3, sticky=E+W)
+
         Label(self._dataLabelFrame, text="Image convertie").grid(row=2, column=1, sticky=E+W)
         self._convertedEntry.grid(row=2, column=2, padx=5, sticky=E+W)
         self._convertedButton.grid(row=2, column=3, sticky=E+W)

@@ -7,7 +7,7 @@ from tkinter.filedialog import *
 from tkinter.ttk import Progressbar
 
 from Generator.model import GeneratorModel
-from Utils.AutoScrollbar import *
+from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
 
 class GeneratorView(Frame):

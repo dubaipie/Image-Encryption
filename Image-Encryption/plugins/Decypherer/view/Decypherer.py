@@ -19,7 +19,7 @@ from tkinter import messagebox
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
 
-from Utils.AutoScrollbar import *
+from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
 
 class Decypherer(Frame):
