@@ -42,7 +42,7 @@ class GeneratorView(Frame):
         self._bouton_generer = Button(self, text = "Générer")
         self._bouton_saveas = Button(self, text = "Enregistrer sous")
         self._bouton_setSize2 = Button(self._frame1, text = "Parcourir")
-        self._progressBar = Progressbar(self._frame1, variable=self._progressBarValue)
+        self._progressBar = Progressbar(self, variable=self._progressBarValue)
         self._image = Canvas(self)
         
         # horizontal AutoScrollbar
@@ -71,7 +71,7 @@ class GeneratorView(Frame):
         self._imgEntry.grid(row = 1, column = 8)
         self._bouton_setSize2.grid(row = 1, columnspan = 1, column = 9, sticky = W + E)
 
-        self._progressBar.grid(row=1, column=10, sticky=W+E)
+        self._progressBar.grid(row=5, column=1, columnspan=4, sticky=W+E)
         
         self._frame1.grid(row = 1, column = 1, columnspan = 4)
         self._bouton_generer.grid(row = 2, columnspan = 4, column = 1, sticky = W + E)
@@ -80,7 +80,7 @@ class GeneratorView(Frame):
         self._vbar.grid(row=3, column=5, sticky=NW+SE)
         
         self._hbar.grid(row=4, column=1, sticky=NW+SE)
-        self._bouton_saveas.grid(row = 5, column = 1, columnspan = 4, sticky = W + E)
+        self._bouton_saveas.grid(row = 6, column = 1, columnspan = 4, sticky = W + E)
         
     def createController(self):
         self._bouton_generer.config(command = self._genererCommand)
@@ -126,7 +126,7 @@ class GeneratorView(Frame):
             else:
                 self._model.setSize(w, h)
                 self._progressBarValue.set(0)
-                self._progressBar.config(maximum=h// 2)
+                self._progressBar.config(maximum=h)
                 self._bouton_generer.config(state=DISABLED)
                 self._model.generatorKey()
         except ValueError:
