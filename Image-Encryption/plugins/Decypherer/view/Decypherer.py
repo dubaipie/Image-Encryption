@@ -15,6 +15,7 @@ from tkinter import messagebox
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
 from Utils.AutoScrollbar import *
+from Utils.EventSystem import PropertyChangeListener
 
 class Decypherer(Frame):
     
@@ -175,13 +176,27 @@ class Decypherer(Frame):
         self._hbar3.configure(command=self._imgDecypherCanvas.xview)
         self._vbar3.configure(command=self._imgDecypherCanvas.yview)
         
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "resultUpdated",
+            lambda event: self.after(0, self._updateResultCanvas, event)
+        ))
+
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "keyPath",
+            lambda event: self.after(0, self._updateKeyCanvas, event)
+        ))
+
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "imagePath",
+            lambda event: self.after(0, self._updateImageCanvas, event)
+        ))
+        
     def _chooseKey(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         
         if len(dlg) > 0:
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
-            self._addImageInCanvas(self._keyCanvas, dlg, 0)
     
     def _chooseImgCypher(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
@@ -189,29 +204,27 @@ class Decypherer(Frame):
         if len(dlg) > 0:
             self._model.imagePath = dlg
             self._img_Cypher_Var.set(dlg)
-            self._addImageInCanvas(self._imgCypherCanvas, dlg, 1)
+
     
     def _chooseDecypher(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
         if len(dlg) > 0:
             self._img_Decypher_Var.set(dlg)
+            self._model.resultPath = dlg
     
     def _decypher(self):
         if (self._model.keyPath is None  or self._model.imagePath is None
                 or self._img_Decypher_Var.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
             return 
-        t = threading.Thread(target=self._execute)
-        t.start()
+        self._execute()
     
     def _execute(self):
         self._decypherButton.config(state=DISABLED)
         try:
-            self._model.cypher(self._img_Decypher_Var.get())
-            self._addImageInCanvas(self._imgDecypherCanvas, self._img_Decypher_Var.get(), 2)
+            self._model.cypher()
         except MismatchFormatException:
             messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
-        self._decypherButton.config(state=NORMAL)
         
     def _addImageInCanvas(self, canvas, img, i):
         im = PIL.Image.open(img)
@@ -236,3 +249,29 @@ class Decypherer(Frame):
         self._model.keyPath = None
         self._model.imagePath = None
         self._keyVar.set('')
+    
+    #Fonction utilisé lors d'événement
+    def _updateKeyCanvas(self, event):
+        """
+        Mettre à jour le canvas de la clé
+        :param event: l'événement déclencheur.
+        """
+        if self._model.keyPath is not None:
+            self._addImageInCanvas(self._keyCanvas, self._model.keyPath, 0)
+
+    def _updateImageCanvas(self, event):
+        """
+        Mettre à jour le canvas de l'image.
+        :param event: l'événement déclencheur
+        """
+        if self._model.imagePath is not None:
+            self._addImageInCanvas(self._imgCypherCanvas, self._model.imagePath, 1)
+
+    def _updateResultCanvas(self, event):
+        """
+        Mettre à jour le canvas du résultat.
+        :param event: l'événement déclencheur
+        """
+        if self._model.resultPath is not None:
+            self._addImageInCanvas(self._imgDecypherCanvas, self._model.resultPath, 2)
+        self._decypherButton.config(state=NORMAL)
