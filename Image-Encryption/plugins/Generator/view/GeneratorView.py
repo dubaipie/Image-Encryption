@@ -32,8 +32,6 @@ class GeneratorView(Frame):
         self._widthVar = StringVar()
         self._heightVar = StringVar()
         self._progressBarValue= IntVar()
-        self._keyWidth = 0
-        self._keyHeight = 0
     
     def createView(self):
         self._frame1 = Frame(self)
@@ -43,7 +41,6 @@ class GeneratorView(Frame):
         
         self._bouton_generer = Button(self, text = "Générer")
         self._bouton_saveas = Button(self, text = "Enregistrer sous")
-        self._bouton_setSize1 = Button(self._frame1, text = "Ok")
         self._bouton_setSize2 = Button(self._frame1, text = "Parcourir")
         self._progressBar = Progressbar(self._frame1, variable=self._progressBarValue)
         self._image = Canvas(self)
@@ -64,7 +61,6 @@ class GeneratorView(Frame):
 
         self._width.grid(row = 1, column = 2)
         self._height.grid(row = 1, column = 4)
-        self._bouton_setSize1.grid(row = 1, columnspan = 1 ,column = 5,sticky = W + E)
 
         label = Label(self._frame1, text = "          ")
         label.grid(row = 1, column = 6)
@@ -89,7 +85,6 @@ class GeneratorView(Frame):
     def createController(self):
         self._bouton_generer.config(command = self._genererCommand)
         self._bouton_saveas.config(command = self._saveas)
-        self._bouton_setSize1.config(command = self._setSizeWithNumber)
         self._bouton_setSize2.config(command = self._setSizeWithImage)
         
         self.grid_columnconfigure(1, weight = 1)
@@ -124,18 +119,19 @@ class GeneratorView(Frame):
         
     def _genererCommand(self):
         try:
-            w = self._keyWidth
-            h = self._keyHeight
+            w = int(self._widthVar.get())
+            h = int (self._heightVar.get())
             if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
                 showerror("Générateur", "Veuillez entrer des entiers pair")
             else:
-                self._model.setSize(int (self._width.get()), int (self._height.get()))
+                self._model.setSize(w, h)
                 self._progressBarValue.set(0)
-                self._progressBar.config(maximum=h // 2)
+                self._progressBar.config(maximum=h// 2)
                 self._model.generatorKey()
+            self._bouton_generer.config(state=DISABLED)
         except ValueError:
             showerror("Générateur", "Veuillez entrer des décimaux")
-        self._bouton_generer.config(state=DISABLED)
+            
     
     #OUTILS
     def _updateCanvasDisplay(self, event):
@@ -163,24 +159,12 @@ class GeneratorView(Frame):
         :param event: l'événement déclencheur
         """
         self._progressBarValue.set(self._progressBarValue.get() + 1)
-
-    def _setSizeWithNumber(self):
-        w = int (self._width.get())
-        h = int (self._height.get())
-        
-        if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
-            showerror("Générateur", "Veuillez entrer des entiers pair")
-        else:
-            self._keyWidth = w
-            self._keyHeight = h
                    
     def _setSizeWithImage(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
         if dlg != "":
             self._imgVar.set(dlg)
-            im = PIL.Image.open(dlg) 
-            self._keyWidth = int (im.width)
-            self._keyHeight = int (im.height)
-            im.close()     
-            self._widthVar.set(self._keyWidth)
-            self._heightVar.set(self._keyHeight)
+            self._model.setSizeImage(dlg)
+            w,h = self._model.getSize() 
+            self._widthVar.set(w)
+            self._heightVar.set(h)

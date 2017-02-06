@@ -5,6 +5,7 @@ from Utils.Decorators import *
 
 import threading
 import random
+import PIL
 
 def create_image():
     '''Créer les possibilités d'images'''
@@ -30,6 +31,7 @@ class GeneratorModel(object):
     
     ImagePossibility = create_image()
     
+    #CONSTRUCTEUR
     def __init__(self):
         """
         Constructeur de générateur de clés. Initialement, la taille de la clé est nulle.
@@ -41,7 +43,8 @@ class GeneratorModel(object):
         self._changeSupport = ChangeListenerSupport()
         self._event = ChangeEvent(self)
         self._lock = threading.Lock()
-
+    
+    #REQUETES
     @synchronized_with_attr("_lock")
     def generatorKey(self):
         """
@@ -49,7 +52,26 @@ class GeneratorModel(object):
         """
         thread = threading.Thread(target=self._generate)
         thread.start()
-
+    
+    @synchronized_with_attr("_lock")
+    def getKey(self):
+        '''
+        Renvoie la clé 
+        @raise IOError: la clé n'a pas encore été générée
+        '''
+        
+        if self._key is None:
+            raise AssertionError
+        return self._key
+    
+    @synchronized_with_attr("_lock")
+    def getSize(self):
+        '''
+        Renvoie la taille du masque
+        '''
+        return self._width, self._height
+    
+    #COMMANDES
     def _generate(self):
         """
         Effectue les calculs pour générer la clé.
@@ -68,16 +90,6 @@ class GeneratorModel(object):
 
         self._firePropertyStatechange("key")
 
-    @synchronized_with_attr("_lock")
-    def getKey(self):
-        '''
-        Renvoie la clé 
-        @raise IOError: la clé n'a pas encore été générée
-        '''
-        
-        if self._key is None:
-            raise AssertionError
-        return self._key
 
     @synchronized_with_attr("_lock")
     def setSize(self, w, h):
@@ -92,7 +104,20 @@ class GeneratorModel(object):
             raise AssertionError
         self._width = w
         self._height = h
-
+    
+    @synchronized_with_attr("_lock")
+    def setSizeImage(self, img):
+        '''
+        Permet de fixer la taille avec une image
+        @param img: chemin vers une image
+        '''
+        im = PIL.Image.open(img) 
+        self._width = im.width
+        self._height = im.height
+        im.close()
+        
+    #OUTILS
+    
     def addPropertyChangeListener(self, propertyChangeListener):
         """
         Enregistrer un ChangeListener au-près du modèle.
