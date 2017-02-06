@@ -126,7 +126,7 @@ class GeneratorView(Frame):
             else:
                 self._model.setSize(w, h)
                 self._progressBarValue.set(0)
-                self._progressBar.config(maximum=h)
+                self._progressBar.config(maximum=h//2)
                 self._bouton_generer.config(state=DISABLED)
                 self._model.generatorKey()
         except ValueError:
