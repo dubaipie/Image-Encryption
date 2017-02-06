@@ -78,7 +78,7 @@ class ChangeListenerSupport():
 
         self._support.append(changeListener)
 
-    def removeChangeListner(self, changeListener):
+    def removeChangeListener(self, changeListener):
         """
         Permet de supprimer le CHangeListener du support.
         :param changeListener: le ChangeListener à supprimer

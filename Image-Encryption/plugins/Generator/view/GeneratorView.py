@@ -4,10 +4,11 @@ from PIL import ImageTk
 from tkinter import filedialog
 from tkinter.messagebox import *
 from tkinter.filedialog import *
+from tkinter.ttk import Progressbar
 
 from Generator.model import GeneratorModel
 from Utils.AutoScrollbar import *
-from Utils.EventSystem import PropertyChangeListener
+from Utils.EventSystem import PropertyChangeListener, ChangeListener
 
 class GeneratorView(Frame):
     
@@ -30,6 +31,7 @@ class GeneratorView(Frame):
         self._imgVar = StringVar()
         self._widthVar = StringVar()
         self._heightVar = StringVar()
+        self._progressBarValue= IntVar()
         self._keyWidth = 0
         self._keyHeight = 0
     
@@ -43,6 +45,7 @@ class GeneratorView(Frame):
         self._bouton_saveas = Button(self, text = "Enregistrer sous")
         self._bouton_setSize1 = Button(self._frame1, text = "Ok")
         self._bouton_setSize2 = Button(self._frame1, text = "Parcourir")
+        self._progressBar = Progressbar(self._frame1, variable=self._progressBarValue)
         self._image = Canvas(self)
         
         # horizontal AutoScrollbar
@@ -71,6 +74,8 @@ class GeneratorView(Frame):
 
         self._imgEntry.grid(row = 1, column = 8)
         self._bouton_setSize2.grid(row = 1, columnspan = 1, column = 9, sticky = W + E)
+
+        self._progressBar.grid(row=1, column=10, sticky=W+E)
         
         self._frame1.grid(row = 1, column = 1, columnspan = 4)
         self._bouton_generer.grid(row = 2, columnspan = 4, column = 1, sticky = W + E)
@@ -101,6 +106,10 @@ class GeneratorView(Frame):
             propertyName="key",
             target=lambda event: self.after(0, self._updateCanvasDisplay, event)
         ))
+
+        self._model.addChangeListener(ChangeListener(
+            target=lambda event: self.after(0, self._updateProgressBarValue, event)
+        ))
         
     def _saveas(self):
         repfic = asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
@@ -121,6 +130,8 @@ class GeneratorView(Frame):
                 showerror("Générateur", "Veuillez entrer des entiers pair")
             else:
                 self._model.setSize(int (self._width.get()), int (self._height.get()))
+                self._progressBarValue.set(0)
+                self._progressBar.config(maximum=h // 2)
                 self._model.generatorKey()
         except ValueError:
             showerror("Générateur", "Veuillez entrer des décimaux")
@@ -146,6 +157,13 @@ class GeneratorView(Frame):
         os.remove("tmp_image.ppm")
         self._bouton_generer.config(state=NORMAL)
 
+    def _updateProgressBarValue(self, event):
+        """
+        Mettre à jour la valeur de la barre de progression.
+        :param event: l'événement déclencheur
+        """
+        self._progressBarValue.set(self._progressBarValue.get() + 1)
+
     def _setSizeWithNumber(self):
         w = int (self._width.get())
         h = int (self._height.get())
@@ -166,5 +184,3 @@ class GeneratorView(Frame):
             im.close()     
             self._widthVar.set(self._keyWidth)
             self._heightVar.set(self._keyHeight)
-        
-                

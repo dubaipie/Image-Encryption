@@ -3,19 +3,22 @@ Created on 18 janv. 2017
 
 @author: dubaipie
 '''
-import PIL
-import Cypherer.model.CyphererModel as DM
 import os
-import threading
-from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame
-from PIL import ImageTk
-from tkinter import filedialog
-from tkinter import messagebox
+
+import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
 from Cypherer.model.CyphererModel import MismatchFormatException
+
+from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame
+from tkinter import filedialog, messagebox
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
+
+import PIL
+from PIL import ImageTk
+
 from Utils.AutoScrollbar import *
+from Utils.EventSystem import PropertyChangeListener
 
 
 class Cypherer(Frame):
@@ -168,6 +171,21 @@ class Cypherer(Frame):
         )
         self._hbar3.configure(command=self._resultCanvas.xview)
         self._vbar3.configure(command=self._resultCanvas.yview)
+
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "resultUpdated",
+            lambda event: self.after(0, self._updateResultCanvas, event)
+        ))
+
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "keyPath",
+            lambda event: self.after(0, self._updateKeyCanvas, event)
+        ))
+
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "imagePath",
+            lambda event: self.after(0, self._updateImageCanvas, event)
+        ))
         
     def _chooseKey(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
@@ -175,7 +193,6 @@ class Cypherer(Frame):
         if dlg != "":
             self._model.keyPath = dlg
             self._keyVar.set(dlg)
-            self._addImageInCanvas(self._keyCanvas, dlg, 0)
             
     def _chooseImg(self):
         dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")] )
@@ -183,11 +200,11 @@ class Cypherer(Frame):
         if dlg != "":
             self._model.imagePath = dlg
             self._imgVar.set(dlg)
-            self._addImageInCanvas(self._imgCanvas, dlg, 1)
     
     def _chooseRsl(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
         if dlg != "":
+            self._model.resultPath = dlg
             self._rslVar.set(dlg)
     
     def _cypher(self):
@@ -195,21 +212,19 @@ class Cypherer(Frame):
                 or self._rslVar.get() == ''):
             messagebox.showerror("Data error", "Please fill all inputs")
             return
-        if (self._model.keyPath is None):
-            t2 = threading.Thread(target=self._generateKey())
-            t2.start()
+        if self._model.keyPath is None:
+            print("hello")
+            self._generateKey()
         else:
-            t = threading.Thread(target=self._execute)
-            t.start()
+            print("hello there")
+            self._execute()
     
     def _execute(self):
         self._cypherButton.config(state=DISABLED)
         try :
-            self._model.cypher(self._rslVar.get())
-            self._addImageInCanvas(self._resultCanvas, self._rslVar.get(), 2)
+            self._model.cypher()
         except MismatchFormatException:
-            messagebox.showerror("Taille", "la taille du masque et de l'image ne corresponde pas")
-        self._cypherButton.config(state=NORMAL)
+            messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
             
     def _addImageInCanvas(self, canvas, img, i):
         im = PIL.Image.open(img)
@@ -234,7 +249,7 @@ class Cypherer(Frame):
         self._model.keyPath = img
         self._keyVar.set(img)
         self._addImageInCanvas(self._keyCanvas, img, 0)
-        messagebox.showinfo("Masque", "La clé a été générer sous: " + os.getcwd() + "/" + img)
+        messagebox.showinfo("Masque", "La clé a été générée sous: " + os.path.join(os.getcwd(),img))
         self._cypherButton.config(state=NORMAL)
         self._execute()
     
@@ -253,3 +268,28 @@ class Cypherer(Frame):
         self._keyVar.set('')
         self._model.keyPath = None
         self._model.imagePath = None
+
+    def _updateKeyCanvas(self, event):
+        """
+        Mettre à jour le canvas de la clé
+        :param event: l'événement déclencheur.
+        """
+        if self._model.keyPath is not None:
+            self._addImageInCanvas(self._keyCanvas, self._model.keyPath, 0)
+
+    def _updateImageCanvas(self, event):
+        """
+        Mettre à jour le canvas de l'image.
+        :param event: l'événement déclencheur
+        """
+        if self._model.imagePath is not None:
+            self._addImageInCanvas(self._imgCanvas, self._model.imagePath, 0)
+
+    def _updateResultCanvas(self, event):
+        """
+        Mettre à jour le canvas du résultat.
+        :param event: l'événement déclencheur
+        """
+        if self._model.resultPath is not None:
+            self._addImageInCanvas(self._resultCanvas, self._model.resultPath, 0)
+        self._cypherButton.config(state=NORMAL)

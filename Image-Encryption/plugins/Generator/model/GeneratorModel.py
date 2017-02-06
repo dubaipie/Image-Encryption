@@ -1,5 +1,6 @@
 from PIL import Image
 from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport
+from Utils.EventSystem import ChangeEvent, ChangeListenerSupport
 from Utils.Decorators import *
 
 import threading
@@ -37,6 +38,8 @@ class GeneratorModel(object):
         self._width = 0
         self._key = None
         self._support = PropertyChangeListenerSupport()
+        self._changeSupport = ChangeListenerSupport()
+        self._event = ChangeEvent(self)
         self._lock = threading.Lock()
 
     @synchronized_with_attr("_lock")
@@ -61,6 +64,7 @@ class GeneratorModel(object):
                 self._key.putpixel((x + 1, y), img.getpixel((1, 0)))
                 self._key.putpixel((x, y + 1), img.getpixel((0, 1)))
                 self._key.putpixel((x + 1, y + 1), img.getpixel((1, 1)))
+            self._fireStateChanged()
 
         self._firePropertyStatechange("key")
 
@@ -92,23 +96,46 @@ class GeneratorModel(object):
     def addPropertyChangeListener(self, propertyChangeListener):
         """
         Enregistrer un ChangeListener au-près du modèle.
-        :param changelistener: le ChangeListener
-        :raise TypeError: l'objet n'est pas un ChangeListener
+        :param changelistener: le PropertyChangeListener
+        :raise TypeError: l'objet n'est pas un PropertyChangeListener
         """
         self._support.addPropertyChangeListener(propertyChangeListener)
 
     def removePropertyChangeListener(self, propertyChangeListener):
         """
         Dé-enregistrer un ChangeListener au-près du modèle.
-        :param changeListener: le ChangeListener
+        :param changeListener: le PropertyChangeListener
         """
         self._support.removePropertyChangeListener(propertyChangeListener)
 
+    def addChangeListener(self, changeListener):
+        """
+        Enregistrer un nouveau ChangeListener au-près du modèle.
+        :param changeListener: le listener
+        :raise TypeError: l'objet n'est pas un ChangeListener
+        """
+        self._changeSupport.addChangeListener(changeListener)
+
+    def removeChangeListener(self, changeListener):
+        """
+        Dé-enregistrer un Changelistener.
+        :param changeListener: le listener
+        """
+        self._changeSupport.removeChangeListener(changeListener)
+
     def _firePropertyStatechange(self, propName):
         """
-        permet de n,optifier les observeurs de propname que la valeur de la
+        Permet de notifier les observeurs de propname que la valeur de la
         propriété a changée.
         :param propName: le nom de la propriété qui a changée
         """
         for l in self._support.getPropertyChangeListener(propName):
             l.execute(PropertyChangeEvent(self, propName))
+
+    def _fireStateChanged(self):
+        """
+        Indique un changement au niveau du calcul des valeurs des pixels
+         et en informe les listeners.
+        """
+        for l in self._changeSupport:
+            l.execute(self._event)
