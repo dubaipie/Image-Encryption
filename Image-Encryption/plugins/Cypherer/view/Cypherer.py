@@ -3,7 +3,6 @@ Created on 18 janv. 2017
 
 @author: dubaipie
 '''
-import os
 
 import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
@@ -16,6 +15,8 @@ from tkinter.constants import DISABLED, NORMAL
 
 import PIL
 from PIL import ImageTk
+
+import threading
 
 from Utils.AutoScrollbar import *
 from Utils.EventSystem import PropertyChangeListener
@@ -203,52 +204,55 @@ class Cypherer(Frame):
     
     def _chooseRsl(self):
         dlg = filedialog.asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
+
         if len(dlg) > 0:
             self._model.resultPath = dlg
             self._rslVar.set(dlg)
     
     def _cypher(self):
-        if (self._model.imagePath is None
-                or self._rslVar.get() == ''):
+        if self._model.imagePath is None or self._rslVar.get() == '':
             messagebox.showerror("Data error", "Please fill all inputs")
             return
         if self._model.keyPath is None:
-            self._generateKey()
-        else:
+            thread = threading.Thread(target=self._generateKey)
+            thread.start()
+        else :
             self._execute()
     
     def _execute(self):
-        self._cypherButton.config(state=DISABLED)
+        self._switchButtonsState(DISABLED)
         try :
             self._model.cypher()
         except MismatchFormatException:
             messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
             
     def _addImageInCanvas(self, canvas, img, i):
-        im = PIL.Image.open(img)
-        x,y = im.size
-        im.close()
         canvas.picture = ImageTk.PhotoImage(file=img)
+        x, y = canvas.picture.width(), canvas.picture.height()
         self._l[i] = canvas.create_image(x/2, y/2, image=canvas.picture)
         canvas.config(scrollregion=(0,0,x,y))
 
     def _generateKey(self):
-        self._cypherButton.config(state=DISABLED)
+        #  Désactivation des boutons
+        self.after(0, self._switchButtonsState, DISABLED)
+
+        #  Récuperation de la taille de l'image
+        im = self._imgCanvas.picture
+        x, y = im.width(), im.height()
+
+        #  Génération de la clé
         obj = GeneratorModel()
-        #Récuperation de la taille de l'image
-        im = PIL.Image.open(self._model.imagePath)
-        x, y = im.size
-        im.close()
         obj.setSize(x,y)
         obj.generatorKey()
-        #voir où l'enregistrer
-        img = "tmp_masque.ppm"
-        obj.getKey().save(img)
-        self._model.keyPath = img
-        self._keyVar.set(img)
-        self._addImageInCanvas(self._keyCanvas, img, 0)
-        messagebox.showinfo("Masque", "La clé a été générée sous: " + os.path.join(os.getcwd(),img))
-        self._cypherButton.config(state=NORMAL)
+
+        #  Enregistrement de la clé générée
+        dlg = filedialog.asksaveasfilename()
+
+        if len(dlg) > 0:
+            self._keyVar = dlg
+            self._model.keyPath = dlg
+
+        #  Poursuite de l'exécution
         self._execute()
     
     def _reset(self):
@@ -281,7 +285,7 @@ class Cypherer(Frame):
         :param event: l'événement déclencheur
         """
         if self._model.imagePath is not None:
-            self._addImageInCanvas(self._imgCanvas, self._model.imagePath, 0)
+            self._addImageInCanvas(self._imgCanvas, self._model.imagePath, 1)
 
     def _updateResultCanvas(self, event):
         """
@@ -289,5 +293,16 @@ class Cypherer(Frame):
         :param event: l'événement déclencheur
         """
         if self._model.resultPath is not None:
-            self._addImageInCanvas(self._resultCanvas, self._model.resultPath, 0)
-        self._cypherButton.config(state=NORMAL)
+            self._addImageInCanvas(self._resultCanvas, self._model.resultPath, 2)
+        self._switchButtonsState(NORMAL)
+
+    def _switchButtonsState(self, state):
+        """
+        Permet de désactiver ou d'activer tous les boutons.
+        :param state: l'état des boutons
+        """
+        self._cypherButton.config(state=state)
+        self._imgButton.config(state=state)
+        self._keyButton.config(state=state)
+        self._rslButton.config(state=state)
+        self._resetButton.config(state=state)

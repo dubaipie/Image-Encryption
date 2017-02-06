@@ -18,6 +18,8 @@ class NoImageToConvert(Exception):
 
 
 class ImageFormaterModel(object):
+
+    #  CONSTRUCTEUR
     def __init__(self):
         """
         Constructeur de convertisseur d'image.
@@ -27,6 +29,7 @@ class ImageFormaterModel(object):
         self._lock = threading.Lock()
         self._support = PropertyChangeListenerSupport()
 
+    #  REQUÊTES
     @property
     @synchronized_with_attr("_lock")
     def originalPicture(self):
@@ -36,6 +39,17 @@ class ImageFormaterModel(object):
         """
         return self._origin
 
+    @property
+    @synchronized_with_attr("_lock")
+    def convertedPicture(self):
+        """
+        Donne l'image convertie si un appel avec succès à convert() à eu lieu,
+        None sinon.
+        :return: L'image convertie ou None
+        """
+        return self._converted
+
+    #  COMMANDES
     @originalPicture.setter
     @synchronized_with_attr("_lock")
     def originalPicture(self, path_or_image):
@@ -65,16 +79,6 @@ class ImageFormaterModel(object):
         thread = threading.Thread(target=self._convertThread)
         thread.start()
 
-    @property
-    @synchronized_with_attr("_lock")
-    def convertedPicture(self):
-        """
-        Donne l'image convertie si un appel avec succès à convert() à eu lieu,
-        None sinon.
-        :return: L'image convertie ou None
-        """
-        return self._converted
-
     def addPropertyChangeListener(self, propertyChangeListener):
         """
         Enregistrer un ChangeListener au-près du modèle.
@@ -90,6 +94,7 @@ class ImageFormaterModel(object):
         """
         self._support.removePropertyChangeListener(propertyChangeListener)
 
+    #  OUTILS
     @synchronized_with_attr("_lock")
     def _convertThread(self):
         """

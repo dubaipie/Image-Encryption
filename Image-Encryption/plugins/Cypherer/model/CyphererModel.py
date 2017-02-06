@@ -146,7 +146,7 @@ class CyphererModel(object):
         result = Image.new("1", img.size)
         for i in range(0, img.width):
             for j in range(0, img.height):
-                value = (img.getpixel((i, j)) + key.getpixel((i, j))) % 2
+                value = not (img.getpixel((i, j)) ^ key.getpixel((i, j)))
                 result.putpixel((i, j), value)
 
         result.save(self._resultPath)
