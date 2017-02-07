@@ -6,7 +6,7 @@ Created on 18 janv. 2017
 
 from PIL import Image
 
-from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport
+from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport, ChangeListenerSupport, ChangeEvent
 from Utils.Decorators import *
 
 import threading
@@ -23,7 +23,8 @@ class CyphererModel(object):
     '''
     Modèle du chiffreur.
     '''
-
+    
+    #CONSTRUCTEUR
     def __init__(self, imagePath=None, keyPath=None):
         '''
         Constructeur
@@ -34,8 +35,11 @@ class CyphererModel(object):
         self._keyPath = keyPath
         self._resultPath = None
         self._support = PropertyChangeListenerSupport()
+        self._changeSupport = ChangeListenerSupport()
+        self._event = ChangeEvent(self)
         self._lock = threading.Lock()
-
+    
+    #REQUETES
     @property
     @synchronized_with_attr("_lock")
     def imagePath(self):
@@ -60,7 +64,8 @@ class CyphererModel(object):
         :return: un chemin
         """
         return self._resultPath
-
+    
+    #COMMANDES
     @resultPath.setter
     @synchronized_with_attr("_lock")
     def resultPath(self, path):
@@ -80,7 +85,6 @@ class CyphererModel(object):
         self._imagePath = imagePath
         self._firePropertyStateChanged("imagePath")
 
-
     @keyPath.setter
     @synchronized_with_attr("_lock")
     def keyPath(self, keyPath):
@@ -89,22 +93,15 @@ class CyphererModel(object):
         '''
         self._keyPath = keyPath
         self._firePropertyStateChanged("keyPath")
-
-    def addPropertyChangeListener(self, changelistener):
-        """
-        Enregistrer un ChangeListener au-près du modèle.
-        :param changelistener: le ChangeListener
-        :raise TypeError: l'objet n'est pas un ChangeListener
-        """
-        self._support.addPropertyChangeListener(changelistener)
-
-    def removePropertyChangeListener(self, changeListener):
-        """
-        Dé-enregistrer un ChangeListener au-près du modèle.
-        :param changeListener: le ChangeListener
-        """
-        self._support.removePropertyChangeListener(changeListener)
-
+    
+    @synchronized_with_attr("_lock")
+    def reset(self):
+        '''
+        Réintialise le modèle
+        '''
+        self._keyPath = None
+        self._imagePath = None
+        
     def cypher(self):
         """
         Permet de chiffrer l'image avec la clé.
@@ -118,7 +115,8 @@ class CyphererModel(object):
 
         thread = threading.Thread(target=self._cypher)
         thread.start()
-
+    
+    #OUTILS
     @synchronized_with_attr("_lock")
     def _cypher(self):
         """
@@ -135,12 +133,51 @@ class CyphererModel(object):
         result = Image.new("1", img.size)
         for i in range(0, img.width):
             for j in range(0, img.height):
-                value = (img.getpixel((i, j)) + key.getpixel((i, j))) % 2
+                value = not (img.getpixel((i, j)) ^ key.getpixel((i, j)))
                 result.putpixel((i, j), value)
+            self._fireStateChanged()
 
         result.save(self._resultPath)
         self._firePropertyStateChanged("resultUpdated")  # pas top, à changer
+    
+    def addChangeListener(self, changeListener):
+        """
+        Enregistrer un nouveau ChangeListener au-près du modèle.
+        :param changeListener: le listener
+        :raise TypeError: l'objet n'est pas un ChangeListener
+        """
+        self._changeSupport.addChangeListener(changeListener)
 
+    def removeChangeListener(self, changeListener):
+        """
+        Dé-enregistrer un Changelistener.
+        :param changeListener: le listener
+        """
+        self._changeSupport.removeChangeListener(changeListener)
+
+    def _fireStateChanged(self):
+        """
+        Indique un changement au niveau du calcul des valeurs des pixels
+         et en informe les listeners.
+        """
+        for l in self._changeSupport:
+            l.execute(self._event)
+    
+    def addPropertyChangeListener(self, changelistener):
+        """
+        Enregistrer un ChangeListener au-près du modèle.
+        :param changelistener: le ChangeListener
+        :raise TypeError: l'objet n'est pas un ChangeListener
+        """
+        self._support.addPropertyChangeListener(changelistener)
+
+    def removePropertyChangeListener(self, changeListener):
+        """
+        Dé-enregistrer un ChangeListener au-près du modèle.
+        :param changeListener: le ChangeListener
+        """
+        self._support.removePropertyChangeListener(changeListener)
+    
     def _firePropertyStateChanged(self, propName):
         """
         Permet de notifier les observeurs que le modèle a changé.
