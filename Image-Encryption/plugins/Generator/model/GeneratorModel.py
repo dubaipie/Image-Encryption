@@ -81,10 +81,7 @@ class GeneratorModel(object):
         for y in range(0, self._height, 2):
             for x in range(0, self._width, 2):
                 img = self.ImagePossibility[random.randint(0, 1)]
-                self._key.putpixel((x, y), img.getpixel((0, 0)))
-                self._key.putpixel((x + 1, y), img.getpixel((1, 0)))
-                self._key.putpixel((x, y + 1), img.getpixel((0, 1)))
-                self._key.putpixel((x + 1, y + 1), img.getpixel((1, 1)))
+                self._key.paste(im = img, box = (x,y))
             self._fireStateChanged()
 
         self._firePropertyStatechange("key")
