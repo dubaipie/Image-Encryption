@@ -131,12 +131,16 @@ class CyphererModel(object):
             raise MismatchFormatException
 
         result = Image.new("1", img.size)
-        for i in range(0, img.width):
-            for j in range(0, img.height):
-                value = not (img.getpixel((i, j)) ^ key.getpixel((i, j)))
-                result.putpixel((i, j), value)
-            self._fireStateChanged()
 
+        dataKey = list(key.getdata())
+        dataImg = list(img.getdata())
+        dataResult = list()
+        
+        for i in range(0, len(dataKey)):
+            dataResult.append(not(dataKey[i] ^ dataImg[i]))
+            self._fireStateChanged()
+            
+        result.putdata(data = dataResult)
         result.save(self._resultPath)
         self._firePropertyStateChanged("resultUpdated")  # pas top, à changer
     
