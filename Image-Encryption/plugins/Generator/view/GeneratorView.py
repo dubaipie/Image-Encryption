@@ -1,9 +1,9 @@
-import PIL
 from PIL import ImageTk
 
-from tkinter import filedialog
-from tkinter.messagebox import *
-from tkinter.filedialog import *
+from tkinter import LabelFrame, Radiobutton, Button, Entry, Canvas, Frame
+from tkinter import IntVar, StringVar, BooleanVar
+from tkinter import N, E, S, W, NW, BOTH, CENTER, DISABLED, NORMAL
+from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 
 from Generator.model import GeneratorModel
@@ -17,154 +17,218 @@ class GeneratorView(Frame):
         Constructeur de la fenêtre.
         '''
         Frame.__init__(self, master)
-        self.createModel()
-        self.createView()
-        self.placeComponents()
-        self.createController()
+        self._createModel()
+        self._createView()
+        self._placeComponents()
+        self._createController()
     
-    def createModel(self):
+    def _createModel(self):
         '''
         Initialisation du model.
         '''
         self._model = GeneratorModel.GeneratorModel()
-        
+
+        self._byVar = BooleanVar()
+
+        self._widthVar = IntVar()
+        self._heightVar = IntVar()
+
+        self._picturePathVar = StringVar()
+
+        self._progressVar = IntVar()
+        """
         self._imgVar = StringVar()
         self._widthVar = StringVar()
         self._heightVar = StringVar()
-        self._progressBarValue= IntVar()
+        self._progressBarValue= IntVar()"""
     
-    def createView(self):
-        self._frame1 = Frame(self)
-        self._width = Entry(self._frame1, textvariable=self._widthVar, width=5)
-        self._height = Entry(self._frame1, textvariable=self._heightVar, width=5)
-        self._imgEntry = Entry(self._frame1,textvariable=self._imgVar) 
-        
-        self._bouton_generer = Button(self, text = "Générer")
-        self._bouton_saveas = Button(self, text = "Enregistrer sous")
-        self._bouton_setSize2 = Button(self._frame1, text = "Parcourir")
-        self._progressBar = Progressbar(self, variable=self._progressBarValue)
-        self._image = Canvas(self)
-        
-        # horizontal AutoScrollbar
-        self._hbar = AutoScrollbar(self, orient=HORIZONTAL)
-         
-        # vertical AutoScrollbar
-        self._vbar = AutoScrollbar(self, orient=VERTICAL)
-         
-        
-    def placeComponents(self):    
-        label = Label(self._frame1, text = "Taille :")
-        label.grid(row = 1, column = 1)
+    def _createView(self):
+        self._dataFrame = Frame(self)
+        self._genFrame = LabelFrame(self._dataFrame, text="Génération")
+        self._propFrame = LabelFrame(self._dataFrame, text="Propriétés")
+        self._viewFrame = LabelFrame(self, text="Aperçu")
+        self._progressFrame = LabelFrame(self, text="Progression")
 
-        label = Label(self._frame1, text = " x ")
-        label.grid(row = 1, column = 3)
+        self._byValueButton = Radiobutton(self._genFrame, text="par valeurs", variable=self._byVar, value=True)
+        self._byPictureButton = Radiobutton(self._genFrame, text="par image", variable=self._byVar, value=False)
 
-        self._width.grid(row = 1, column = 2)
-        self._height.grid(row = 1, column = 4)
+        self._widthEntry = Entry(self._genFrame, textvariable=self._widthVar, width=10, justify=CENTER, state=DISABLED)
+        self._heightEntry = Entry(self._genFrame, textvariable=self._heightVar, width=10, justify=CENTER, state=DISABLED)
 
-        label = Label(self._frame1, text = "          ")
-        label.grid(row = 1, column = 6)
+        self._genButton = Button(self._genFrame, text="Générer")
 
-        label = Label(self._frame1, text = "Choisir une taille à partir d'une image : ")
-        label.grid(row = 1, column = 7)
+        self._loadButton = Button(self._genFrame, text="Charger")
+        self._genViewFrame = LabelFrame(self._genFrame, text="Aperçu")
+        self._genViewCanvas = Canvas(self._genViewFrame)
 
-        self._imgEntry.grid(row = 1, column = 8)
-        self._bouton_setSize2.grid(row = 1, columnspan = 1, column = 9, sticky = W + E)
+        self._widthLabel = Label(self._propFrame, textvariable=self._widthVar)
+        self._heightLabel = Label(self._propFrame, textvariable=self._heightVar)
 
-        self._progressBar.grid(row=5, column=1, columnspan=4, sticky=W+E)
+        self._picturePathLabel = Label(self._propFrame, textvariable=self._picturePathVar, wraplength=275)
+
+        self._progressBar = Progressbar(self._progressFrame, variable=self._progressVar)
+
+        self._viewCanvas = Canvas(self._viewFrame)
         
-        self._frame1.grid(row = 1, column = 1, columnspan = 4)
-        self._bouton_generer.grid(row = 2, columnspan = 4, column = 1, sticky = W + E)
-        
-        self._image.grid(row = 3, columnspan = 4, column = 1, padx = 5)
-        self._vbar.grid(row=3, column=5, sticky=NW+SE)
-        
-        self._hbar.grid(row=4, column=1, sticky=NW+SE)
-        self._bouton_saveas.grid(row = 6, column = 1, columnspan = 4, sticky = W + E)
-        
-    def createController(self):
-        self._bouton_generer.config(command = self._genererCommand)
-        self._bouton_saveas.config(command = self._saveas)
-        self._bouton_setSize2.config(command = self._setSizeWithImage)
-        
-        self.grid_columnconfigure(1, weight = 1)
-        self.grid_rowconfigure(3, weight = 1)
-        
-        self._image.configure(
-            xscrollcommand=self._hbar.set,
-            yscrollcommand=self._vbar.set
-        )
-        self._hbar.configure(command=self._image.xview)
-        self._vbar.configure(command=self._image.yview)
+    def _placeComponents(self):
+        self._dataFrame.grid(row=1, column=1, sticky=N+E+W+S, padx=5, pady=5)
+
+        self._genFrame.grid(row=1, column=1, sticky=N+E+W)
+
+        self._byValueButton.grid(row=1, column=1)
+
+        self._widthEntry.grid(row=2, column=2)
+        label = Label(self._genFrame, text=" * ")
+        label.grid(row=2, column=3)
+        self._heightEntry.grid(row=2, column=4)
+
+        self._byPictureButton.grid(row=3, column=1)
+
+        self._loadButton.grid(row=4, column=2, columnspan=2, sticky=E+W)
+
+        self._genViewFrame.grid(row=5, column=1, columnspan=4, sticky=E+W+N+S, padx=5, pady=5)
+
+        self._genViewCanvas.pack(fill=BOTH)
+
+        self._genButton.grid(row=6, column=2, columnspan=2, sticky=E+W, padx=5, pady=5)
+
+
+        self._propFrame.grid(row=2, column=1, sticky=N+E+W)
+
+        label = Label(self._propFrame, text="Taille de la clé : ")
+        label.grid(row=1, column=1)
+        self._widthLabel.grid(row=1, column=2, sticky=W+E)
+        label = Label(self._propFrame, text=" * ")
+        label.grid(row=1, column=3, sticky=W+E)
+        self._heightLabel.grid(row=1, column=4, sticky=W+E)
+
+        label = Label(self._propFrame, text="Chemin vers la clé : ")
+        label.grid(row=2, column=1)
+        self._picturePathLabel.grid(row=2, column=2, columnspan=3, sticky=W+E)
+
+
+        self._viewFrame.grid(row=1, column=2, sticky=N+E+W+S, padx=5, pady=5)
+
+        self._viewCanvas.pack(fill=BOTH)
+
+
+        self._progressFrame.grid(row=2, column=1, columnspan=2, sticky=N+E+W+S, padx=5)
+
+        self._progressBar.pack(fill=BOTH, padx=5, pady=5)
+
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+
+    def _createController(self):
+        self._byPictureButton.config(command=self._hasByVarChanged)
+        self._byValueButton.config(command=self._hasByVarChanged)
+
+        self._loadButton.config(command=self._onLoadButtonClick)
+        self._genButton.config(command=self._onGenButtonClick)
 
         self._model.addPropertyChangeListener(PropertyChangeListener(
             propertyName="key",
             target=lambda event: self.after(0, self._updateCanvasDisplay, event)
         ))
 
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            propertyName="key",
+            target=lambda event: self.after(0, self._savePicture, event)
+        ))
+
         self._model.addChangeListener(ChangeListener(
             target=lambda event: self.after(0, self._updateProgressBarValue, event)
         ))
-        
-    def _saveas(self):
-        repfic = asksaveasfilename(title="Enregistrer sous", defaultextension=".ppm") 
-        if len(repfic) > 0:
-            try:
-                self._model.getKey().save(repfic)
-                showinfo("Sauvegarde", "La clé à été enregistrée sous :" + repfic)
-            except AttributeError:
-                showerror("Sauvegarde", "Veuillez générer une clé avant de sauvegarder")
-            except KeyError:
-                showerror("Sauvegarde", "Sauvegarde échoué veuillez vérifier que le nom du fichier est correct")
-        
-    def _genererCommand(self):
+
+    # OUTILS
+    def _hasByVarChanged(self):
+        """
+        Méthode appelée lorsque la valeur de la variable self._byVar a changé.
+        Permet d'activer / désactiver les éléments de chaque catégorie.
+        """
+        if self._byVar.get():
+            #Désactivation des widgets liés à la sélection par image
+            self._loadButton.config(state=DISABLED)
+            self._genViewCanvas.config(state=DISABLED)
+            #Activation de ceux liés à la sélection par valeurs
+            self._heightEntry.config(state=NORMAL)
+            self._widthEntry.config(state=NORMAL)
+        else:
+            # Désactivation des widgets liés à la sélection par valeurs
+            self._heightEntry.config(state=DISABLED)
+            self._widthEntry.config(state=DISABLED)
+            # Activation de ceux liés à la sélection par images
+            self._loadButton.config(state=NORMAL)
+            self._genViewCanvas.config(state=NORMAL)
+
+    def _savePicture(self, event):
+        """
+        Permet l'ouverture d'une boîte de dialogue demandant de choisir un nom de fichier, puis enregistre
+        la clé avec ce nom de fichier.
+        :raise AttributeError: la clé n'a pas été générée
+        """
+        refpic = filedialog.asksaveasfilename(title="Enregistrer la clé sous ...", defaultextension=".ppm")
         try:
-            w = int (self._widthVar.get())
-            h = int (self._heightVar.get())
-            if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
-                showerror("Générateur", "Veuillez entrer des entiers pair")
-            else:
-                self._model.setSize(w, h)
-                self._progressBarValue.set(0)
-                self._progressBar.config(maximum=h//2)
-                self._bouton_generer.config(state=DISABLED)
-                self._model.generatorKey()
-        except ValueError:
-            showerror("Générateur", "Veuillez entrer des décimaux")
-            
-    
-    #OUTILS
+            self._model.getKey().save(refpic)
+            self._picturePathVar.set(refpic)
+        except KeyError:
+            messagebox.showerror("Sauvegarde", "Sauvegarde échoué veuillez vérifier que le nom du fichier est correct")
+            if refpic != "":
+                self._savePicture(event)
+
+    def _validateEntry(self):
+        """
+        Méthode appelée lorsque l'utilisateur entre des données dans les widgets self._widthEntry et
+        self._heightEntry. Permet de contrôler que les valeurs entrées sont des nombres positifs et pairs.
+        :return: False si les données sont non conformes, True sinon
+        """
+        w = int(self._widthVar.get())
+        h = int(self._heightVar.get())
+        if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
+            messagebox.showerror("Génération", "Veuillez entrer des entiers pair")
+            return False
+        return True
+
+    def _onGenButtonClick(self):
+        if self._validateEntry():
+            self._model.setSize(self._widthVar.get(), self._heightVar.get())
+            self._progressVar.set(0)
+            self._progressBar.config(maximum=self._heightVar.get()//2)
+            self._genButton.config(state=DISABLED)
+            self._model.generateKey()
+
     def _updateCanvasDisplay(self, event):
         """
         Permet de mettre à jour l'image affichée lors de la génération
         d'une nouvelle clé.
         :param event: l'événement à l'origine du rafraichissement
         """
-        self._model.getKey().save("tmp_image.ppm")
-        monimage = "tmp_image.ppm"
-        photo = ImageTk.PhotoImage(file=monimage)
-        im = PIL.Image.open(monimage)
-        x, y = im.size
-        im.close()
-        self._image.config(width=x, height=y)
-        self._image.config(scrollregion=(0, 0, x, y))
-        self._image.create_image(x / 2, y / 2, image=photo)
-        self._image.image = photo
-        os.remove("tmp_image.ppm")
-        self._bouton_generer.config(state=NORMAL)
+
+        photo = ImageTk.PhotoImage(image=self._model.getKey())
+        x, y = photo.width(), photo.height()
+        self._viewCanvas.config(width=x, height=y)
+        self._viewCanvas.config(scrollregion=(0, 0, x, y))
+        self._viewCanvas.create_image(x / 2, y / 2, image=photo)
+        self._viewCanvas.image = photo
+        self._genButton.config(state=NORMAL)
 
     def _updateProgressBarValue(self, event):
         """
         Mettre à jour la valeur de la barre de progression.
         :param event: l'événement déclencheur
         """
-        self._progressBarValue.set(self._progressBarValue.get() + 1)
-                   
-    def _setSizeWithImage(self):
-        dlg = filedialog.askopenfilename(title="Ouvrir", filetypes=[("PPM", "*.ppm")])
-        if dlg != "":
-            self._imgVar.set(dlg)
-            self._model.setSizeImage(dlg)
-            w,h = self._model.getSize() 
-            self._widthVar.set(w)
-            self._heightVar.set(h)
+        self._progressVar.set(self._progressVar.get() + 1)
+
+    def _onLoadButtonClick(self):
+        """
+        Lorsque le bouton _loadButton est cliqué, une boite de dialogue s'ouvre et demande
+        l'image dont on souhaite avoir les dimensions.
+        """
+        refpic = filedialog.askopenfilename(filetypes=[("PPM", "*.ppm")], title="Ouvrir une image ...")
+        if len(refpic) > 0:
+            picture = ImageTk.PhotoImage(file=refpic)
+            x, y = picture.width(), picture.height()
+            self._widthVar.set(x)
+            self._heightVar.set(y)
+            self._genViewCanvas.picture = picture
+            self._genViewCanvas.create_image(x / 2, y / 2, image=picture)

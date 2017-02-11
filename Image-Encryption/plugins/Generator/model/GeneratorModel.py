@@ -45,7 +45,7 @@ class GeneratorModel(object):
         self._lock = threading.Lock()
     
     #REQUETES
-    def generatorKey(self):
+    def generateKey(self):
         """
         Permet de générer une clé. Les calculs sont effectués avec un thread dédié.
         """
@@ -77,14 +77,14 @@ class GeneratorModel(object):
         Effectue les calculs pour générer la clé.
         """
         self._key = Image.new('1', (self._width, self._height))
-        #  Parcours l'image pour insérer les blocs générés de façon aléatoire
+        #  Parcourt l'image pour insérer les blocs générés de façon aléatoire
         for y in range(0, self._height, 2):
             for x in range(0, self._width, 2):
                 img = self.ImagePossibility[random.randint(0, 1)]
                 self._key.paste(im = img, box = (x,y))
             self._fireStateChanged()
 
-        self._firePropertyStatechange("key")
+        self._firePropertyStateChange("key")
 
 
     @synchronized_with_attr("_lock")
@@ -100,17 +100,6 @@ class GeneratorModel(object):
             raise AssertionError
         self._width = w
         self._height = h
-    
-    @synchronized_with_attr("_lock")
-    def setSizeImage(self, img):
-        '''
-        Permet de fixer la taille avec une image
-        @param img: chemin vers une image
-        '''
-        im = PIL.Image.open(img) 
-        self._width = im.width
-        self._height = im.height
-        im.close()
         
     #OUTILS
     
@@ -144,14 +133,15 @@ class GeneratorModel(object):
         """
         self._changeSupport.removeChangeListener(changeListener)
 
-    def _firePropertyStatechange(self, propName):
+    def _firePropertyStateChange(self, propName):
         """
         Permet de notifier les observeurs de propname que la valeur de la
         propriété a changée.
         :param propName: le nom de la propriété qui a changée
         """
         for l in self._support.getPropertyChangeListener(propName):
-            l.execute(PropertyChangeEvent(self, propName))
+            thread = threading.Thread(target=l.execute, args=[PropertyChangeEvent(self, propName)])
+            thread.start()
 
     def _fireStateChanged(self):
         """
