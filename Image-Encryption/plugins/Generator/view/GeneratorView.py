@@ -2,7 +2,7 @@ from PIL import ImageTk
 
 from tkinter import LabelFrame, Radiobutton, Button, Entry, Canvas, Frame
 from tkinter import IntVar, StringVar, BooleanVar
-from tkinter import N, E, S, W, NW, BOTH, CENTER, DISABLED, NORMAL
+from tkinter import N, E, S, W, BOTH, CENTER, DISABLED, NORMAL
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 
@@ -36,11 +36,6 @@ class GeneratorView(Frame):
         self._picturePathVar = StringVar()
 
         self._progressVar = IntVar()
-        """
-        self._imgVar = StringVar()
-        self._widthVar = StringVar()
-        self._heightVar = StringVar()
-        self._progressBarValue= IntVar()"""
     
     def _createView(self):
         self._dataFrame = Frame(self)
@@ -128,11 +123,6 @@ class GeneratorView(Frame):
 
         self._model.addPropertyChangeListener(PropertyChangeListener(
             propertyName="key",
-            target=lambda event: self.after(0, self._updateCanvasDisplay, event)
-        ))
-
-        self._model.addPropertyChangeListener(PropertyChangeListener(
-            propertyName="key",
             target=lambda event: self.after(0, self._savePicture, event)
         ))
 
@@ -167,14 +157,11 @@ class GeneratorView(Frame):
         la clé avec ce nom de fichier.
         :raise AttributeError: la clé n'a pas été générée
         """
-        refpic = filedialog.asksaveasfilename(title="Enregistrer la clé sous ...", defaultextension=".ppm")
         try:
-            self._model.getKey().save(refpic)
-            self._picturePathVar.set(refpic)
+            self._model.getKey().save(self._picturePathVar.get())
+            self._updateCanvasDisplay()
         except KeyError:
             messagebox.showerror("Sauvegarde", "Sauvegarde échoué veuillez vérifier que le nom du fichier est correct")
-            if refpic != "":
-                self._savePicture(event)
 
     def _validateEntry(self):
         """
@@ -184,7 +171,7 @@ class GeneratorView(Frame):
         """
         w = int(self._widthVar.get())
         h = int(self._heightVar.get())
-        if w < 0 or h < 0 or w % 2 != 0 or h % 2 != 0:
+        if w <= 0 or h <= 0 or w % 2 != 0 or h % 2 != 0:
             messagebox.showerror("Génération", "Veuillez entrer des entiers pair")
             return False
         return True
@@ -195,16 +182,17 @@ class GeneratorView(Frame):
             self._progressVar.set(0)
             self._progressBar.config(maximum=self._heightVar.get()//2)
             self._genButton.config(state=DISABLED)
+            refpic = filedialog.asksaveasfilename(title="Enregistrer la clé sous ...", defaultextension=".ppm")
+            self._picturePathVar.set(refpic)
             self._model.generateKey()
 
-    def _updateCanvasDisplay(self, event):
+    def _updateCanvasDisplay(self):
         """
         Permet de mettre à jour l'image affichée lors de la génération
         d'une nouvelle clé.
         :param event: l'événement à l'origine du rafraichissement
         """
-
-        photo = ImageTk.PhotoImage(image=self._model.getKey())
+        photo = ImageTk.PhotoImage(file=self._picturePathVar.get())
         x, y = photo.width(), photo.height()
         self._viewCanvas.config(width=x, height=y)
         self._viewCanvas.config(scrollregion=(0, 0, x, y))

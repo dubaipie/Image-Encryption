@@ -1,11 +1,11 @@
 from PIL import Image
+
 from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport
 from Utils.EventSystem import ChangeEvent, ChangeListenerSupport
 from Utils.Decorators import *
 
 import threading
 import random
-import PIL
 
 def create_image():
     '''Créer les possibilités d'images'''
@@ -71,19 +71,18 @@ class GeneratorModel(object):
         return self._width, self._height
     
     #COMMANDES
-    @synchronized_with_attr("_lock")
     def _generate(self):
         """
         Effectue les calculs pour générer la clé.
         """
-        self._key = Image.new('1', (self._width, self._height))
-        #  Parcourt l'image pour insérer les blocs générés de façon aléatoire
-        for y in range(0, self._height, 2):
-            for x in range(0, self._width, 2):
-                img = self.ImagePossibility[random.randint(0, 1)]
-                self._key.paste(im = img, box = (x,y))
-            self._fireStateChanged()
-
+        with self._lock:
+            self._key = Image.new('1', (self._width, self._height))
+            #  Parcourt l'image pour insérer les blocs générés de façon aléatoire
+            for y in range(0, self._height, 2):
+                for x in range(0, self._width, 2):
+                    img = GeneratorModel.ImagePossibility[random.randint(0, 1)]
+                    self._key.paste(im=img, box=(x,y))
+                self._fireStateChanged()
         self._firePropertyStateChange("key")
 
 
@@ -133,6 +132,7 @@ class GeneratorModel(object):
         """
         self._changeSupport.removeChangeListener(changeListener)
 
+    # OUTILS
     def _firePropertyStateChange(self, propName):
         """
         Permet de notifier les observeurs de propname que la valeur de la
@@ -140,8 +140,7 @@ class GeneratorModel(object):
         :param propName: le nom de la propriété qui a changée
         """
         for l in self._support.getPropertyChangeListener(propName):
-            thread = threading.Thread(target=l.execute, args=[PropertyChangeEvent(self, propName)])
-            thread.start()
+            l.execute(PropertyChangeEvent(self, propName))
 
     def _fireStateChanged(self):
         """
