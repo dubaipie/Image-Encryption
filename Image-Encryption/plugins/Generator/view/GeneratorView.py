@@ -2,7 +2,7 @@ from PIL import ImageTk
 
 from tkinter import LabelFrame, Radiobutton, Button, Entry, Canvas, Frame
 from tkinter import IntVar, StringVar, BooleanVar
-from tkinter import N, E, S, W, BOTH, CENTER, DISABLED, NORMAL
+from tkinter import N, E, S, W, BOTH, CENTER, DISABLED, NORMAL, HORIZONTAL, VERTICAL
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 
@@ -37,6 +37,7 @@ class GeneratorView(Frame):
 
         self._progressVar = IntVar()
     
+    
     def _createView(self):
         self._dataFrame = Frame(self)
         self._genFrame = LabelFrame(self._dataFrame, text="Génération")
@@ -63,6 +64,9 @@ class GeneratorView(Frame):
 
         self._progressBar = Progressbar(self._progressFrame, variable=self._progressVar)
 
+         #Aperçu
+        self._hbar = AutoScrollbar(self._viewFrame, orient=HORIZONTAL)
+        self._vbar = AutoScrollbar(self._viewFrame, orient=VERTICAL)
         self._viewCanvas = Canvas(self._viewFrame)
         
     def _placeComponents(self):
@@ -101,10 +105,13 @@ class GeneratorView(Frame):
         label.grid(row=2, column=1)
         self._picturePathLabel.grid(row=2, column=2, columnspan=3, sticky=W+E)
 
-
+        
+        #Image générer
         self._viewFrame.grid(row=1, column=2, sticky=N+E+W+S, padx=5, pady=5)
-
-        self._viewCanvas.pack(fill=BOTH)
+        
+        self._hbar.grid(row=2, column=1, sticky=E+W)
+        self._vbar.grid(row=1, column=2, sticky=N+S)
+        self._viewCanvas.grid(row=1, column=1, sticky=N+E+W+S)
 
 
         self._progressFrame.grid(row=2, column=1, columnspan=2, sticky=N+E+W+S, padx=5)
@@ -113,6 +120,8 @@ class GeneratorView(Frame):
 
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(1, weight=1)
+        self._viewFrame.grid_columnconfigure(1, weight=1)
+        self._viewFrame.grid_rowconfigure(1, weight=1)
 
     def _createController(self):
         self._byPictureButton.config(command=self._hasByVarChanged)
@@ -129,6 +138,14 @@ class GeneratorView(Frame):
         self._model.addChangeListener(ChangeListener(
             target=lambda event: self.after(0, self._updateProgressBarValue, event)
         ))
+        
+        self._viewCanvas.configure(
+            xscrollcommand=self._hbar.set,
+            yscrollcommand=self._vbar.set
+        )
+        
+        self._hbar.configure(command=self._viewCanvas.xview)
+        self._vbar.configure(command=self._viewCanvas.yview)
 
     # OUTILS
     def _hasByVarChanged(self):
@@ -181,10 +198,11 @@ class GeneratorView(Frame):
             self._model.setSize(self._widthVar.get(), self._heightVar.get())
             self._progressVar.set(0)
             self._progressBar.config(maximum=self._heightVar.get()//2)
-            self._genButton.config(state=DISABLED)
             refpic = filedialog.asksaveasfilename(title="Enregistrer la clé sous ...", defaultextension=".ppm")
-            self._picturePathVar.set(refpic)
-            self._model.generateKey()
+            if len(refpic) > 0:
+                self._genButton.config(state=DISABLED)
+                self._picturePathVar.set(refpic)
+                self._model.generateKey()
 
     def _updateCanvasDisplay(self):
         """
