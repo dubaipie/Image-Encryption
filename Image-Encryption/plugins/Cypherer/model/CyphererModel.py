@@ -129,15 +129,19 @@ class CyphererModel(object):
 
         if img.size != key.size:
             raise MismatchFormatException
-
-        result = Image.new("1", img.size)
         
-        for i in range(0, result.width):
-            for j in range(0, result.height):
-                value = not(img.getpixel((i,j)) ^ key.getpixel((i,j)))
-                result.putpixel((i,j), value)
-            self._fireStateChanged()
+        keyList = list(key.getdata())
+        imgList = list(img.getdata())
+        resultList = list()
+        result = Image.new("1", img.size)
+
+        for i in range(0, len(imgList)):
+            resultList.append(not(imgList[i] ^ keyList[i]))
+            if (i % result.height == 0):
+                self._fireStateChanged()
+        result.putdata(resultList)
         result.save(self._resultPath)
+        
         
         self._firePropertyStateChanged("resultUpdated")  # pas top, à changer
     
