@@ -9,8 +9,8 @@ from Generator.model.GeneratorModel import GeneratorModel
 from Cypherer.model.CyphererModel import MismatchFormatException
 
 from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame,\
-    IntVar
-from tkinter import filedialog, messagebox
+    IntVar, BooleanVar
+from tkinter import filedialog, messagebox, Radiobutton
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL
 from tkinter.ttk import Progressbar
@@ -47,11 +47,14 @@ class Cypherer(Frame):
         self._keyVar = StringVar()
         self._imgVar = StringVar()
         self._rslVar = StringVar()
+        self._byVar = BooleanVar()
         self._progressBarValue= IntVar()
 
     def _createView(self):
         #Frame
-        self._frame1 = Frame(self)
+        self._frame = Frame(self)
+        self._frame0 = Frame(self._frame)
+        self._frame1 = Frame(self._frame)
         self._frame2 = Frame(self)
         self._frame3 = Frame(self)
         self._frame4 = LabelFrame(self, text="Aperçu de la clé")
@@ -92,13 +95,28 @@ class Cypherer(Frame):
         
         #ProgressBar
         self._progressBar = Progressbar(self, variable=self._progressBarValue)
-
+        
+        #RadioButton
+        self._byCypherButton = Radiobutton(self._frame0, text="crypter", variable=self._byVar, value=False)
+        self._byDecyphererButton = Radiobutton(self._frame0, text="décrypter", variable=self._byVar, value=True)
+        
+        #Label
+        self._label = Label(self._frame2, text=_("Image à Crypter : ")) 
+        
     def _placeComponents(self):
+        #FRAME
+        self._frame.grid(row=1, column=1)
+        
+        #FRAME0
+        self._byCypherButton.grid(row=1, column=1, sticky=E+W)
+        self._byDecyphererButton.grid(row=2, column=1)
+        self._frame0.grid(row=1, column=1,  sticky=E+W)
+        
         #FRAME1
-        Label(self._frame1, text=_("Key : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame1, text=_("Clé : ")).grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
-        self._frame1.grid(row=1, column=1)
+        self._frame1.grid(row=1, column=2)
         
         #FRAME4
         self._keyCanvas.grid(row = 1, column = 1, sticky=NW+SE)
@@ -107,7 +125,7 @@ class Cypherer(Frame):
         self._frame4.grid(row=2, column=1, sticky=NW+SE)
         
         #FRAME2
-        Label(self._frame2, text=_("Cyphered Picture : ")).grid(row=1, column=1, sticky=W)
+        self._label.grid(row=1, column=1, sticky=W)
         self._imgEntry.grid(row=1, column=2)
         self._imgButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._frame2.grid(row=1, column=2)
@@ -119,7 +137,7 @@ class Cypherer(Frame):
         self._frame5.grid(row=2, column=2, sticky=NW+SE)
         
         #FRAME3
-        Label(self._frame3, text=_("Destination file : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame3, text=_("Chemin de retour : ")).grid(row=1, column=1, sticky=W)
         self._rslEntry.grid(row=1, column=2)
         self._rslButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._resetButton.grid(row=1, column=4)
@@ -140,6 +158,8 @@ class Cypherer(Frame):
         self._rslButton.config(command=self._chooseRsl)
         self._cypherButton.config(command=self._cypher)
         self._resetButton.config(command=self._reset)
+        self._byCypherButton.config(command=self._hasByVarChanged)
+        self._byDecyphererButton.config(command=self._hasByVarChanged)
         
         self.grid_rowconfigure(2, weight = 1)
         self.grid_columnconfigure(1, weight = 1)
@@ -216,6 +236,23 @@ class Cypherer(Frame):
             self._model.resultPath = dlg
             self._rslVar.set(dlg)
     
+    def _hasByVarChanged(self):
+        self._reset()
+        if self._byVar.get():
+            self._cypherButton.config(command=self._decypher, text='Décrypter')
+            self._frame5.config(text="Aperçu de l'image crypter")
+            self._label.config(text=_("Image à Décrypter : "))
+        else:
+            self._cypherButton.config(command=self._cypher, text='crypter')
+            self._frame5.config(text="Aperçu de l'image")
+            self._label.config(text=_("Image à Crypter : "))
+    
+    def _decypher(self):
+        if self._model.imagePath is None or self._model.keyPath is None or self._rslVar.get() == '':
+            messagebox.showerror("Data error", "Please fill all inputs")
+        else:
+            self._execute()
+            
     def _cypher(self):
         if self._model.imagePath is None or self._rslVar.get() == '':
             messagebox.showerror("Data error", "Please fill all inputs")
@@ -238,6 +275,7 @@ class Cypherer(Frame):
             messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
             
     def _addImageInCanvas(self, canvas, img, i):
+        """Ajoute une image dans un canvas """
         canvas.picture = ImageTk.PhotoImage(file=img)
         x, y = canvas.picture.width(), canvas.picture.height()
         self._l[i] = canvas.create_image(x/2, y/2, image=canvas.picture)
@@ -261,20 +299,21 @@ class Cypherer(Frame):
             target=lambda event: self.after(0, self._updateProgressBarValue, event)
         ))
         obj.setSize(x,y)
-        obj.generatorKey()
+        obj.generateKey()
 
         #  Enregistrement de la clé générée
         dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
                                            defaultextension=".ppm")
 
         if len(dlg) > 0:
-            self._keyVar.set(dlg)
+            obj.getKey().save(dlg)
             self._model.keyPath = dlg
-
-        #  Poursuite de l'exécution
-        self._execute()
+            self._keyVar.set(dlg)
+            #  Poursuite de l'exécution
+            self._execute()
     
     def _reset(self):
+        """ Réintialise le model et les canvas """
         if (self._l[0] is not None):
             self._keyCanvas.delete(self._l[0])
             self._keyCanvas.config(scrollregion=(0,0,0,0))
@@ -325,7 +364,9 @@ class Cypherer(Frame):
         self._keyButton.config(state=state)
         self._rslButton.config(state=state)
         self._resetButton.config(state=state)
-
+        self._byCypherButton.config(state=state)
+        self._byDecyphererButton.config(state=state)
+        
     def _updateProgressBarValue(self, event):
         """
         Mettre à jour la valeur de la barre de progression.
