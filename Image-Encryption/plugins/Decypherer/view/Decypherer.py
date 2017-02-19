@@ -5,7 +5,6 @@ Created on 1 févr. 2017
 '''
 
 import PIL
-import threading
 import Cypherer.model.CyphererModel as DM
 
 from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame,\
@@ -71,11 +70,11 @@ class Decypherer(Frame):
         
         #Les Boutons
         
-        self._keyButton = Button(self._frame1, text=_("Find"))
-        self._imgCypherButton = Button(self._frame2, text=_("Find"))
-        self._imgDecypherButton = Button(self._frame3, text=_("Save as"))
-        self._decypherButton = Button(self, text=_("Decypher"))
-        self._resetButton = Button(self._frame3, text=_("Reset"))
+        self._keyButton = Button(self._frame1, text="Ouvrir")
+        self._imgCypherButton = Button(self._frame2, text="Ouvrir")
+        self._imgDecypherButton = Button(self._frame3, text="Sauvegarder sous")
+        self._decypherButton = Button(self, text="Déchiffreur")
+        self._resetButton = Button(self._frame3, text="Réinitialiser")
         
         #Les Canvas
         
@@ -83,7 +82,7 @@ class Decypherer(Frame):
         self._imgCypherCanvas = Canvas(self._frame5)
         self._imgDecypherCanvas = Canvas(self._frame6)
         
-        self._DecypherButton = Button(self, text=_("Decypher"))
+        self._DecypherButton = Button(self, text="Déchiffreur")
         
         # horizontal AutoScrollbar
         self._hbar1 = AutoScrollbar(self._frame4, orient=HORIZONTAL)
@@ -101,19 +100,19 @@ class Decypherer(Frame):
     def _placeComponents(self):
         
         #FRAME1
-        Label(self._frame1, text=_("Key : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame1, text="Clé : ").grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._frame1.grid(row=1, column=1)
         
         #FRAME2
-        Label(self._frame2, text=_("Cyphered Picture : ")).grid(row=2, column=1, sticky=W)
+        Label(self._frame2, text="Image cryptée : ").grid(row=2, column=1, sticky=W)
         self._imgCypherEntry.grid(row=2, column=2)
         self._imgCypherButton.grid(row=2, column=3, sticky=E+W, padx=5, pady=5)
         self._frame2.grid(row=1,column=2)
         
         #FRAME3
-        Label(self._frame3, text=_("Destination file : ")).grid(row=3, column=1, sticky=W)
+        Label(self._frame3, text="Fichier de destination").grid(row=3, column=1, sticky=W)
         self._imgDecypherEntry.grid(row=3, column=2)
         self._imgDecypherButton.grid(row=3, column=3, sticky=E+W, padx=5, pady=5)
         self._resetButton.grid(row=3, column=4)

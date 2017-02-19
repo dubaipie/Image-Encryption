@@ -117,19 +117,19 @@ class CyphererModel(object):
         thread.start()
     
     #OUTILS
-    @synchronized_with_attr("_lock")
     def _cypher(self):
         """
         Méthode appelée sur un thread dédié au calculs.
         :param resultPath: le chemin qui pointera sur l'image résultante.
         :raise IOError: L'image ou la clé n'a pas pu être chargée, ou l'écriture a échouée
         """
-        img = Image.open(self._imagePath)
-        key = Image.open(self._keyPath)
+        with self._lock:
+            img = Image.open(self._imagePath)
+            key = Image.open(self._keyPath)
 
         if img.size != key.size:
             raise MismatchFormatException
-        
+
         keyList = list(key.getdata())
         imgList = list(img.getdata())
         resultList = list()
@@ -141,8 +141,8 @@ class CyphererModel(object):
                 self._fireStateChanged()
         result.putdata(resultList)
         result.save(self._resultPath)
-        
-        
+
+
         self._firePropertyStateChanged("resultUpdated")  # pas top, à changer
     
     def addChangeListener(self, changeListener):

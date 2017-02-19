@@ -32,4 +32,4 @@ class Initializer(object):
         '''
         Récupérer le nom du plugin.
         '''
-        return "Cypherer"
+        return "Crypter"

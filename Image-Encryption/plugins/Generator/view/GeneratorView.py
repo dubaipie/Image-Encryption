@@ -7,8 +7,10 @@ from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 
 from Generator.model import GeneratorModel
+
 from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
+from Utils.ImageViewer import ImageViewer
 
 class GeneratorView(Frame):
     
@@ -42,7 +44,6 @@ class GeneratorView(Frame):
         self._dataFrame = Frame(self)
         self._genFrame = LabelFrame(self._dataFrame, text="Génération")
         self._propFrame = LabelFrame(self._dataFrame, text="Propriétés")
-        self._viewFrame = LabelFrame(self, text="Aperçu")
         self._progressFrame = LabelFrame(self, text="Progression")
 
         self._byValueButton = Radiobutton(self._genFrame, text="par valeurs", variable=self._byVar, value=True)
@@ -54,8 +55,7 @@ class GeneratorView(Frame):
         self._genButton = Button(self._genFrame, text="Générer")
 
         self._loadButton = Button(self._genFrame, text="Charger")
-        self._genViewFrame = LabelFrame(self._genFrame, text="Aperçu")
-        self._genViewCanvas = Canvas(self._genViewFrame)
+        self._genViewFrame = ImageViewer(self._genFrame, text="Aperçu")
 
         self._widthLabel = Label(self._propFrame, textvariable=self._widthVar)
         self._heightLabel = Label(self._propFrame, textvariable=self._heightVar)
@@ -65,9 +65,7 @@ class GeneratorView(Frame):
         self._progressBar = Progressbar(self._progressFrame, variable=self._progressVar)
 
          #Aperçu
-        self._hbar = AutoScrollbar(self._viewFrame, orient=HORIZONTAL)
-        self._vbar = AutoScrollbar(self._viewFrame, orient=VERTICAL)
-        self._viewCanvas = Canvas(self._viewFrame)
+        self._viewFrame = ImageViewer(self, text="Aperçu")
         
     def _placeComponents(self):
         self._dataFrame.grid(row=1, column=1, sticky=N+E+W+S, padx=5, pady=5)
@@ -87,8 +85,6 @@ class GeneratorView(Frame):
 
         self._genViewFrame.grid(row=5, column=1, columnspan=4, sticky=E+W+N+S, padx=5, pady=5)
 
-        self._genViewCanvas.pack(fill=BOTH)
-
         self._genButton.grid(row=6, column=2, columnspan=2, sticky=E+W, padx=5, pady=5)
 
 
@@ -106,13 +102,8 @@ class GeneratorView(Frame):
         self._picturePathLabel.grid(row=2, column=2, columnspan=3, sticky=W+E)
 
         
-        #Image générer
+        #Image générée
         self._viewFrame.grid(row=1, column=2, sticky=N+E+W+S, padx=5, pady=5)
-        
-        self._hbar.grid(row=2, column=1, sticky=E+W)
-        self._vbar.grid(row=1, column=2, sticky=N+S)
-        self._viewCanvas.grid(row=1, column=1, sticky=N+E+W+S)
-
 
         self._progressFrame.grid(row=2, column=1, columnspan=2, sticky=N+E+W+S, padx=5)
 
@@ -138,14 +129,6 @@ class GeneratorView(Frame):
         self._model.addChangeListener(ChangeListener(
             target=lambda event: self.after(0, self._updateProgressBarValue, event)
         ))
-        
-        self._viewCanvas.configure(
-            xscrollcommand=self._hbar.set,
-            yscrollcommand=self._vbar.set
-        )
-        
-        self._hbar.configure(command=self._viewCanvas.xview)
-        self._vbar.configure(command=self._viewCanvas.yview)
 
     # OUTILS
     def _hasByVarChanged(self):
@@ -156,7 +139,6 @@ class GeneratorView(Frame):
         if self._byVar.get():
             #Désactivation des widgets liés à la sélection par image
             self._loadButton.config(state=DISABLED)
-            self._genViewCanvas.config(state=DISABLED)
             #Activation de ceux liés à la sélection par valeurs
             self._heightEntry.config(state=NORMAL)
             self._widthEntry.config(state=NORMAL)
@@ -166,7 +148,6 @@ class GeneratorView(Frame):
             self._widthEntry.config(state=DISABLED)
             # Activation de ceux liés à la sélection par images
             self._loadButton.config(state=NORMAL)
-            self._genViewCanvas.config(state=NORMAL)
 
     def _savePicture(self, event):
         """
@@ -210,12 +191,7 @@ class GeneratorView(Frame):
         d'une nouvelle clé.
         :param event: l'événement à l'origine du rafraichissement
         """
-        photo = ImageTk.PhotoImage(file=self._picturePathVar.get())
-        x, y = photo.width(), photo.height()
-        self._viewCanvas.config(width=x, height=y)
-        self._viewCanvas.config(scrollregion=(0, 0, x, y))
-        self._viewCanvas.create_image(x / 2, y / 2, image=photo)
-        self._viewCanvas.image = photo
+        self._viewFrame.addPicture(self._picturePathVar.get())
         self._genButton.config(state=NORMAL)
 
     def _updateProgressBarValue(self, event):
@@ -232,9 +208,6 @@ class GeneratorView(Frame):
         """
         refpic = filedialog.askopenfilename(filetypes=[("PPM", "*.ppm")], title="Ouvrir une image ...")
         if len(refpic) > 0:
-            picture = ImageTk.PhotoImage(file=refpic)
-            x, y = picture.width(), picture.height()
-            self._widthVar.set(x)
-            self._heightVar.set(y)
-            self._genViewCanvas.picture = picture
-            self._genViewCanvas.create_image(x / 2, y / 2, image=picture)
+            self._genViewFrame.addPicture(refpic)
+            self._widthVar.set(self._genViewFrame.picture.width)
+            self._heightVar.set(self._genViewFrame.picture.height)

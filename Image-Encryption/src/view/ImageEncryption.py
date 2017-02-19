@@ -3,10 +3,11 @@ Created on 13 janv. 2017
 
 @author: dubaipie
 '''
-import tkinter
-import sys
-import os
+from tkinter import messagebox
+from tkinter import Tk, Menu
+
 import tkinter.ttk as ttk
+
 import model.ImageEncryptionModel as IEM
 import xml.etree.ElementTree as ET
 
@@ -36,41 +37,31 @@ class ImageEncryption(object):
         '''
         try:
             self._model = IEM.ImageEncryptionModel(api)
-            self._model.selectedLocale = self._model.selectedLocale
         except ET.ParseError:
-            tkinter.messagebox.showerror(_("Properties file error"),
-                                         _("An error occurs during properties file parsing"))
+            messagebox.showerror("Erreur sur le fichier de propriétés",
+                                         "Une erreur s'est produite pendant le traitement du fichier")
                 
     def createView(self):
         '''
         Création des différents widgets de la fenêtre.
         '''
         #La fenêtre principale
-        self._frame = tkinter.Tk()
-        self._frame.title(_("Image Encryption"))
+        self._frame = Tk()
+        self._frame.title("Image Encryption")
         self._frame.minsize(600, 400)
-        
+
+
         self._tabs = ttk.Notebook(self._frame)
         
         #Les différents onglets correspondant à chaque plugin
         self._pluginTabs = []
-        #try:
         for init in self._model.plugins:
-            #try:
             frame = init.getFrame(self._tabs)
             frame.tabText = init.getName()
             self._pluginTabs.append(frame)
-                #except :
-                    #les modules non conforme sont ignorés
-                    #print("error")
-                    #traceback.print_exc()
-                    #pass
-        #except NotADirectoryError:
-        #    tkinter.messagebox.showerror(_("Plugin directory error"),
-        #                                 _("Plugin directory not found"))
-        
+
         #La barre des menus de l'application
-        self._menuBar = tkinter.Menu(self._frame)
+        self._menuBar = Menu(self._frame)
     
     def placeComponents(self):
         '''
@@ -88,42 +79,17 @@ class ImageEncryption(object):
         '''
         Initialisation du contrôleur de la fenêtre.
         '''
-        self._createMenu()        
-    
-    def _restart(self):
-        '''
-        Redémarrer le programme.
-        '''
-        pgrm = sys.executable
-        os.execl(pgrm, pgrm, *sys.argv)
-    
-    def _reloadWithLocale(self, loc):
-        self._model.selectedLocale = loc
-        self._restart()
-    
+        self._createMenu()
+
     def _createMenu(self):
         #-- Ajout des controleurs au menu 'File'. --#
-        fileMenu = tkinter.Menu(self._menuBar, tearoff=False)
+        fileMenu = Menu(self._menuBar, tearoff=0)
         #  Ajout de l'item quitter  #
-        fileMenu.add_command(label=_("Quit"), command=self._frame.quit)
-        self._menuBar.add_cascade(label=_("File"), menu=fileMenu)
+        fileMenu.add_command(label="Quitter", command=self._frame.quit)
+        self._menuBar.add_cascade(label="Fichier", menu=fileMenu)
         #-------------------------------------------#
         
         #-- Ajout de controleurs au menu 'Option' --#
-        optMenu = tkinter.Menu(self._menuBar, tearoff=False)
-        #  Ajout du sous-menu langage  #
-        languageMenu = tkinter.Menu(optMenu, tearoff=False)
-        localeChoosed = tkinter.StringVar()
-        for loc in self._model.availableLocales:
-            languageMenu.add_radiobutton(label=loc, variable=localeChoosed, value=loc)
-            if loc == self._model.selectedLocale:
-                localeChoosed.set(loc)
-        localeChoosed.trace("w", lambda *args: self._reloadWithLocale(localeChoosed.get()))
-        optMenu.add_cascade(label=_("Languages"), menu=languageMenu)
-        #-------------------------------------------#
+        optMenu = Menu(self._menuBar, tearoff=False)
         
-        self._menuBar.add_cascade(label=_("Option"), menu=optMenu)
-
-if __name__ == "__main__":
-    app = ImageEncryption()
-    app.display()
+        self._menuBar.add_cascade(label="Option", menu=optMenu)

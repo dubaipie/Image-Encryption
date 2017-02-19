@@ -8,7 +8,7 @@ import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
 from Cypherer.model.CyphererModel import MismatchFormatException
 
-from tkinter import Entry, Button, StringVar, Frame, Canvas, Label, LabelFrame,\
+from tkinter import Entry, Button, StringVar, Frame, Canvas, LabelFrame,\
     IntVar, BooleanVar
 from tkinter import filedialog, messagebox, Radiobutton
 from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
@@ -72,10 +72,10 @@ class Cypherer(Frame):
         self._rslEntry.config(state="readonly", textvariable=self._rslVar)
         
         #Boutons
-        self._keyButton = Button(self._frame1, text=_("Find"))
-        self._imgButton = Button(self._frame2, text=_("Find"))
-        self._rslButton = Button(self._frame3, text=_("Save as"))
-        self._cypherButton = Button(self, text=_("Cypher"))
+        self._keyButton = Button(self._frame1, text="Find")
+        self._imgButton = Button(self._frame2, text="Find")
+        self._rslButton = Button(self._frame3, text="Save as")
+        self._cypherButton = Button(self, text="Cypher")
         self._resetButton = Button(self._frame3, text=("Reset"))
         
         #Canvas
@@ -101,7 +101,7 @@ class Cypherer(Frame):
         self._byDecyphererButton = Radiobutton(self._frame0, text="décrypter", variable=self._byVar, value=True)
         
         #Label
-        self._label = Label(self._frame2, text=_("Image à Crypter : ")) 
+        self._label = Label(self._frame2, text="Image à Crypter : ")
         
     def _placeComponents(self):
         #FRAME
@@ -113,7 +113,7 @@ class Cypherer(Frame):
         self._frame0.grid(row=1, column=1,  sticky=E+W)
         
         #FRAME1
-        Label(self._frame1, text=_("Clé : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame1, text="Clé : ").grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._frame1.grid(row=1, column=2)
@@ -137,7 +137,7 @@ class Cypherer(Frame):
         self._frame5.grid(row=2, column=2, sticky=NW+SE)
         
         #FRAME3
-        Label(self._frame3, text=_("Chemin de retour : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame3, text="Chemin de retour : ").grid(row=1, column=1, sticky=W)
         self._rslEntry.grid(row=1, column=2)
         self._rslButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._resetButton.grid(row=1, column=4)
@@ -241,11 +241,11 @@ class Cypherer(Frame):
         if self._byVar.get():
             self._cypherButton.config(command=self._decypher, text='Décrypter')
             self._frame5.config(text="Aperçu de l'image crypter")
-            self._label.config(text=_("Image à Décrypter : "))
+            self._label.config(text="Image à Décrypter : ")
         else:
             self._cypherButton.config(command=self._cypher, text='crypter')
             self._frame5.config(text="Aperçu de l'image")
-            self._label.config(text=_("Image à Crypter : "))
+            self._label.config(text="Image à Crypter : ")
     
     def _decypher(self):
         if self._model.imagePath is None or self._model.keyPath is None or self._rslVar.get() == '':
