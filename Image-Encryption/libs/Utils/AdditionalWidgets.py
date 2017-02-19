@@ -2,8 +2,8 @@ from tkinter import Scrollbar, Toplevel, Label
 
 class AutoScrollbar(Scrollbar):
     """
-    a scrollbar that hides itself if it's not needed.  only
-    works if you use the grid geometry manager.
+    A scrollbar that hides itself if it's not needed.
+    Only works if you use the grid geometry manager.
     """
     def set(self, lo, hi):
         if float(lo) <= 0.0 and float(hi) >= 1.0:

@@ -8,7 +8,6 @@ from API.PropertiesManager import PropertiesManager
 from API.PluginManager import PluginManager
 
 import os
-from API.LocaleManager import LocaleManager
 from API.LibManager import LibManager
 
 class AppLauncher(object):
@@ -33,10 +32,6 @@ class AppLauncher(object):
                                            os.path.abspath(os.path.join(os.getcwd(), "../..")),
                                            "properties.xml")
 
-        self._localeManager = LocaleManager(self)
-        self._localeManager.addLocalePath(self._properties.getProperty(self, "app_name")[0],
-                                          self._properties.getProperty(self, "locales")[0])
-
         self._libManager = LibManager(self)
         self._libManager.loadLibs()
 
@@ -55,12 +50,6 @@ class AppLauncher(object):
         Donne le PropertiesManager utilisé.
         '''
         return self._properties
-
-    def getLocaleManager(self):
-        '''
-        Donne le localeManager utilisé.
-        '''
-        return self._localeManager
 
     def getLibManager(self):
         '''

@@ -5,8 +5,10 @@ Created on 18 janv. 2017
 '''
 
 from PIL import Image
+
 from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport
 from Utils.Decorators import *
+
 import threading
 
 
@@ -95,16 +97,16 @@ class ImageFormaterModel(object):
         self._support.removePropertyChangeListener(propertyChangeListener)
 
     #  OUTILS
-    @synchronized_with_attr("_lock")
     def _convertThread(self):
         """
         Méthode qui sera appelée par le thread de calcul. Modifie sur place les attributs.
         """
-        self._converted = self._origin.convert('1')
-        width, height = self._converted.width, self._converted.height
-        width *= 2
-        height *= 2
-        self._converted = self._converted.resize((width, height), Image.BILINEAR)
+        with self._lock:
+            self._converted = self._origin.convert('1')
+            width, height = self._converted.width, self._converted.height
+            width *= 2
+            height *= 2
+            self._converted = self._converted.resize((width, height), Image.BILINEAR)
         self._firePropertyStateChange("convertedPicture")
 
     def _firePropertyStateChange(self, propName):

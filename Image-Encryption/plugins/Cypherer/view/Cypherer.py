@@ -69,11 +69,11 @@ class Cypherer(Frame):
         self._rslEntry.config(state="readonly", textvariable=self._rslVar)
         
         #Boutons
-        self._keyButton = Button(self._frame1, text=_("Find"))
-        self._imgButton = Button(self._frame2, text=_("Find"))
-        self._rslButton = Button(self._frame3, text=_("Save as"))
-        self._cypherButton = Button(self, text=_("Cypher"))
-        self._resetButton = Button(self._frame3, text=("Reset"))
+        self._keyButton = Button(self._frame1, text="Ouvrir")
+        self._imgButton = Button(self._frame2, text="Ouvrir")
+        self._rslButton = Button(self._frame3, text="Sauvegarder sous ...")
+        self._cypherButton = Button(self, text="Chiffreur")
+        self._resetButton = Button(self._frame3, text="Réinitialiser")
         
         #Canvas
         self._resultCanvas = Canvas(self._frame6)
@@ -95,7 +95,7 @@ class Cypherer(Frame):
 
     def _placeComponents(self):
         #FRAME1
-        Label(self._frame1, text=_("Key : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame1, text="Clé : ").grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._frame1.grid(row=1, column=1)
@@ -107,7 +107,7 @@ class Cypherer(Frame):
         self._frame4.grid(row=2, column=1, sticky=NW+SE)
         
         #FRAME2
-        Label(self._frame2, text=_("Cyphered Picture : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame2, text="Image cryptée").grid(row=1, column=1, sticky=W)
         self._imgEntry.grid(row=1, column=2)
         self._imgButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._frame2.grid(row=1, column=2)
@@ -119,7 +119,7 @@ class Cypherer(Frame):
         self._frame5.grid(row=2, column=2, sticky=NW+SE)
         
         #FRAME3
-        Label(self._frame3, text=_("Destination file : ")).grid(row=1, column=1, sticky=W)
+        Label(self._frame3, text="Fichier de destination").grid(row=1, column=1, sticky=W)
         self._rslEntry.grid(row=1, column=2)
         self._rslButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._resetButton.grid(row=1, column=4)
@@ -218,7 +218,7 @@ class Cypherer(Frame):
     
     def _cypher(self):
         if self._model.imagePath is None or self._rslVar.get() == '':
-            messagebox.showerror("Data error", "Please fill all inputs")
+            messagebox.showerror("Erreur", "Remplissez tous les champs avant de valider")
             return
         if self._model.keyPath is None:
             thread = threading.Thread(target=self._generateKey)

@@ -6,11 +6,14 @@ Created on 18 janv. 2017
 from tkinter import Frame, Entry, Canvas, Button, LabelFrame
 from tkinter import StringVar, HORIZONTAL, VERTICAL, E, W, N, S
 from tkinter import filedialog, messagebox
+
 from PIL import ImageTk
+
 from ImageFormater.model.ImageFormaterModel import *
+
 from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener
-
+from Utils.ImageViewer import *
 
 class ImageFormater(Frame):
     FORMATS = [
@@ -67,14 +70,7 @@ class ImageFormater(Frame):
         self._convertButton = Button(self._leftFrame, text="Convertir")
         ToolTips(self._convertButton, text="Formater l'image")
 
-        self._rightFrame = Frame(self)
-        self._canvasLabelFrame = LabelFrame(self._rightFrame, text="Aperçu")
-        self._canvas = Canvas(self._canvasLabelFrame)
-        ToolTips(self._canvasLabelFrame, text="L'image formatée apparaîtra dans cette zone un fois le bouton\n"
-                                    "'Convertir' pressé et les champs remplis")
-
-        self._hbar = AutoScrollbar(self._canvasLabelFrame, orient=HORIZONTAL)
-        self._vbar = AutoScrollbar(self._canvasLabelFrame, orient=VERTICAL)
+        self._pictureView = ImageViewer(self, text="Aperçu")
 
     def _placeComponents(self):
         """
@@ -104,20 +100,8 @@ class ImageFormater(Frame):
         self._leftFrame.grid(row=1, column=1, sticky=E+W+N, padx=10, pady=10)
 
         # -----   rightFrame   ----------
-        #
-        # ---- canvasLabelFrame ----
-        self._canvas.grid(row=1, column=1)
-        self._hbar.grid(row=2, column=1, sticky=E+W)
-        self._vbar.grid(row=1, column=2, sticky=N+S)
-        # ----       Fin        ----
-        #
-        self._canvasLabelFrame.grid_columnconfigure(1, weight=1)
-        self._canvasLabelFrame.grid_rowconfigure(1, weight=1)
-        self._canvasLabelFrame.grid(row=1, column=1, sticky=N+E+W+S)
+        self._pictureView.grid(row=1, column=2, sticky=N+E+W+S, padx=10, pady=10)
         # -----       Fin      ----------
-        self._rightFrame.grid_columnconfigure(1, weight=1)
-        self._rightFrame.grid_rowconfigure(1, weight=1)
-        self._rightFrame.grid(row=1, column=2, sticky=N+S+E+W, padx=10, pady=10)
 
         # Distribution de l'espace restant dans la frame principale
         self.grid_columnconfigure(1, weight=1, minsize=400)  # 1/3 pour la partie gauche
@@ -132,13 +116,15 @@ class ImageFormater(Frame):
         self._convertedButton.config(command=self._onConvertedButtonClick)
         self._convertButton.config(command=self._onConvertButtonClick)
 
-        self._canvas.config(xscrollcommand=self._hbar.set, yscrollcommand=self._vbar.set)
-        self._hbar.config(command=self._canvas.xview)
-        self._vbar.config(command=self._canvas.yview)
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            propertyName="convertedPicture",
+            target = lambda event: self.after(0, self._pictureView.addPicture(self._model.convertedPicture))
+        ))
 
         self._model.addPropertyChangeListener(PropertyChangeListener(
             propertyName="convertedPicture",
-            target=lambda event: self.after(0, self._updateCanvasDisplay, event)))
+            target=lambda event: self._model.convertedPicture.save(self._convertedStrVar.get())
+        ))
 
     def _onOriginalButtonClick(self):
         """
@@ -172,19 +158,3 @@ class ImageFormater(Frame):
         """
         if self._model.originalPicture is not None and self._convertedStrVar is not None:
             self._model.convert()
-
-    def _updateCanvasDisplay(self, event):
-        """
-        Méthode appelée lorsqu'un changement est détecté au niveau du modèle.
-        :param event: l'événement reçu.
-        """
-        if self._model.convertedPicture is not None:
-            picture = self._model.convertedPicture
-            picture.save(self._convertedStrVar.get())
-            picture = ImageTk.PhotoImage(picture)
-            w, h = picture.width(), picture.height()
-            self._canvas.config(width=w,
-                                height=h,
-                                scrollregion=(0, 0, w, h))
-            self._canvas.create_image(w / 2, h / 2, image=picture)
-            self._canvas.picture = picture
