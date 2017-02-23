@@ -3,12 +3,6 @@ Created on 21 janv. 2017
 
 @author: dubaipie
 '''
-from view.ImageEncryption import ImageEncryption
-from API.PropertiesManager import PropertiesManager
-from API.PluginManager import PluginManager
-
-import os
-from API.LibManager import LibManager
 
 class AppLauncher(object):
     """
@@ -27,29 +21,17 @@ class AppLauncher(object):
         Ensemble des opérations à effectuer avant de lancer l'application
         principale.
         '''
-        self._properties = PropertiesManager()
-        self._properties.addPropertiesFile(self,
-                                           os.path.abspath(os.path.join(os.getcwd(), "../..")),
-                                           "properties.xml")
+        self._libManager = LibManager()
+        self._pluginManager = PluginManager()
 
-        self._libManager = LibManager(self)
         self._libManager.loadLibs()
-
-        self._pluginManager = PluginManager(self)
         self._pluginManager.loadPlugins()
-
 
     def getPluginManager(self):
         '''
         Donne le pluginManager utilisé.
         '''
         return self._pluginManager
-
-    def getPropertiesManager(self):
-        '''
-        Donne le PropertiesManager utilisé.
-        '''
-        return self._properties
 
     def getLibManager(self):
         '''
@@ -65,6 +47,15 @@ class AppLauncher(object):
         self._frame.display()
 
 if __name__ == "__main__":
-    app = AppLauncher()
-    app.init()
-    app.launch()
+    try:
+        from view.ImageEncryption import ImageEncryption
+        from API.PluginManager import PluginManager
+        from API.LibManager import LibManager
+
+        app = AppLauncher()
+        app.init()
+        app.launch()
+
+    except ImportError as e:
+        import sys
+        print("Une erreur s'est produite : " + e.msg, file=sys.stderr)

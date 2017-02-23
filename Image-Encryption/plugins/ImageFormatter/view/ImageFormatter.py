@@ -9,7 +9,7 @@ from tkinter import filedialog, messagebox
 
 from PIL import ImageTk
 
-from ImageFormater.model.ImageFormaterModel import *
+from ImageFormatter.model.ImageFormatterModel import *
 
 from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener

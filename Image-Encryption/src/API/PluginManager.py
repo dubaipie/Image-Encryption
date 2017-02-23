@@ -11,12 +11,10 @@ class PluginManager(object):
     Chargeur de plugins.
     '''
 
-
-    def __init__(self, api):
+    def __init__(self):
         '''
         Constructeur.
         '''
-        self._api = api
         self._plugins = []
     
     def loadPlugins(self):
@@ -24,7 +22,7 @@ class PluginManager(object):
         Charge les plugins à partir du chemin fourni par l'API. Si le module Initializer
         du plugin n'est pas correctement défini, le plugin est ignoré.
         '''
-        path = self._api.getPropertiesManager().getProperty(self._api, "plugins")[0]
+        path = os.path.abspath("../../plugins")
         for d in os.listdir(path):
             m = os.path.abspath(os.path.join(path, os.path.join(d, "Initializer.py")))
             if os.path.isfile(m):
@@ -35,16 +33,8 @@ class PluginManager(object):
                 try:
                     initializer = initializerModule.Initializer(self)
                     self._plugins.append(initializer)
-                    initializer.initPlugin()
-                except ImportError as e:
-                    print(e.msg)
-
-    @property
-    def API(self):
-        '''
-        Donne l'interface utilisée pour manipuler le programme principal.
-        '''
-        return self._api
+                except ImportError:
+                    pass
 
     @property
     def loadedPlugins(self):

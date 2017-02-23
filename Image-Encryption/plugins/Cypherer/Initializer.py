@@ -17,11 +17,6 @@ class Initializer(object):
         '''
         self._loader = loader
 
-    def initPlugin(self):
-        '''
-        Initialiser le plugin (langues, configuration ...)
-        '''
-
     def getFrame(self, master=None):
         '''
         Récupérer la fenêtre.

@@ -1,9 +1,9 @@
 '''
-Created on 1 févr. 2017
+Created on 20 janv. 2017
 
-@author: havarjos
+@author: dubaipie
 '''
-from Decypherer.view.Decypherer import Decypherer
+from ImageFormatter.view.ImageFormatter import ImageFormater
 
 class Initializer(object):
     '''
@@ -21,10 +21,10 @@ class Initializer(object):
         '''
         Récupérer la fenêtre.
         '''
-        return Decypherer(master)
+        return ImageFormater(master)
     
     def getName(self):
         '''
         Récupérer le nom du plugin.
         '''
-        return "Déchiffreur"
+        return "Convertisseur d'images"

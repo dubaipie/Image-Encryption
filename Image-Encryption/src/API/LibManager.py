@@ -11,13 +11,12 @@ class LibManager(object):
     Objet permettant de chager les librairies nécessaires à l'application.
     '''
 
-    def __init__(self, api):
+    def __init__(self):
         '''
         Constructeur.
         '''
-        self._api = api
         self._availableLibs = []
-        self._path = os.path.abspath(self._api.getPropertiesManager().getProperty(api, "libs")[0])
+        self._path = os.path.abspath("../../libs")
 
     @property
     def availableLibs(self):

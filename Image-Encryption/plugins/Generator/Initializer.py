@@ -16,11 +16,7 @@ class Initializer(object):
         Constructeur.
         '''
         self._loader = loader
-    
-    def initPlugin(self):
-        '''
-        Initialiser le plugin (langues, configuration ...)
-        '''
+
     def getFrame(self, master=None):
         '''
         Récupérer la fenêtre.
@@ -31,5 +27,4 @@ class Initializer(object):
         '''
         Récupérer le nom du plugin.
         '''
-        #return self._loader.API.getPropertiesManager().getProperty(self, "appname")
         return "Générateur de clé"

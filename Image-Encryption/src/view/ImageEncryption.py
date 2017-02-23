@@ -3,13 +3,9 @@ Created on 13 janv. 2017
 
 @author: dubaipie
 '''
-from tkinter import messagebox
 from tkinter import Tk, Menu
-
 import tkinter.ttk as ttk
-
 import model.ImageEncryptionModel as IEM
-import xml.etree.ElementTree as ET
 
 class ImageEncryption(object):
     '''
@@ -19,11 +15,12 @@ class ImageEncryption(object):
     def __init__(self, api):
         '''
         Constructeur de la fenêtre.
+        :param api: Le lanceur de l'application.
         '''
-        self.createModel(api)
-        self.createView()
-        self.placeComponents()
-        self.createController()
+        self._createModel(api)
+        self._createView()
+        self._placeComponents()
+        self._createController()
     
     def display(self):
         '''
@@ -31,17 +28,13 @@ class ImageEncryption(object):
         '''
         self._frame.mainloop()
     
-    def createModel(self, api):
+    def _createModel(self, api):
         '''
         Initialisation du model.
         '''
-        try:
-            self._model = IEM.ImageEncryptionModel(api)
-        except ET.ParseError:
-            messagebox.showerror("Erreur sur le fichier de propriétés",
-                                         "Une erreur s'est produite pendant le traitement du fichier")
+        self._model = IEM.ImageEncryptionModel(api)
                 
-    def createView(self):
+    def _createView(self):
         '''
         Création des différents widgets de la fenêtre.
         '''
@@ -63,7 +56,7 @@ class ImageEncryption(object):
         #La barre des menus de l'application
         self._menuBar = Menu(self._frame)
     
-    def placeComponents(self):
+    def _placeComponents(self):
         '''
         Placement des composants sur la fenêtre.
         '''
@@ -75,7 +68,7 @@ class ImageEncryption(object):
         #Ajout de la barre des menus.
         self._frame.config(menu=self._menuBar)
     
-    def createController(self): #SECTION A RETRAVAILLER
+    def _createController(self): #SECTION A RETRAVAILLER
         '''
         Initialisation du contrôleur de la fenêtre.
         '''
