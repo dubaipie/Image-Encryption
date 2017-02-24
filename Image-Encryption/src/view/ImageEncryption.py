@@ -42,7 +42,7 @@ class ImageEncryption(object):
         self._frame = Tk()
         self._frame.title("Image Encryption")
         self._frame.minsize(600, 400)
-
+        self._frame.iconbitmap("../../ressources/pictures/icon.ico")
 
         self._tabs = ttk.Notebook(self._frame)
         

@@ -1,12 +1,12 @@
 from PIL import ImageTk
 
-from tkinter import LabelFrame, Radiobutton, Button, Entry, Canvas, Frame
+from tkinter import LabelFrame, Radiobutton, Button, Entry, Frame
 from tkinter import IntVar, StringVar, BooleanVar
-from tkinter import N, E, S, W, BOTH, CENTER, DISABLED, NORMAL, HORIZONTAL, VERTICAL
+from tkinter import N, E, S, W, BOTH, CENTER, DISABLED, NORMAL
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 
-from Generator.model import GeneratorModel
+from Generator.model.GeneratorModel import GeneratorModel
 
 from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
@@ -28,7 +28,7 @@ class GeneratorView(Frame):
         '''
         Initialisation du model.
         '''
-        self._model = GeneratorModel.GeneratorModel()
+        self._model = GeneratorModel()
 
         self._byVar = BooleanVar()
 
@@ -47,22 +47,32 @@ class GeneratorView(Frame):
         self._progressFrame = LabelFrame(self, text="Progression")
 
         self._byValueButton = Radiobutton(self._genFrame, text="par valeurs", variable=self._byVar, value=True)
+        ToolTips(self._byValueButton, text="Entrer une taille manuellement")
         self._byPictureButton = Radiobutton(self._genFrame, text="par image", variable=self._byVar, value=False)
+        ToolTips(self._byPictureButton, text="Choisir une taille à partir d'une image")
 
         self._widthEntry = Entry(self._genFrame, textvariable=self._widthVar, width=10, justify=CENTER, state=DISABLED)
+        ToolTips(self._widthEntry, text="Largeur de la clé")
         self._heightEntry = Entry(self._genFrame, textvariable=self._heightVar, width=10, justify=CENTER, state=DISABLED)
+        ToolTips(self._heightEntry, text="Hauteur de la clé")
 
         self._genButton = Button(self._genFrame, text="Générer")
+        ToolTips(self._genButton, text="Générer la clé")
 
         self._loadButton = Button(self._genFrame, text="Charger")
+        ToolTips(self._loadButton, text="Choisir l'image dont il faut la taille")
         self._genViewFrame = ImageViewer(self._genFrame, text="Aperçu")
 
         self._widthLabel = Label(self._propFrame, textvariable=self._widthVar)
+        ToolTips(self._widthLabel, text="Largeur de la clé générée")
         self._heightLabel = Label(self._propFrame, textvariable=self._heightVar)
+        ToolTips(self._heightLabel, text="Hauteur de la clé générée")
 
         self._picturePathLabel = Label(self._propFrame, textvariable=self._picturePathVar, wraplength=275)
+        ToolTips(self._picturePathLabel, text="L'emplacement de la clé générée")
 
         self._progressBar = Progressbar(self._progressFrame, variable=self._progressVar)
+        ToolTips(self._progressBar, text="La progression de la génération de la clé")
 
          #Aperçu
         self._viewFrame = ImageViewer(self, text="Aperçu")

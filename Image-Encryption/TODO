@@ -1,18 +1,20 @@
 PRIORITE:
-   #ÈlevÈe :
+   #√©lev√©e :
        - Terminer la suppression du module Decypherer
        - Utiliser des ImageViewers dans Cypherer
        - Harmoniser l'interface
-       - Remplacer le texte anglais par du franÁais
-       - Ajouter les Tooltips sur Cypherer et ImageGenerator
+       - Remplacer le texte anglais par du fran√ßais
+       - Ajouter les Tooltips sur Cypherer
    #moyenne :
        - Faire le rapport
-       - Faire la vidÈo
-       - RÈflÈchir au moyen de distribuer le programme
+       - Faire la vid√©o
+       - R√©fl√©chir au moyen de distribuer le programme
    #faible :
        - Editeur d'image
 
 AMELIORATIONS:
-    - SystËme de mise ‡ jour automatique
-    - AmÈliorer le zoom dans le composant ImageViewer
+    - Syst√®me de mise √† jour automatique
+    - Am√©liorer le zoom dans le composant ImageViewer
+    - Possibilit√© d'impression
+    - Possibilit√© de g√©n√©rer des images sans avoir √† les sauvegarder
     - ...

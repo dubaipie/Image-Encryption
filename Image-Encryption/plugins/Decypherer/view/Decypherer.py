@@ -22,6 +22,7 @@ from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
 
 class Decypherer(Frame):
+    # fixme: delete file
     
     '''
     Vue du modèle de Decypherer, le même

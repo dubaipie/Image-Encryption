@@ -5,6 +5,7 @@ Created on 20 janv. 2017
 '''
 import importlib.util
 import os
+import sys
 
 class PluginManager(object):
     '''
@@ -16,6 +17,7 @@ class PluginManager(object):
         Constructeur.
         '''
         self._plugins = []
+        sys.path.insert(1, os.path.abspath("../../plugins"))
     
     def loadPlugins(self):
         '''
@@ -23,6 +25,7 @@ class PluginManager(object):
         du plugin n'est pas correctement défini, le plugin est ignoré.
         '''
         path = os.path.abspath("../../plugins")
+
         for d in os.listdir(path):
             m = os.path.abspath(os.path.join(path, os.path.join(d, "Initializer.py")))
             if os.path.isfile(m):

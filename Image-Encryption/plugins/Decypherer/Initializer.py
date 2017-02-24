@@ -6,6 +6,7 @@ Created on 1 févr. 2017
 from Decypherer.view.Decypherer import Decypherer
 
 class Initializer(object):
+    # fixme: delete file
     '''
     La classe d'initialisation du plugin.
     '''

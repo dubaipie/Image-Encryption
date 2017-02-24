@@ -51,6 +51,7 @@ class Cypherer(Frame):
         self._progressBarValue= IntVar()
 
     def _createView(self):
+        # fixme: add tooltips
         #Frame
         self._frame = Frame(self)
         self._frame0 = Frame(self._frame)
@@ -79,9 +80,9 @@ class Cypherer(Frame):
         self._resetButton = Button(self._frame3, text=("Reset"))
         
         #Canvas
-        self._resultCanvas = Canvas(self._frame6)
-        self._keyCanvas = Canvas(self._frame4)
-        self._imgCanvas = Canvas(self._frame5)
+        self._resultCanvas = Canvas(self._frame6) # fixme: use ImageViewer instance instead
+        self._keyCanvas = Canvas(self._frame4)  # fixme: use ImageViewer instance instead
+        self._imgCanvas = Canvas(self._frame5)  # fixme: use ImageViewer instance instead
         
         # horizontal AutoScrollbar
         self._hbar = AutoScrollbar(self._frame4, orient=HORIZONTAL)

@@ -48,6 +48,10 @@ class AppLauncher(object):
 
 if __name__ == "__main__":
     try:
+        import sys
+        import os
+        sys.path.insert(1, os.path.abspath(".."))
+
         from view.ImageEncryption import ImageEncryption
         from API.PluginManager import PluginManager
         from API.LibManager import LibManager
@@ -57,5 +61,4 @@ if __name__ == "__main__":
         app.launch()
 
     except ImportError as e:
-        import sys
         print("Une erreur s'est produite : " + e.msg, file=sys.stderr)

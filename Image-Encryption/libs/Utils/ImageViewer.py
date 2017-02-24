@@ -254,6 +254,7 @@ class ImageViewerModel(object):
         Créé une image de type ImageTk à la dimension demandée.
         :return: L'image demandée (Instance de ImageTK.PhotoImage).
         """
+        # fixme: improve performances
         image = self.picture.copy()
         self._currentWidth = int(image.width * self._scale)
         self._currentHeight = int(image.height * self._scale)
