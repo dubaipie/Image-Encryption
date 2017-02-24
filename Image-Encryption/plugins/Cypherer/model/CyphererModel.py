@@ -110,8 +110,9 @@ class CyphererModel(object):
         :precondition : getImagepath() is not None
         :raise IOError: L'image ou la clé n'a pas pu être chargée ou si l'écriture a échoué.
         """
-        if self.keyPath is None or self.imagePath is None:
-            raise AssertionError
+        with self._lock:
+            if self.keyPath is None or self.imagePath is None:
+                raise AssertionError
 
         thread = threading.Thread(target=self._cypher)
         thread.start()

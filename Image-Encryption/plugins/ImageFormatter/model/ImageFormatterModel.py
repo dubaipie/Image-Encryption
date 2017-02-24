@@ -53,7 +53,6 @@ class ImageFormaterModel(object):
 
     #  COMMANDES
     @originalPicture.setter
-    @synchronized_with_attr("_lock")
     def originalPicture(self, path_or_image):
         """
         Permet de spécifier l'image qui sera convertie lors d'un appel à convert()
@@ -62,10 +61,12 @@ class ImageFormaterModel(object):
         :raise IOError: le chemin ne pointe pas sur une image valide.
         """
         if type(path_or_image) is str:
-            self._origin = Image.open(path_or_image)
+            with self._lock:
+                self._origin = Image.open(path_or_image)
             self._firePropertyStateChange("originalPicture")
         elif type(path_or_image) is Image:
-            self._origin = path_or_image
+            with self._lock:
+                self._origin = path_or_image
             self._firePropertyStateChange("originalPicture")
         else:
             raise TypeError
