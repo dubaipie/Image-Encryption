@@ -111,9 +111,8 @@ class CyphererModel(object):
         :raise IOError: L'image ou la clé n'a pas pu être chargée ou si l'écriture a échoué.
         """
         with self._lock:
-            if self.keyPath is None or self.imagePath is None:
+            if self._keyPath is None or self._imagePath is None:
                 raise AssertionError
-
         thread = threading.Thread(target=self._cypher)
         thread.start()
     
@@ -130,7 +129,6 @@ class CyphererModel(object):
 
         if img.size != key.size:
             raise MismatchFormatException
-
         keyList = list(key.getdata())
         imgList = list(img.getdata())
         resultList = list()

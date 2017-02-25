@@ -28,7 +28,7 @@ class ImageViewer(LabelFrame):
         self._createView()
         self._placeComponents()
         self._createController()
-
+    
     @property
     def picture(self):
         """
@@ -128,6 +128,7 @@ class ImageViewerModel(object):
         """
         Constructeur du modèle.
         """
+        self._pictureIn = None
         self._picture = None
         self._canvas = None
         self._propertySupport = PropertyChangeListenerSupport()
@@ -185,7 +186,7 @@ class ImageViewerModel(object):
         Permet de fixer l'imagec affichée dans le modèle.
         :param path_or_picture: le chemin vers l'image ou une instance de Image
         """
-        self.canvas.delete(self.picture)
+        self.canvas.delete(self._pictureIn)
         if path_or_picture is None:
             self._picture = None
         elif type(path_or_picture) == Image.Image:
@@ -236,7 +237,7 @@ class ImageViewerModel(object):
         x, y = self._computeUpperLeftCorner()
         self._canvas.delete("all")
         self.canvas.config(scrollregion=(0, 0, self._currentWidth, self._currentHeight))
-        self.canvas.create_image(x, y, image=picture, anchor=NW)
+        self._pictureIn = self.canvas.create_image(x, y, image=picture, anchor=NW)
         self.canvas.pic = picture
 
     def _computeUpperLeftCorner(self):
