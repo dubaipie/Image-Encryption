@@ -23,6 +23,7 @@ import threading
 from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
 from Utils.ImageViewer import ImageViewer
+from idlelib.ToolTip import ToolTip
 
 
 class Cypherer(Frame):
@@ -57,10 +58,11 @@ class Cypherer(Frame):
         #Frame
         self._GenFrame = LabelFrame(self, text="Cryptage")
         
-        self._KeyFrame = LabelFrame(self._GenFrame, text="Clé*")
+        self._frame0 = Frame(self._GenFrame)
+        
+        self._KeyFrame = LabelFrame(self._GenFrame, text="Clé")
         self._frame1 = Frame(self._KeyFrame)
         self._KeyImage = ImageViewer(self._KeyFrame, text="Aperçu de la clé")
-        ToolTips(self._KeyFrame, text="*: La clé n'est pas obligatoire lors du cryptage elle sera générer automatiquement")
         self._ImageFrame = LabelFrame(self._GenFrame, text="Image à crypter")
         self._frame2 = Frame(self._ImageFrame)
         self._Image = ImageViewer(self._ImageFrame, text="Aperçu de l'image")
@@ -89,7 +91,9 @@ class Cypherer(Frame):
         self._rslButton = Button(self._frame3, text="Enregistrer sous")
         ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du cryptage va être sauvegarder")
         self._cypherButton = Button(self._GenFrame, text="Crypter")
-        self._resetButton = Button(self._GenFrame, text=("Réintialiser"))
+        ToolTips(self._cypherButton, "Permet de lancer le cryptage de l'image avec ou sans clé")
+        self._resetButton = Button(self._frame0, text=("Réintialiser"))
+        ToolTips(self._resetButton, text="Permet de réintialiser tout les champs")
         
         #ProgressBar
         self._progressBar = Progressbar(self._ProgressFrame, variable=self._progressBarValue)
@@ -97,24 +101,27 @@ class Cypherer(Frame):
         
         #RadioButton
         self._byCypherButton = Radiobutton(self._GenFrame, text="Crypter", variable=self._byVar, value=False)
-        self._byDecyphererButton = Radiobutton(self._GenFrame, text="Décrypter", variable=self._byVar, value=True)
+        self._byDecyphererButton = Radiobutton(self._frame0, text="Décrypter", variable=self._byVar, value=True)
         
         #Label
         self._label = Label(self._frame2, text="Image à Crypter : ")
+        self._labelKey = Label(self._frame1, text="Clé* : ")
+        ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du cryptage elle sera générer automatiquement")
         
     def _placeComponents(self):
         
         #GenFrame
         self._byCypherButton.grid(row=1, column=1)
-        self._byDecyphererButton.grid(row=1, column=2)
+        self._byDecyphererButton.grid(row=1, column=1)
+        self._resetButton.grid(row=1, column=2, padx = 20)
+        self._frame0.grid(row=1, column=2)
         self._KeyFrame.grid(row=2, column=1, sticky=N+W+S+E)
         self._ImageFrame.grid(row=2, column=2, sticky=N+W+S+E)
-        self._cypherButton.grid(row=3, column=1)
-        self._resetButton.grid(row=3, column=2)
+        self._cypherButton.grid(row=3, column=1, columnspan = 2, sticky=E+W , padx=100, pady=5 )
         self._GenFrame.grid(row=1, column=1, sticky=N+W+S+E)
         
         #KeyFrame
-        Label(self._frame1, text="Clé : ").grid(row=1, column=1, sticky=W)
+        self._labelKey.grid(row=1, column=1, sticky=W)
         self._keyEntry.grid(row=1, column=2)
         self._keyButton.grid(row=1, column=3, sticky=E+W, padx=5, pady=5)
         self._frame1.grid(row=1, column=1)
@@ -134,7 +141,7 @@ class Cypherer(Frame):
         self._Result.grid(row=2, column=1, sticky=NW+SE)
         self._ResFrame.grid(row=1, column=2, sticky=NW+SE)
         
-        self._progressBar.pack(fill = BOTH)
+        self._progressBar.pack(fill = BOTH, padx=5, pady=5)
         self._ProgressFrame.grid(row=3,column=1, columnspan=2, sticky=W+E+N+S)
         
     def _createController(self):
@@ -210,41 +217,43 @@ class Cypherer(Frame):
             self._label.config(text="Image à Décrypter : ")
             self._GenFrame.config(text="Décryptage")
             self._ImageFrame.config(text="Image à Décrypter")
-            self._KeyFrame.config(text="Clé")
+            self._labelKey.config(text="Clé :")
             ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à décrypter")
             ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à décrypter")
             ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du décryptage va être sauvegarder")
             ToolTips(self._progressBar, text="La progression du Décryptage")
-            ToolTips(self._KeyFrame, text="Clé servant au décryptage")
+            ToolTips(self._labelKey, text="Clé servant au décryptage")
+            ToolTips(self._cypherButton, "Permet de lancer le décryptage de l'image avec la clé transmise")
         else:
             self._cypherButton.config(command=self._cypher, text='Crypter')
             self._Image.config(text="Aperçu de l'image")
             self._label.config(text="Image à Crypter : ")
             self._GenFrame.config(text="Cryptage")
-            self._KeyFrame.config(text="*Clé")
+            self._labelKey.config(text="Clé* :")
             self._ImageFrame.config(text="Image à Crypter")
             ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à crypter")
             ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à crypter")
             ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du cryptage va être sauvegarder")
             ToolTips(self._progressBar, text="La progression du Cryptage")
-            ToolTips(self._KeyFrame, text="*: La clé n'est pas obligatoire lors du cryptage elle sera générer automatiquement")
+            ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du cryptage elle sera générer automatiquement")
+            ToolTips(self._cypherButton, "Permet de lancer le cryptage de l'image avec ou sans clé")
             
     def _decypher(self):
         if self._model.imagePath is None or self._model.keyPath is None or self._rslVar.get() == '':
-            messagebox.showerror("Data error", "Please fill all inputs")
+            messagebox.showerror("Erreur", "Veuiller indiquer la clé et l'image à décrypter ainsi que l'endroit où sauvegarder le résultat")
         else:
             self._execute()
             
     def _cypher(self):
         if self._model.imagePath is None or self._rslVar.get() == '':
-            messagebox.showerror("Data error", "Please fill all inputs")
+            messagebox.showerror("Erreu", "Veuillez indiquer au minimu l'image à crypter ainsi que l'endroit où sauvegarder le résultat")
             return
         if self._model.keyPath is None:
             thread = threading.Thread(target=self._generateKey)
             thread.start()
         else :
             self._execute()
-    
+                
     def _execute(self):
         self._switchButtonsState(DISABLED)
         try :
@@ -258,6 +267,7 @@ class Cypherer(Frame):
             messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
 
     def _generateKey(self):
+        """Méthode permettant de générer une clé aléatoirement et de la sauvegarder ainsi que de l'afficher """
         #  Désactivation des boutons
         self.after(0, self._switchButtonsState, DISABLED)
 
@@ -291,7 +301,6 @@ class Cypherer(Frame):
     
     def _reset(self):
         """ Réintialise le model et les canvas """
-        self._KeyImage.addPicture(None)
         self._Image.addPicture(None)
         self._Result.addPicture(None)
         self._rslVar.set('')
@@ -305,24 +314,21 @@ class Cypherer(Frame):
         Mettre à jour le canvas de la clé
         :param event: l'événement déclencheur.
         """
-        if self._model.keyPath is not None:
-            self._KeyImage.addPicture(self._model.keyPath)
+        self._KeyImage.addPicture(self._model.keyPath)
 
     def _updateImageCanvas(self, event):
         """
         Mettre à jour le canvas de l'image.
         :param event: l'événement déclencheur
         """
-        if self._model.imagePath is not None:
-            self._Image.addPicture(self._model.imagePath)
+        self._Image.addPicture(self._model.imagePath)
 
     def _updateResultCanvas(self, event):
         """
         Mettre à jour le canvas du résultat.
         :param event: l'événement déclencheur
         """
-        if self._model.resultPath is not None:
-            self._Result.addPicture(self._model.resultPath)
+        self._Result.addPicture(self._model.resultPath)
         self._switchButtonsState(NORMAL)
 
     def _switchButtonsState(self, state):

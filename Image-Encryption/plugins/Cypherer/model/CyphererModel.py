@@ -99,8 +99,12 @@ class CyphererModel(object):
         '''
         Réintialise le modèle
         '''
+        self._resultPath = None
         self._keyPath = None
         self._imagePath = None
+        self._firePropertyStateChanged("keyPath")
+        self._firePropertyStateChanged("imagePath")
+        self._firePropertyStateChanged("resultPath")
         
     def cypher(self):
         """

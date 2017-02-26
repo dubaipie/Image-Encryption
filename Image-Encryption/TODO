@@ -1,10 +1,6 @@
 PRIORITE:
    #élevée :
-       - Terminer la suppression du module Decypherer
-       - Utiliser des ImageViewers dans Cypherer
-       - Harmoniser l'interface
-       - Remplacer le texte anglais par du français
-       - Ajouter les Tooltips sur Cypherer
+       - Le plugins Decypherer peut être supprimer
    #moyenne :
        - Faire le rapport
        - Faire la vidéo
@@ -18,3 +14,7 @@ AMELIORATIONS:
     - Possibilité d'impression
     - Possibilité de générer des images sans avoir à les sauvegarder
     - ...
+    
+PROBLEMES:
+	- lors de l'utilisation de méthode utilisant le verrou dans le Cypher Model cela bloque le thread
+	- Rafraichissement du zoom pour des images importants fait buger l'applcation (Utilisation d'un Thread et bloquer le bouton temporairement ?)
