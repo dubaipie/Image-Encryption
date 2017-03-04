@@ -10,7 +10,6 @@ class Initializer(object):
     La classe d'initialisation du plugin.
     '''
 
-
     def __init__(self, loader):
         '''
         Constructeur.
@@ -27,4 +26,4 @@ class Initializer(object):
         '''
         Récupérer le nom du plugin.
         '''
-        return "Crypter"
+        return "Crypteur/Déchiffreur"
