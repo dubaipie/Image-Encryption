@@ -50,7 +50,10 @@ class ImageViewer(LabelFrame):
 
     def _createView(self):
         self._model.canvas = Canvas(self)
-        self._model.canvas.config(cursor=ImageViewer.DEFAULT_CURSOR)
+        try:
+            self._model.canvas.config(cursor=ImageViewer.DEFAULT_CURSOR)
+        except:
+            pass
 
         self._toolsFrame = Frame(self)
         self._scaler = Scale(self._toolsFrame, from_=0.1, to=20, resolution=0.1, orient=HORIZONTAL, showvalue=0)
@@ -82,14 +85,22 @@ class ImageViewer(LabelFrame):
         self._model.canvas.config(xscrollcommand=self._hbar.set, yscrollcommand=self._vbar.set)
         self._model.canvas.bind("<B1-Motion>", self._moveCanvasView)
         self._model.canvas.bind("<Button-1>", self._setMousePos)
-        self._model.canvas.bind("<ButtonRelease-1>",
-                         lambda event: self._model.canvas.config(cursor=ImageViewer.DEFAULT_CURSOR))
+        self._model.canvas.bind("<ButtonRelease-1>", self._setDefaultCursor)
 
         self._scaler.config(command=self._setScale)
 
+    def _setDefaultCursor(self, event):
+        try:
+            self._model.canvas.config(cursor=ImageViewer.DEFAULT_CURSOR)
+        except:
+            pass
+
     def _setMousePos(self, event):
         self._mousePos = (event.x, event.y)
-        self._model.canvas.config(cursor=ImageViewer.GRAB_CURSOR)
+        try:
+            self._model.canvas.config(cursor=ImageViewer.GRAB_CURSOR)
+        except:
+            pass
 
     def _moveCanvasView(self, event):
         """
