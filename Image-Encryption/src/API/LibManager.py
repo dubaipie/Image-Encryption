@@ -21,8 +21,8 @@ class LibManager(object):
     @property
     def availableLibs(self):
         '''
-        Donne un dictionnaire nom : chemin des librairies disponibles.
-        :return: un dictionnaire
+        Donne une liste des chemins des librairies disponibles.
+        :return: une liste
         '''
         if self._availableLibs == []:
             self._lookInto(self._path)

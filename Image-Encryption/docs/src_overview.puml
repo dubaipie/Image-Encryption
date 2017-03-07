@@ -1,0 +1,57 @@
+@startuml
+package "src" {
+    package "API" {
+        class "AppLauncher" {
+            -- Attributes --
+            - LibManager libManager
+            - PluginManager pluginManager
+            -- Methods --
+            + PluginManager getPluginManager()
+            + LibManager getLibManager()
+            + void launch()
+        }
+        class "LibManager" {
+            -- Attributes --
+            - list availableLibs
+            - AbsPath path
+            -- Properties --
+            + list availableLibs (R)
+            -- Methods --
+            + void loadLibs()
+            - void lookInto(path)
+        }
+        class "PluginManager" {
+            -- Attributes --
+            - list plugins
+            -- Properties --
+            + loadedPlugins (R)
+            -- Methods --
+            + void loadPlugins()
+        }
+    }
+
+    package "Model" {
+        class "ImageEncryptionModel" {
+            -- Attributes --
+            - AppLauncher api
+            -- Properties --
+            + list plugins (R)
+        }
+    }
+
+    package "View" {
+        class "ImageEncryption" {
+            -- Methods --
+            + void display()
+            - void createModel()
+            - createView()
+            - placeComponents()
+            - createController()
+            - createMenu()
+        }
+    }
+}
+hide empty members
+center footer Tous les attributs liés à des composants graphiques ne sont pas affichés
+title Description du paquetage src
+@enduml

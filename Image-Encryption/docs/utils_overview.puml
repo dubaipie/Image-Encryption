@@ -1,0 +1,111 @@
+@startuml
+
+package Utils {
+    class AutoScrollbar {
+        -- Methods --
+        + void set(lo hi)
+    }
+
+    class ToolTips {
+        -- Attributes --
+        - Widget widget
+        - String text
+        -- Methods --
+        + void enter(event)
+        + void close(event)
+    }
+
+    class ChangeEvent {
+        -- Attributes --
+        - Object src
+        -- Properties --
+        + source (R|W)
+    }
+
+    class ChangeListener {
+        -- Attributes --
+        - Function target
+        -- Methods --
+        + void execute(event)
+    }
+
+    class ChangeListenerSupport {
+        -- Attributes --
+        - List support
+        -- Methods --
+        + void addChangeListener(changeListener)
+        + void removeChangeListener(changeListener)
+    }
+
+    class PropertyChangeEvent {
+        -- Attributes --
+        - String name
+        -- Properties --
+        + propertyName (R|W)
+    }
+
+    class PropertyChangeListener {
+        -- Attributes --
+        - String name
+        - Function target
+        -- Methods --
+        + void execute(event)
+    }
+
+    class PropertyChangeListenerSupport {
+        -- Attributes --
+        - List listeners
+        -- Methods --
+        + void addPropertyChangeListener(propertyChangeListener)
+        + void removePropertyChangeListener(propertyChangeListener)
+        + List getPropertyChangeListener(propName)
+    }
+
+    class ImageViewer {
+        -- Statics --
+        + String DEFAULT_CURSOR
+        + String GRAB_CURSOR
+        -- Attributes --
+        - ImageViewerModel model
+        - Tuple mousePos
+        -- Properties --
+        + picture (R)
+        -- Methods --
+        + void addPicture(path_or_file)
+        - void createModel()
+        - void createView()
+        - void placeComponents()
+        - void createController()
+        - void setMousePos(event)
+        - void moveCanvasView(event)
+        - void setScale(s)
+    }
+
+    class ImageViewerModel {
+        -- Attributes --
+        - Image pictureIn
+        - Image picture
+        - Canvas canvas
+        - PropertyChangeListenerSupport propertySupport
+        - boolean isFromCanvas
+        - float scale
+        - int currentWidth
+        - int currentHeight
+        -- Properties --
+        + width (R)
+        + height (R)
+        + canvas (R|W)
+        + picture (R|W)
+        + scale (R|W)
+        -- Methods --
+        - void updateCanvasSize(event)
+        - void drawImageIntoCanvas()
+        - Tuple computeUpperLeftCorner()
+        - PhotoImage cropPicture()
+        - void firePropertyChange(propname)
+    }
+}
+center footer Tous les attributs liés à des composants graphiques ne sont pas affichés
+title Description du paquetage utils
+
+@enduml

@@ -24,13 +24,4 @@ class ImageEncryptionModel(object):
         @raise NotADirectoryError: Levée lorsque le dossier des plugins n'est pas trouvé.
         '''
         return self._api.getPluginManager().loadedPlugins
-
-    @property
-    def availableLocales(self):
-        '''
-        Permet de récupérer toutes les langues disponibles.
-        :return: Une liste de string, représentant l'ensemble des langues.
-        :raise: NotADirectoryError: Levée lorsque le dossier des langues n'est pas trouvé.
-        '''
-        return self._api.getLocaleManager().getAvailableLocales()
     

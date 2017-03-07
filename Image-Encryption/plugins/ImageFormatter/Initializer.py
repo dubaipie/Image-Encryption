@@ -3,13 +3,12 @@ Created on 20 janv. 2017
 
 @author: dubaipie
 '''
-from ImageFormatter.view.ImageFormatter import ImageFormater
+from ImageFormatter.view.ImageFormatter import ImageFormatter
 
 class Initializer(object):
     '''
     La classe d'initialisation du plugin.
     '''
-
 
     def __init__(self, loader):
         '''
@@ -21,7 +20,7 @@ class Initializer(object):
         '''
         Récupérer la fenêtre.
         '''
-        return ImageFormater(master)
+        return ImageFormatter(master)
     
     def getName(self):
         '''

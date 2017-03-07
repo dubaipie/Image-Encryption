@@ -19,7 +19,7 @@ class NoImageToConvert(Exception):
     pass
 
 
-class ImageFormaterModel(object):
+class ImageFormatterModel(object):
 
     #  CONSTRUCTEUR
     def __init__(self):

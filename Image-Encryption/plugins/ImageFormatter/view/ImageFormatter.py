@@ -3,11 +3,9 @@ Created on 18 janv. 2017
 
 @author: havarjos
 '''
-from tkinter import Frame, Entry, Canvas, Button, LabelFrame
-from tkinter import StringVar, HORIZONTAL, VERTICAL, E, W, N, S
+from tkinter import Entry, Button
+from tkinter import StringVar
 from tkinter import filedialog, messagebox
-
-from PIL import ImageTk
 
 from ImageFormatter.model.ImageFormatterModel import *
 
@@ -15,7 +13,7 @@ from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener
 from Utils.ImageViewer import *
 
-class ImageFormater(Frame):
+class ImageFormatter(Frame):
     FORMATS = [
         ("Joint Photographic Experts Group", ("*.jpg", "*.jpeg")),
         ("Bitmap", "*.bmp"),
@@ -42,7 +40,7 @@ class ImageFormater(Frame):
         """
         Création du modèle associé à la vue.
         """
-        self._model = ImageFormaterModel()
+        self._model = ImageFormatterModel()
 
         self._originalStrVar = StringVar()
         self._convertedStrVar = StringVar()
@@ -130,7 +128,7 @@ class ImageFormater(Frame):
         """
         Action déclenchée lors du clic sur le bouton originalButton
         """
-        dlg = filedialog.askopenfilename(filetypes=ImageFormater.FORMATS)
+        dlg = filedialog.askopenfilename(filetypes=ImageFormatter.FORMATS)
 
         if dlg != "":
             try:

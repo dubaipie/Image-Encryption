@@ -7,4 +7,3 @@
 *.blg
 *.log
 .idea/
-docs/*.puml

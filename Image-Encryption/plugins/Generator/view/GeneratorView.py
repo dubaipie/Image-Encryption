@@ -1,5 +1,3 @@
-from PIL import ImageTk
-
 from tkinter import LabelFrame, Radiobutton, Button, Entry, Frame
 from tkinter import IntVar, StringVar, BooleanVar
 from tkinter import N, E, S, W, BOTH, CENTER, DISABLED, NORMAL
