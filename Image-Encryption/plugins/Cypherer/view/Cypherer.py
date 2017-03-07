@@ -184,6 +184,11 @@ class Cypherer(Frame):
             lambda event: self.after(0, self._updateImageCanvas, event)
         ))
         
+        self._model.addPropertyChangeListener(PropertyChangeListener(
+            "Erreur",
+            lambda event: self.after(0, self._erreurTaille, event)
+        ))
+        
         self._model.addChangeListener(ChangeListener(
             target=lambda event: self.after(0, self._updateProgressBarValue, event)
         ))
@@ -246,7 +251,7 @@ class Cypherer(Frame):
             
     def _cypher(self):
         if self._model.imagePath is None or self._rslVar.get() == '':
-            messagebox.showerror("Erreu", "Veuillez indiquer au minimu l'image à crypter ainsi que l'endroit où sauvegarder le résultat")
+            messagebox.showerror("Erreur", "Veuillez indiquer au minimu l'image à crypter ainsi que l'endroit où sauvegarder le résultat")
             return
         if self._model.keyPath is None:
             thread = threading.Thread(target=self._generateKey)
@@ -256,15 +261,12 @@ class Cypherer(Frame):
                 
     def _execute(self):
         self._switchButtonsState(DISABLED)
-        try :
-            im = PIL.Image.open(self._model.keyPath)
-            w,h = im.size
-            im.close()
-            self._progressBarValue.set(0)
-            self._progressBar.config(maximum=w)
-            self._model.cypher()
-        except MismatchFormatException:
-            messagebox.showerror("Taille", "la taille du masque et de l'image ne correspondent pas")
+        im = PIL.Image.open(self._model.keyPath)
+        w,h = im.size
+        im.close()
+        self._progressBarValue.set(0)
+        self._progressBar.config(maximum=w)
+        self._model.cypher()
 
     def _generateKey(self):
         """Méthode permettant de générer une clé aléatoirement et de la sauvegarder ainsi que de l'afficher """
@@ -301,8 +303,6 @@ class Cypherer(Frame):
     
     def _reset(self):
         """ Réintialise le model et les canvas """
-        self._Image.addPicture(None)
-        self._Result.addPicture(None)
         self._rslVar.set('')
         self._imgVar.set('')
         self._keyVar.set('')
@@ -350,3 +350,11 @@ class Cypherer(Frame):
         :param event: l'événement à l'origine de la mise à jour
         """
         self._progressBarValue.set(self._progressBarValue.get() + 1)
+    
+    def _erreurTaille(self, event):
+        """
+        Permet de signaler une erreur lors du cryptage
+        :parem event: l'événement à l'origine de l'erreur
+        """
+        messagebox.showerror("Erreur", "La taille de l'image et du masque ne correspondent pas veuillez réessayer")
+        self._switchButtonsState(NORMAL)
