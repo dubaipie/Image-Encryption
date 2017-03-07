@@ -1,0 +1,46 @@
+@startuml
+
+title Chargement des plugins et affichage
+
+[-> AppLauncher : init()
+AppLauncher -> PluginManager : loadPlugins()
+
+loop for d := dirs
+    alt isfile("d/Initializer.py")
+        PluginManager -> Initializer : create
+        Initializer --> PluginManager : instance
+        PluginManager -> PluginManager : add to internal storage
+    end
+end
+
+[-> AppLauncher : launch()
+AppLauncher -> ImageEncryption : create
+
+activate ImageEncryption
+ImageEncryption -> ImageEncryption : _createView()
+ImageEncryption -> ImageEncryptionModel : plugins
+activate ImageEncryptionModel
+ImageEncryptionModel -> AppLauncher : getPluginManager()
+AppLauncher --> ImageEncryptionModel : pluginManager
+ImageEncryptionModel -> PluginManager : loadedPlugins
+PluginManager --> ImageEncryptionModel : list
+ImageEncryptionModel --> ImageEncryption : list
+deactivate ImageEncryptionModel
+
+loop for init := list
+    ImageEncryption -> Initializer : init.getFrame(self)
+    Initializer --> ImageEncryption : frame
+    ImageEncryption -> Initializer : init.getName()
+    Initializer --> ImageEncryption : name
+    ImageEncryption -> ImageEncryption : append frame to view
+end
+
+ImageEncryption --> AppLauncher : instance
+deactivate ImageEncryption
+AppLauncher -> ImageEncryption : display()
+
+
+
+center footer Seules les instructions nécessaires au chargement et à l'affichage des plugins sont représentées
+hide footbox
+@enduml

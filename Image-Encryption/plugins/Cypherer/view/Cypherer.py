@@ -6,24 +6,20 @@ Created on 18 janv. 2017
 
 import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
-from Cypherer.model.CyphererModel import MismatchFormatException
 
-from tkinter import Entry, Button, StringVar, Frame, Canvas, LabelFrame,\
+from tkinter import Entry, Button, StringVar, Frame, LabelFrame,\
     IntVar, BooleanVar
 from tkinter import filedialog, messagebox, Radiobutton
-from tkinter import W, E, HORIZONTAL, VERTICAL, N, S, NW, SE
+from tkinter import W, E, N, S, NW, SE
 from tkinter.constants import DISABLED, NORMAL, BOTH
 from tkinter.ttk import Progressbar
 
-from PIL import ImageTk
-
-import PIL
+from PIL import Image
 import threading
 
 from Utils.AdditionalWidgets import *
 from Utils.EventSystem import PropertyChangeListener, ChangeListener
 from Utils.ImageViewer import ImageViewer
-from idlelib.ToolTip import ToolTip
 
 
 class Cypherer(Frame):
@@ -251,7 +247,7 @@ class Cypherer(Frame):
             
     def _cypher(self):
         if self._model.imagePath is None or self._rslVar.get() == '':
-            messagebox.showerror("Erreur", "Veuillez indiquer au minimu l'image à crypter ainsi que l'endroit où sauvegarder le résultat")
+            messagebox.showerror("Erreur", "Veuillez indiquer au minimum l'image à crypter ainsi que l'endroit où sauvegarder le résultat")
             return
         if self._model.keyPath is None:
             thread = threading.Thread(target=self._generateKey)
@@ -261,7 +257,7 @@ class Cypherer(Frame):
                 
     def _execute(self):
         self._switchButtonsState(DISABLED)
-        im = PIL.Image.open(self._model.keyPath)
+        im = Image.open(self._model.keyPath)
         w,h = im.size
         im.close()
         self._progressBarValue.set(0)
@@ -274,13 +270,13 @@ class Cypherer(Frame):
         self.after(0, self._switchButtonsState, DISABLED)
 
         #  Récuperation de la taille de l'image
-        im = PIL.Image.open(self._model.imagePath)
+        im = Image.open(self._model.imagePath)
         x, y = im.size
         im.close()
 
         #  Configuration de la barre de progression
         self._progressBarValue.set(0)
-        self._progressBar.config(maximum=y)
+        self._progressBar.config(maximum=y//2)
 
         #  Génération de la clé
         obj = GeneratorModel()
@@ -291,8 +287,10 @@ class Cypherer(Frame):
         obj.generateKey()
 
         #  Enregistrement de la clé générée
-        dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
-                                           defaultextension=".ppm")
+        dlg = ""
+        while dlg == "":
+            dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
+                                               defaultextension=".ppm")
 
         if len(dlg) > 0:
             obj.getKey().save(dlg)
