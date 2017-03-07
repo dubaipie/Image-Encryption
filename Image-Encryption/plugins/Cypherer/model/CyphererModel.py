@@ -37,7 +37,7 @@ class CyphererModel(object):
         self._support = PropertyChangeListenerSupport()
         self._changeSupport = ChangeListenerSupport()
         self._event = ChangeEvent(self)
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
     
     #REQUETES
     @property
@@ -99,12 +99,9 @@ class CyphererModel(object):
         '''
         Réintialise le modèle
         '''
-        self._resultPath = None
-        self._keyPath = None
-        self._imagePath = None
-        self._firePropertyStateChanged("keyPath")
-        self._firePropertyStateChanged("imagePath")
-        self._firePropertyStateChanged("resultPath")
+        self.resultPath = None
+        self.keyPath = None
+        self.imagePath =None
         
     def cypher(self):
         """
@@ -115,7 +112,7 @@ class CyphererModel(object):
         :raise IOError: L'image ou la clé n'a pas pu être chargée ou si l'écriture a échoué.
         """
         with self._lock:
-            if self._keyPath is None or self._imagePath is None:
+            if self.keyPath is None or self.imagePath is None:
                 raise AssertionError
         thread = threading.Thread(target=self._cypher)
         thread.start()
@@ -132,7 +129,9 @@ class CyphererModel(object):
             key = Image.open(self._keyPath)
 
         if img.size != key.size:
-            raise MismatchFormatException
+            self._firePropertyStateChanged("Erreur")
+            return
+        
         keyList = list(key.getdata())
         imgList = list(img.getdata())
         resultList = list()
