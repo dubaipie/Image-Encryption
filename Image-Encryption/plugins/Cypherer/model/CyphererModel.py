@@ -102,6 +102,7 @@ class CyphererModel(object):
         self.resultPath = None
         self.keyPath = None
         self.imagePath =None
+        self._firePropertyStateChanged("resultUpdated")
         
     def cypher(self):
         """
