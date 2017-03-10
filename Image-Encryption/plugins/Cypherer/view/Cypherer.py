@@ -281,7 +281,16 @@ class Cypherer(Frame):
         #  Configuration de la barre de progression
         self._progressBarValue.set(0)
         self._progressBar.config(maximum=y)
-
+        
+        #  Emplacement de la clé
+        dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
+                                           defaultextension=".ppm")
+        
+        if len(dlg) <= 0:
+            messagebox.showerror("Erreur lors de la sauvegarde", "Le chemin est incorrect. Veuillez réessayer")
+            self.after(0, self._switchButtonsState, NORMAL)
+            return
+        
         #  Génération de la clé
         obj = GeneratorModel()
         obj.addChangeListener(ChangeListener(
@@ -291,15 +300,11 @@ class Cypherer(Frame):
         obj.generateKey()
 
         #  Enregistrement de la clé générée
-        dlg = filedialog.asksaveasfilename(title="Choisir un emplacement pour la clé",
-                                           defaultextension=".ppm")
-
-        if len(dlg) > 0:
-            obj.getKey().save(dlg)
-            self._model.keyPath = dlg
-            self._keyVar.set(dlg)
-            #  Poursuite de l'exécution
-            self._execute()
+        obj.getKey().save(dlg)
+        self._model.keyPath = dlg
+        self._keyVar.set(dlg)
+        #  Poursuite de l'exécution
+        self._execute()
     
     def _reset(self):
         """ Réintialise le model et les canvas """
