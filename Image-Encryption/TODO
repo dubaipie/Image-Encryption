@@ -2,7 +2,6 @@ PRIORITE:
    #élevée :
        - Faire le rapport
        - Faire la vidéo
-       - Réfléchir au moyen de distribuer le programme
    #faible :
        - Editeur d'image
 
@@ -14,5 +13,4 @@ AMELIORATIONS:
     - ...
     
 PROBLEMES:
-	- lors de l'utilisation de méthode utilisant le verrou dans le Cypher Model cela bloque le thread
 	- pour les grandes images, le zoom peut faire crasher l'application
