@@ -1,9 +1,3 @@
-'''
-Created on 18 janv. 2017
-
-@author: dubaipie
-'''
-
 import Cypherer.model.CyphererModel as DM
 from Generator.model.GeneratorModel import GeneratorModel
 

@@ -1,9 +1,3 @@
-*.pyc
 *.xml
 *.project
-*.pydevproject
-*.aux
-*.bbl
-*.blg
-*.log
 .idea/

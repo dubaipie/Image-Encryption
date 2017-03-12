@@ -1,9 +1,3 @@
-'''
-Created on 18 janv. 2017
-
-@author: dubaipie
-'''
-
 from PIL import Image
 
 from Utils.EventSystem import PropertyChangeEvent, PropertyChangeListenerSupport, ChangeListenerSupport, ChangeEvent

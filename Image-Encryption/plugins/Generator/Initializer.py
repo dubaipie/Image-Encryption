@@ -1,8 +1,3 @@
-'''
-Created on 20 janv. 2017
-
-@author: dubaipie
-'''
 from Generator.view.GeneratorView import GeneratorView
 
 

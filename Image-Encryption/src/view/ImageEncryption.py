@@ -1,8 +1,3 @@
-'''
-Created on 13 janv. 2017
-
-@author: dubaipie
-'''
 from tkinter import Tk, Menu
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM

@@ -1,6 +1,3 @@
-"""
-Contient l'ensemble des classes nécessaires au fonctionnement de ImageViewer.
-"""
 from tkinter import LabelFrame, Canvas, Scale, Label, Frame
 from tkinter import HORIZONTAL, VERTICAL, E, S, W, N, NW
 

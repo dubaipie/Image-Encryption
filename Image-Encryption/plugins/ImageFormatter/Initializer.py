@@ -1,8 +1,3 @@
-'''
-Created on 20 janv. 2017
-
-@author: dubaipie
-'''
 from ImageFormatter.view.ImageFormatter import ImageFormatter
 
 class Initializer(object):

@@ -1,8 +1,3 @@
-'''
-Created on 18 janv. 2017
-
-@author: havarjos
-'''
 from tkinter import Entry, Button
 from tkinter import StringVar
 from tkinter import filedialog, messagebox

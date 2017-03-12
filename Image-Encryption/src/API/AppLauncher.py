@@ -1,9 +1,3 @@
-'''
-Created on 21 janv. 2017
-
-@author: dubaipie
-'''
-
 class AppLauncher(object):
     """
     Lanceur de l'application, se charge d'initialiser l'application, de
