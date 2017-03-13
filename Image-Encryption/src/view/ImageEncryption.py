@@ -3,7 +3,8 @@ Created on 13 janv. 2017
 
 @author: dubaipie
 '''
-from tkinter import Tk, Menu
+from tkinter import Tk, Menu, Toplevel, N, E, W, S
+from view import HelpWidget
 import tkinter.ttk as ttk
 import model.ImageEncryptionModel as IEM
 
@@ -87,5 +88,18 @@ class ImageEncryption(object):
         
         #-- Ajout de controleurs au menu 'Option' --#
         optMenu = Menu(self._menuBar, tearoff=False)
+        #  Ajout de l'item aide  #
+        optMenu.add_command(label="Aide", command=self._displayHelp)
         
         self._menuBar.add_cascade(label="Option", menu=optMenu)
+
+    def _displayHelp(self):
+        '''
+        Affiche l'aide dans une fenêtre séparée.
+        '''
+        frame = Toplevel(self._frame)
+        frame.title = "Aide"
+        HelpWidget.HelpWidget(frame).grid(row=1, column=1, sticky=N+E+W+S)
+        frame.grid_rowconfigure(1, weight=1)
+        frame.grid_columnconfigure(1, weight=1)
+

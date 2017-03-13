@@ -97,12 +97,12 @@ class Cypherer(Frame):
         
         #RadioButton
         self._byCypherButton = Radiobutton(self._GenFrame, text="Crypter", variable=self._byVar, value=False)
-        self._byDecyphererButton = Radiobutton(self._frame0, text="Décrypter", variable=self._byVar, value=True)
+        self._byDecyphererButton = Radiobutton(self._frame0, text="Déchiffrer", variable=self._byVar, value=True)
         
         #Label
         self._label = Label(self._frame2, text="Image à Crypter : ")
         self._labelKey = Label(self._frame1, text="Clé* : ")
-        ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du cryptage elle sera générer automatiquement")
+        ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du cryptage, elle sera générée automatiquement")
         
     def _placeComponents(self):
         
@@ -213,18 +213,18 @@ class Cypherer(Frame):
     def _hasByVarChanged(self):
         self._reset()
         if self._byVar.get():
-            self._cypherButton.config(command=self._decypher, text='Décrypter')
+            self._cypherButton.config(command=self._decypher, text='Déchiffrer')
             self._Image.config(text="Aperçu de l'image crypter")
-            self._label.config(text="Image à Décrypter : ")
-            self._GenFrame.config(text="Décryptage")
-            self._ImageFrame.config(text="Image à Décrypter")
+            self._label.config(text="Image à Déchiffrer : ")
+            self._GenFrame.config(text="Déchiffrage")
+            self._ImageFrame.config(text="Image à Déchiffrer")
             self._labelKey.config(text="Clé :")
-            ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à décrypter")
-            ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à décrypter")
-            ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du décryptage va être sauvegarder")
-            ToolTips(self._progressBar, text="La progression du Décryptage")
-            ToolTips(self._labelKey, text="Clé servant au décryptage")
-            ToolTips(self._cypherButton, "Permet de lancer le décryptage de l'image avec la clé transmise")
+            ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à déchiffrer")
+            ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à déchiffrer")
+            ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du déchiffrage va être sauvegarder")
+            ToolTips(self._progressBar, text="La progression du Déchiffrage")
+            ToolTips(self._labelKey, text="Clé servant au Déchiffrage")
+            ToolTips(self._cypherButton, "Permet de lancer le déchiffrement de l'image avec la clé transmise")
         else:
             self._cypherButton.config(command=self._cypher, text='Crypter')
             self._Image.config(text="Aperçu de l'image")
@@ -241,7 +241,7 @@ class Cypherer(Frame):
             
     def _decypher(self):
         if self._model.imagePath is None or self._model.keyPath is None or self._rslVar.get() == '':
-            messagebox.showerror("Erreur", "Veuiller indiquer la clé et l'image à décrypter ainsi que l'endroit où sauvegarder le résultat")
+            messagebox.showerror("Erreur", "Veuiller indiquer la clé et l'image à déchiffrer ainsi que l'endroit où sauvegarder le résultat")
         else:
             self._execute()
             

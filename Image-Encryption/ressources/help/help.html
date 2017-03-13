@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Aide</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Bienvenue dans l'aide de ImageViewer</h1>
+        <h2>Pour bien commencer</h2>
+        <h3>1. Convertir une image dans le bon format</h3>
+        <p>L'application utilise des images au format .ppm. Ces images se doivent d'être
+        en noir et blanc, et leur taille doir être pair (600x800 par exemple, mais pas 605x700)</p>
+        <p>Pour convertir vos propres images, cliquez sur l'onglet 'Convertisseur d'images'. Dans l'interface,
+        vous trouverez deux champs : </p>
+        <ul>
+            <li>Image originale : le bouton parcourir de cette ligne vous permettera de choisir l'image que vous
+                souhaitez convertir.</li>
+            <li>Image convertie : le bouton parcourir en fin de ligne vous permettera de choisir l'emplacement de la
+                future image convertie. N'ajoutez pas d'extension au nom du fichier, cela sera fait automagiquement.
+            </li>
+        </ul>
+        <img src="pictures/converter.jpg">
+        <h3>2. Générer une clé</h3>
+        <p>Le plugin 'Générateur de clé' vous permet de générer une clé de taille définie. Pour cela, cliquez sur
+        l'onglet du plugin. Pour spécifier la taille de l'image, deux choix s'offrent à vous :</p>
+        <ul>
+            <li>par valeurs : saisissez directement les dimensions de la clé dans les deux champs prévus à cet effet
+                (les deux valeurs doivent être positives et pairs)</li>
+            <li>par image : vous pouvez créer une clé qui correspondra exactement aux dimensions d'une image, comme
+                celle générée précédement par exemple.</li>
+        </ul>
+        <p>Une fois les dimensions de la clé obtenues, cliquez sur 'Générer' en bas à gauche de la fenêtre.
+        Le programme vous demandera où vous souhaitez sauvegarder votre clé fraîchement générée. Laissez l'extension
+        vide, elle sera remplie automatiquement.</p>
+        <p>Il est également possible de générer une clé à la volée dans le plugin Cypherer, cela sera expliqué dans
+        le point suivant.</p>
+        <img src="pictures/generator.jpg">
+        <h3>3. Cryper une image</h3>
+        <p>Pour commencer, rendez-vous dans l'onglet 'Crypter/Déchiffrer'. Ce plugin vous permet d'une part de crypter
+        des images à partir d'une clé, et d'autre part de déchiffrer des images. Concentrons-nous sur le crytpage d'une
+        image. Assurez vous que l'option 'Crypter' est sélectionnée. Si vous avez généré votre propre clé comme à
+            l'étape précédente, appuyez sur Ouvrir dans la partie 'Clé' et choisissez votre fichier. Si vous souhaitez
+        générer cette clé à la volée, laissez ce champ vide. il vous sera demandé un emplacement pour enregistrer la clé
+        plus tard. Il faut maintenant remplir la zone 'Image à crypter'. En appuyant sur le bouton 'Ouvrir', vous
+        pourrez spécifier l'image (dans le format approprié, probablement celle créée avec le 'Convertisseur d'images')
+        que vous souhaitez crypter. Dernière étape : dans la zone 'Résultat', cliquez sur le bouton 'Enregistrer sous'
+        et donner un nom à votre future image cryptée. Une fois que vous êtes prêts, cliquez sur 'Crypter' et laissez
+        la magie opérer !</p>
+        <img src="pictures/cypherer.jpg">
+        <h3>4. Déchiffrer une image</h3>
+        <p>Le principe est similaire. Assurez-vous que l'option 'Déchiffrer' est sélectionnée. Dans la partie clé,
+        entrer le nom du fichier de votre clé. Dans la partie 'Image à Déchiffrer', indiquez le nom du fichier qui
+        contient otre image chiffrée. Enfin, entrez un nom dans la partie résultat pour votre future image en clair.
+        Une fois que vous êtes prêts, appuyer sur le bouton 'Déchiffrer'.</p>
+        <img src="pictures/decypherer.jpg">
+        <h2>Autres fonctionnalités</h2>
+        <p>Comme vous avez pu le constater, l'application affiche les images au fur et à mesure qu'elles sont
+            sélectionnées. Il est possible d'agrandir et de ce déplacer dans celles-i à l'aide du curseur et des barres
+        de défilement, ou encore en maintenant le bouton gauche de la souris enfoncé et en déplaçant la souris. Il vous
+        est donc possible de voir en détail les images.</p>
+    </body>
+</html>
