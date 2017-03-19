@@ -50,16 +50,15 @@ class Cypherer(Frame):
         self._progressBarValue= IntVar()
 
     def _createView(self):
-        # fixme: add tooltips
         #Frame
-        self._GenFrame = LabelFrame(self, text="Cryptage")
+        self._GenFrame = LabelFrame(self, text="Chiffrage")
         
         self._frame0 = Frame(self._GenFrame)
         
         self._KeyFrame = LabelFrame(self._GenFrame, text="Clé")
         self._frame1 = Frame(self._KeyFrame)
         self._KeyImage = ImageViewer(self._KeyFrame, text="Aperçu de la clé")
-        self._ImageFrame = LabelFrame(self._GenFrame, text="Image à crypter")
+        self._ImageFrame = LabelFrame(self._GenFrame, text="Image à chiffrer")
         self._frame2 = Frame(self._ImageFrame)
         self._Image = ImageViewer(self._ImageFrame, text="Aperçu de l'image")
         
@@ -81,28 +80,30 @@ class Cypherer(Frame):
         
         #Boutons
         self._keyButton = Button(self._frame1, text="Ouvrir")
-        ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à crypter")
+        ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à chiffrer")
         self._imgButton = Button(self._frame2, text="Ouvrir")
-        ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à crypter")
+        ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à chiffrer")
         self._rslButton = Button(self._frame3, text="Enregistrer sous")
-        ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du cryptage va être sauvegarder")
-        self._cypherButton = Button(self._GenFrame, text="Crypter")
-        ToolTips(self._cypherButton, "Permet de lancer le cryptage de l'image avec ou sans clé")
+        ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du chiffrage va être sauvegardé")
+        self._cypherButton = Button(self._GenFrame, text="Chiffrer")
+        ToolTips(self._cypherButton, "Permet de lancer le chiffrage de l'image avec ou sans clé")
         self._resetButton = Button(self._frame0, text=("Réintialiser"))
         ToolTips(self._resetButton, text="Permet de réintialiser tout les champs")
         
         #ProgressBar
         self._progressBar = Progressbar(self._ProgressFrame, variable=self._progressBarValue)
-        ToolTips(self._progressBar, text="La progression du Cryptage")
+        ToolTips(self._progressBar, text="La progression du Chiffrage")
         
         #RadioButton
-        self._byCypherButton = Radiobutton(self._GenFrame, text="Crypter", variable=self._byVar, value=False)
+        self._byCypherButton = Radiobutton(self._GenFrame, text="Chiffrer", variable=self._byVar, value=False)
+        ToolTips(self._byCypherButton, text="Utiliser le plugin pour chiffrer")
         self._byDecyphererButton = Radiobutton(self._frame0, text="Déchiffrer", variable=self._byVar, value=True)
+        ToolTips(self._byDecyphererButton, text="Utiliser le plugin pour déchiffrer")
         
         #Label
-        self._label = Label(self._frame2, text="Image à Crypter : ")
+        self._label = Label(self._frame2, text="Image à Chiffrer : ")
         self._labelKey = Label(self._frame1, text="Clé* : ")
-        ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du cryptage, elle sera générée automatiquement")
+        ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du chiffrage, elle sera générée automatiquement")
         
     def _placeComponents(self):
         
@@ -214,30 +215,30 @@ class Cypherer(Frame):
         self._reset()
         if self._byVar.get():
             self._cypherButton.config(command=self._decypher, text='Déchiffrer')
-            self._Image.config(text="Aperçu de l'image crypter")
+            self._Image.config(text="Aperçu de l'image chiffrée")
             self._label.config(text="Image à Déchiffrer : ")
             self._GenFrame.config(text="Déchiffrage")
             self._ImageFrame.config(text="Image à Déchiffrer")
             self._labelKey.config(text="Clé :")
             ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à déchiffrer")
             ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à déchiffrer")
-            ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du déchiffrage va être sauvegarder")
+            ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du déchiffrage va être sauvegardé")
             ToolTips(self._progressBar, text="La progression du Déchiffrage")
             ToolTips(self._labelKey, text="Clé servant au Déchiffrage")
             ToolTips(self._cypherButton, "Permet de lancer le déchiffrement de l'image avec la clé transmise")
         else:
-            self._cypherButton.config(command=self._cypher, text='Crypter')
+            self._cypherButton.config(command=self._cypher, text='Chiffrer')
             self._Image.config(text="Aperçu de l'image")
-            self._label.config(text="Image à Crypter : ")
-            self._GenFrame.config(text="Cryptage")
+            self._label.config(text="Image à Chiffrer : ")
+            self._GenFrame.config(text="Chiffrage")
             self._labelKey.config(text="Clé* :")
-            self._ImageFrame.config(text="Image à Crypter")
-            ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à crypter")
-            ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à crypter")
-            ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du cryptage va être sauvegarder")
-            ToolTips(self._progressBar, text="La progression du Cryptage")
-            ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du cryptage elle sera générer automatiquement")
-            ToolTips(self._cypherButton, "Permet de lancer le cryptage de l'image avec ou sans clé")
+            self._ImageFrame.config(text="Image à Chiffrer")
+            ToolTips(self._keyButton, text="Permet d'indiquer le chemin de la clé qui va servir à chiffrer")
+            ToolTips(self._imgButton, text="Permet d'indiquer le chemin de l'image à chiffrer")
+            ToolTips(self._rslButton, text="Permet d'indiquer le chemin où le résultat du chiffrage va être sauvegardé")
+            ToolTips(self._progressBar, text="La progression du chiffrage")
+            ToolTips(self._labelKey, text="*: La clé n'est pas obligatoire lors du chiffrage, elle sera générée automatiquement")
+            ToolTips(self._cypherButton, "Permet de lancer le chiffrage de l'image avec ou sans clé")
             
     def _decypher(self):
         if self._model.imagePath is None or self._model.keyPath is None or self._rslVar.get() == '':
@@ -247,7 +248,7 @@ class Cypherer(Frame):
             
     def _cypher(self):
         if self._model.imagePath is None or self._rslVar.get() == '':
-            messagebox.showerror("Erreur", "Veuillez indiquer au minimum l'image à crypter ainsi que l'endroit où sauvegarder le résultat")
+            messagebox.showerror("Erreur", "Veuillez indiquer au minimum l'image à chiffrer ainsi que l'endroit où sauvegarder le résultat")
             return
         if self._model.keyPath is None:
             thread = threading.Thread(target=self._generateKey)
@@ -357,5 +358,5 @@ class Cypherer(Frame):
         Permet de signaler une erreur lors du cryptage
         :parem event: l'événement à l'origine de l'erreur
         """
-        messagebox.showerror("Erreur", "La taille de l'image et du masque ne correspondent pas veuillez réessayer")
+        messagebox.showerror("Erreur", "La taille de l'image et du masque ne correspondent pas, veuillez réessayer")
         self._switchButtonsState(NORMAL)

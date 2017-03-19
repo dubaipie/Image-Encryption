@@ -167,7 +167,7 @@ class GeneratorView(Frame):
             self._model.getKey().save(self._picturePathVar.get())
             self._updateCanvasDisplay()
         except KeyError:
-            messagebox.showerror("Sauvegarde", "Sauvegarde échoué veuillez vérifier que le nom du fichier est correct")
+            messagebox.showerror("Sauvegarde", "La sauvegarde a échoué, veuillez vérifier que le nom du fichier est correct")
 
     def _validateEntry(self):
         """
@@ -178,7 +178,7 @@ class GeneratorView(Frame):
         w = int(self._widthVar.get())
         h = int(self._heightVar.get())
         if w <= 0 or h <= 0 or w % 2 != 0 or h % 2 != 0:
-            messagebox.showerror("Génération", "Veuillez entrer des entiers pair")
+            messagebox.showerror("Génération", "Veuillez entrer des entiers pairs")
             return False
         return True
 

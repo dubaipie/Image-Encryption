@@ -26,4 +26,4 @@ class Initializer(object):
         '''
         Récupérer le nom du plugin.
         '''
-        return "Crypteur/Déchiffreur"
+        return "Chiffreur/Déchiffreur"
